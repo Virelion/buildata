@@ -19,9 +19,7 @@ class BuilderElementProperty<T>(
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): T {
-        if(!optional) {
-            require(initialized) { "Property ${property.name} not initialized" }
-        }
+        require(initialized) { "Property ${property.name} was not initialized" }
 
         @Suppress("unchecked_cast")
         return container as T

@@ -17,13 +17,13 @@ internal class PackageStreamer(
             val output = File(
                     packageDir +
                             File.separator +
-                            template.mockName + ".kt"
+                            template.builderName + ".kt"
             )
             output.createNewFile()
 
             val printWriter = PrintWriter(output)
             printWriter.use {
-                it.print(template.generate(CodeBuilder()))
+                it.print(template.generateCode(CodeBuilder()))
             }
         }
     }

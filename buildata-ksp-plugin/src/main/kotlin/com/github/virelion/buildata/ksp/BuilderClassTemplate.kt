@@ -18,14 +18,6 @@ internal class BuilderClassTemplate(
             emptyLine()
             appendln("class ${builderName}() {")
             indent {
-                properties.forEach {
-                    it.generate(builder)
-                }
-                emptyLine()
-
-                methods.forEach {
-                    it.generate(builder)
-                }
             }
             appendln("}")
         }
