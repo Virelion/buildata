@@ -15,7 +15,7 @@ class BuildataPlugin : Plugin<Project> {
         val kspExtension = project.extensions.getByType(KspExtension::class.java)
 
         val buildataCodegenDir =
-                listOf(project.buildDir.path, "generated", "com.github.virelion.buildata", "commonTest")
+                listOf(project.buildDir.path, "generated", "buildata", "commonTest")
                         .joinToString(separator = File.separator)
 
         kspExtension.arg("buildataCodegenDir", buildataCodegenDir)
@@ -38,7 +38,7 @@ class BuildataPlugin : Plugin<Project> {
                 val taskName = "kspKotlin" + kspCodegenPlatformTarget.name.capitalize()
 
                 project.configurations.getByName("ksp").dependencies.add(
-                        project.dependencies.create("com.github.virelion.com.github.virelion.buildata:com.github.virelion.buildata-ksp-plugin:${Version.value}")
+                        project.dependencies.create("com.github.virelion.buildata:buildata-ksp-plugin:${Version.value}")
                 )
 
                 multiplatformExtension.targets

@@ -17,7 +17,7 @@ class NonCompositeBuilderTest {
             assertEquals("TestValue", noDefaultRequired)
             assertNull(noDefaultOptional)
             assertEquals("default", requiredWithDefault)
-            assertEquals("default", opionalWithDefault)
+            assertEquals("default", optionalWithDefault)
         }
     }
 
@@ -77,10 +77,10 @@ class NonCompositeBuilderTest {
         val item = NonCompositeDataClass::class.build {
             noDefaultRequired = "TestValue"
             noDefaultOptional = null
-            opionalWithDefault = "opt"
+            optionalWithDefault = "opt"
         }
         with(item) {
-            assertEquals("opt", opionalWithDefault)
+            assertEquals("opt", optionalWithDefault)
         }
     }
 
@@ -90,10 +90,10 @@ class NonCompositeBuilderTest {
         val item = NonCompositeDataClass::class.build {
             noDefaultRequired = "TestValue"
             noDefaultOptional = null
-            opionalWithDefault = null
+            optionalWithDefault = null
         }
         with(item) {
-            assertNull(opionalWithDefault)
+            assertNull(optionalWithDefault)
         }
     }
 }

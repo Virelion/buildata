@@ -5,6 +5,7 @@ import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 
 @AutoService(SymbolProcessor::class)
 class BuildataSymbolProcessor : SymbolProcessor {
@@ -26,6 +27,14 @@ class BuildataSymbolProcessor : SymbolProcessor {
     override fun process(resolver: Resolver) {
         logger.info("BuildataSymbolProcessor processing started")
 
-//        PackageStreamer(buildataCodegenDir).stream(classes)
+        val classes = resolver
+                .getSymbolsWithAnnotation("com.github.virelion.buildata.Buildable")
+                .asSequence()
+                .filterIsInstance<KSClassDeclaration>()
+                .map {
+                    it.buildClass()
+                }
+
+        PackageStreamer(buildataCodegenDir).stream(classes)
     }
 }

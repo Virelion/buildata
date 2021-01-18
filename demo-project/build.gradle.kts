@@ -15,7 +15,7 @@ buildscript {
 
 plugins {
     kotlin("multiplatform") version "1.4.21"
-    id("org.jlleitschuh.gradle.ktlint") version "9.2.1"
+    id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
     id("com.github.virelion.buildata") version "0.0.0-SNAPSHOT"
 }
 
@@ -53,7 +53,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+                implementation("com.github.virelion.buildata:buildata-runtime:$buildataRuntimeVersion")
             }
         }
 

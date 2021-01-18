@@ -1,4 +1,4 @@
-rootProject.name = "com.github.virelion.buildata"
+rootProject.name = "Buildata"
 
 include(":buildata-ksp-plugin")
 include(":buildata-gradle-plugin")

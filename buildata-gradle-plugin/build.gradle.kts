@@ -17,8 +17,8 @@ repositories {
 gradlePlugin {
     plugins {
         register("BuildataGradlePlugin") {
-            id = "com.github.virelion.com.github.virelion.buildata"
-            implementationClass = "com.github.virelion.com.github.virelion.buildata.gradle.BuildataPlugin"
+            id = "com.github.virelion.buildata"
+            implementationClass = "com.github.virelion.buildata.gradle.BuildataPlugin"
         }
     }
 }
@@ -47,4 +47,8 @@ tasks.withType<Jar>() {
     this.manifest {
         attributes("Implementation-Version" to project.version)
     }
+}
+
+(tasks.getByName("processResources") as ProcessResources).apply {
+    expand("projectVersion" to project.version)
 }
