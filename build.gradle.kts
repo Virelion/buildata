@@ -30,7 +30,8 @@ tasks {
     val publishPluginsToMavenLocal by creating {
         dependsOn(
                 ":buildata-ksp-plugin:publishToMavenLocal",
-                ":buildata-gradle-plugin:publishToMavenLocal"
+                ":buildata-gradle-plugin:publishToMavenLocal",
+                ":buildata-runtime:publishJvmPublicationToMavenLocal"
         )
     }
 }

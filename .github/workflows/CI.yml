@@ -11,7 +11,7 @@ on:
 jobs:
   "MacOS-and-iOS":
     name: MacOS & iOS
-    runs-on: macos-11.0
+    runs-on: macos-lastest
     steps:
       - uses: actions/checkout@v2
       - name: Unit tests
@@ -40,7 +40,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Unit tests
         run: |
-          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMingwX64PublicationToMavenLocal
+          ./gradlew clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMingwX64PublicationToMavenLocal -Prelease.version=0.0.0-SNAPSHOT
           ./gradlew mingwX64Test
       - name: Integration tests
         working-directory: demo-project
