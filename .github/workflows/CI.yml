@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  "MacOS-and-iOS":
+    name: MacOS & iOS
+    runs-on: macos-11.0
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unit tests
+        run: |
+          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMacosX64PublicationToMavenLocal publishIosX64PublicationToMavenLocal publishIosArm64PublicationToMavenLocal
+          ./gradlew macosX64Test iosX64Test
+      - name: Integration tests
+        working-directory: demo-project
+        run: ./gradlew clean macosX64Test iosX64Test
+
+  "Linux":
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unit tests
+        run: |
+          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal
+          ./gradlew linuxX64Test
+      - name: Integration tests
+        working-directory: demo-project
+        run: ./gradlew clean linuxX64Test
+
+  "Windows":
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unit tests
+        run: |
+          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMingwX64PublicationToMavenLocal
+          ./gradlew mingwX64Test
+      - name: Integration tests
+        working-directory: demo-project
+        run: ./gradlew clean mingwX64Test
+
+  "JavaScript":
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unit tests
+        run: |
+          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJsPublicationToMavenLocal
+          ./gradlew jsTest jsNodeTest
+      - name: Integration tests
+        working-directory: demo-project
+        run: ./gradlew clean jsTest jsNodeTest
+
+  "JVM":
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unit tests
+        run: |
+          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJvmPublicationToMavenLocal
+          ./gradlew jvmTest
+      - name: Integration tests
+        working-directory: demo-project
+        run: ./gradlew clean jvmTest
+
+  "Android":
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Unit tests
+        run: |
+          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJvmPublicationToMavenLocal publishAndroidDebugPublicationToMavenLocal publishAndroidReleasePublicationToMavenLocal
+          ./gradlew testDebugUnitTest
+      - name: Integration tests
+        working-directory: demo-project
+        run: ./gradlew clean testDebugUnitTest
+
