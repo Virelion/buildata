@@ -15,7 +15,7 @@ class BuildataPlugin : Plugin<Project> {
         val kspExtension = project.extensions.getByType(KspExtension::class.java)
 
         val buildataCodegenDir =
-                listOf(project.buildDir.path, "generated", "buildata", "commonTest")
+                listOf(project.buildDir.path, "generated", "buildata", "commonMain")
                         .joinToString(separator = File.separator)
 
         kspExtension.arg("buildataCodegenDir", buildataCodegenDir)
@@ -23,10 +23,10 @@ class BuildataPlugin : Plugin<Project> {
         project.afterEvaluate {
             val multiplatformExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
 
-            val commonTest = multiplatformExtension.sourceSets.getByName("commonTest")
+            val commonMain = multiplatformExtension.sourceSets.getByName("commonMain")
 
             project.logger.info("Buildata codegen directory: $buildataCodegenDir")
-            commonTest.kotlin.srcDir(buildataCodegenDir)
+            commonMain.kotlin.srcDir(buildataCodegenDir)
 
             val kspCodegenPlatformTarget =
                     multiplatformExtension.targets
@@ -45,9 +45,7 @@ class BuildataPlugin : Plugin<Project> {
                         .fold(mutableListOf<KotlinCompilation<*>>()) { acc, next ->
                             acc += next.compilations
                             acc
-                        }
-                        .filter { it.compilationName.contains("test", ignoreCase = true) }
-                        .forEach {
+                        }.forEach {
                             project.tasks.getByName(it.compileKotlinTask.name).dependsOn(taskName)
                         }
             } else {

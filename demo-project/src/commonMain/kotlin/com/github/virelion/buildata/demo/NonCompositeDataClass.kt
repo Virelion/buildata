@@ -6,6 +6,11 @@ import com.github.virelion.buildata.Buildable
 data class NonCompositeDataClass(
     val noDefaultRequired: String,
     val noDefaultOptional: String?,
-    val requiredWithDefault: String,
-    val optionalWithDefault: String?
+    val requiredWithDefault: String = "defaultRequired",
+    val optionalWithDefault: String? = "defaultOptional"
 )
+
+fun use() {
+    NonCompositeDataClass::class.build {
+    }
+}

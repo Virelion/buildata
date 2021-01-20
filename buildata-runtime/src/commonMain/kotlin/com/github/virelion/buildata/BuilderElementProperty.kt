@@ -4,14 +4,12 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 class BuilderElementProperty<T>(
-        val defaultValueProvider: (() -> T)?,
+        val hasDefaultValue: Boolean,
         val optional: Boolean
 ) : ReadWriteProperty<Any?, T> {
-    private var initialized = false
-    private var container: T? = defaultValueProvider?.let {
-        initialized = true
-        it.invoke()
-    }
+    var initialized = false
+        private set
+    private var container: T? = null
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         initialized = true

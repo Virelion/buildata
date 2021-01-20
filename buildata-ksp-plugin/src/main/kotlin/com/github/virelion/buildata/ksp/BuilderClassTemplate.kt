@@ -3,21 +3,29 @@ package com.github.virelion.buildata.ksp
 import com.github.virelion.buildata.ksp.extensions.toFQName
 import com.github.virelion.buildata.ksp.utils.CodeBuilder
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.symbol.Nullability
+import java.lang.IllegalStateException
 
 internal fun KSClassDeclaration.buildClass(): BuilderClassTemplate {
+    if(Modifier.DATA !in this.modifiers) {
+        throw IllegalStateException("Cannot add create builder for non data class")
+    }
     return BuilderClassTemplate(
             pkg = this.packageName.asString(),
             originalName = this.simpleName.getShortName(),
-            properties = this.getAllProperties().map {
-                val type = it.type.resolve()
-                ClassProperty(
-                    name = it.simpleName.getShortName(),
-                    type = type.toFQName(),
-                    defaultValue = null,
-                    optional = type.nullability == Nullability.NULLABLE
-                )
-            }
+            properties = requireNotNull(this.primaryConstructor) { "${this.qualifiedName} needs to have primary constructor" }
+                    .parameters
+                    .filter { it.isVar || it.isVal }
+                    .map {
+                        val type = it.type.resolve()
+                        ClassProperty(
+                                name = requireNotNull(it.name?.getShortName()) { "${this.qualifiedName} contains nameless property" },
+                                type = type.toFQName(),
+                                hasDefaultValue = it.hasDefault,
+                                optional = type.nullability == Nullability.NULLABLE
+                        )
+                    }
     )
 }
 
@@ -26,6 +34,9 @@ internal class BuilderClassTemplate(
         val originalName: String,
         val properties: List<ClassProperty>
 ) {
+    private val propertiesWithDefault = properties.filter { it.hasDefaultValue }
+    private val propertiesWithoutDefault = properties.filter { !it.hasDefaultValue }
+
     val builderName = "${originalName}_Builder"
 
     fun generateCode(codeBuilder: CodeBuilder): String {
@@ -52,6 +63,7 @@ internal class BuilderClassTemplate(
             }
             appendln("}")
             emptyLine()
+            appendln("@BuildataDSL")
             appendln("class ${builderName}() : Builder<$originalName> {")
             indent {
                 properties.forEach {
@@ -60,13 +72,23 @@ internal class BuilderClassTemplate(
                 emptyLine()
                 appendln("override fun build(): $originalName {")
                 indent {
-                    appendln("return $originalName(")
+                    appendln("var result = $originalName(")
                     indent {
-                        properties.forEach {
+                        propertiesWithoutDefault.forEach {
                             appendln("${it.name} = ${it.name},")
                         }
                     }
                     appendln(")")
+
+                    propertiesWithDefault.forEach {
+                        appendln("if (${it.backingPropName}.initialized) {")
+                        indent {
+                            appendln("result = result.copy(${it.name} = ${it.name})")
+                        }
+                        appendln("}")
+                    }
+
+                    appendln("return result")
                 }
                 appendln("}")
             }
@@ -78,6 +100,7 @@ internal class BuilderClassTemplate(
         val imports: List<String> = listOf(
                 "com.github.virelion.buildata.Builder",
                 "com.github.virelion.buildata.BuilderElementProperty",
+                "com.github.virelion.buildata.BuildataDSL",
                 "kotlin.reflect.KClass"
         ).sorted()
 
@@ -87,14 +110,13 @@ internal class BuilderClassTemplate(
 internal class ClassProperty(
         val name: String,
         val type: String,
-        val defaultValue: String?,
+        val hasDefaultValue: Boolean,
         val optional: Boolean
 ) {
-    fun generateCode(codeBuilder: CodeBuilder) {
-        codeBuilder.appendln("var ${name}: ${type} by BuilderElementProperty(${generateDefaultValueLambda()}, $optional)")
-    }
+    val backingPropName = "${name}_Element"
 
-    fun generateDefaultValueLambda(): String {
-        return defaultValue?.let { "{ $it } "} ?: "null"
+    fun generateCode(codeBuilder: CodeBuilder) {
+        codeBuilder.appendln("var $backingPropName = BuilderElementProperty<$type>($hasDefaultValue, $optional)")
+        codeBuilder.appendln("var ${name}: $type by $backingPropName")
     }
 }
