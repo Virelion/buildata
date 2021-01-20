@@ -1,4 +1,5 @@
 package com.github.virelion.buildata
 
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class Buildable
