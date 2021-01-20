@@ -1,4 +1,4 @@
-package com.github.virelion.buildata
+package com.github.virelion.buildata.demo
 
 import kotlin.js.JsName
 import kotlin.test.Test
@@ -16,8 +16,8 @@ class NonCompositeBuilderTest {
         with(item) {
             assertEquals("TestValue", noDefaultRequired)
             assertNull(noDefaultOptional)
-            assertEquals("default", requiredWithDefault)
-            assertEquals("default", optionalWithDefault)
+            assertEquals("defaultRequired", requiredWithDefault)
+            assertEquals("defaultOptional", optionalWithDefault)
         }
     }
 
@@ -29,7 +29,7 @@ class NonCompositeBuilderTest {
                 noDefaultOptional = null
             }
         } catch (e: IllegalArgumentException) {
-            assertEquals(e.message,"Property noDefaultRequired was not initialized")
+            assertEquals(e.message, "Property noDefaultRequired was not initialized")
         }
     }
 
@@ -54,7 +54,7 @@ class NonCompositeBuilderTest {
                 noDefaultRequired = "TestValue"
             }
         } catch (e: IllegalArgumentException) {
-            assertEquals(e.message,"Property noDefaultOptional was not initialized")
+            assertEquals(e.message, "Property noDefaultOptional was not initialized")
         }
     }
 
