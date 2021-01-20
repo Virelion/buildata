@@ -1,4 +1,4 @@
-name: CI
+name: verification
 
 on:
   push:
@@ -12,6 +12,7 @@ jobs:
   "MacOS-and-iOS":
     name: MacOS & iOS
     runs-on: macos-lastest
+    if: "false"
     steps:
       - uses: actions/checkout@v2
       - name: Unit tests
@@ -39,12 +40,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Unit tests
+        shell: cmd
         run: |
-          ./gradlew clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMingwX64PublicationToMavenLocal -Prelease.version=0.0.0-SNAPSHOT
-          ./gradlew mingwX64Test
+          .\gradlew.bat -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMingwX64PublicationToMavenLocal
+          .\gradlew.bat mingwX64Test
       - name: Integration tests
         working-directory: demo-project
-        run: ./gradlew clean mingwX64Test
+        run: .\gradlew.bat clean mingwX64Test
 
   "JavaScript":
     runs-on: ubuntu-20.04
