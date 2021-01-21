@@ -67,7 +67,7 @@ class CompositeBuilderTest {
                 value = "INNER_CLASS"
                 level2 {
                     value = "LEVEL2"
-                    level3.populate(Level3Class("LEVEL3"))
+                    level3.populateWith(Level3Class("LEVEL3"))
                 }
             }
         }

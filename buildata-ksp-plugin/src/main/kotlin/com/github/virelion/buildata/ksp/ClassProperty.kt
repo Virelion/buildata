@@ -42,10 +42,10 @@ internal class ClassProperty(
         }
     }
 
-    fun generateRepopulateLine(codeBuilder: CodeBuilder) {
+    fun generatePopulateWithLine(codeBuilder: CodeBuilder) {
         codeBuilder.build {
             if(buildable) {
-                appendln("${name}.populate(it.$name)")
+                appendln("${name}.populateWith(it.$name)")
             } else {
                 appendln("$name = it.$name")
             }

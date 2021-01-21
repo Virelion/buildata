@@ -90,7 +90,7 @@ internal class BuilderClassTemplate(
             emptyLine()
             generateBuildFunction()
             emptyLine()
-            generateBuilderPopulateFunction()
+            generateBuilderPopulateWithFunction()
         }
         appendln("}")
     }
@@ -119,13 +119,13 @@ internal class BuilderClassTemplate(
         appendln("}")
     }
 
-    fun CodeBuilder.generateBuilderPopulateFunction() {
-        appendln("override fun populate(source: $originalName) {")
+    fun CodeBuilder.generateBuilderPopulateWithFunction() {
+        appendln("override fun populateWith(source: $originalName) {")
         indent {
             appendln("source.let {")
             indent {
                 properties.forEach {
-                    it.generateRepopulateLine(this)
+                    it.generatePopulateWithLine(this)
                 }
             }
             appendln("}")
