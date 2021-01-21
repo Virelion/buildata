@@ -1,30 +1,42 @@
 package com.github.virelion.buildata.ksp
 
-import com.github.virelion.buildata.ksp.extensions.toFQName
+import com.github.virelion.buildata.ksp.Constants.BUILDABLE_FQNAME
+import com.github.virelion.buildata.ksp.extensions.typeFQName
 import com.github.virelion.buildata.ksp.utils.CodeBuilder
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.symbol.Nullability
-import java.lang.IllegalStateException
 
 internal fun KSClassDeclaration.buildClass(): BuilderClassTemplate {
     if(Modifier.DATA !in this.modifiers) {
         throw IllegalStateException("Cannot add create builder for non data class")
     }
+    val fqName = this.packageName.asString() + "." + this.simpleName.getShortName()
     return BuilderClassTemplate(
             pkg = this.packageName.asString(),
             originalName = this.simpleName.getShortName(),
-            properties = requireNotNull(this.primaryConstructor) { "${this.qualifiedName} needs to have primary constructor" }
+            properties = requireNotNull(this.primaryConstructor) { "$fqName needs to have primary constructor" }
                     .parameters
                     .filter { it.isVar || it.isVal }
-                    .map {
-                        val type = it.type.resolve()
+                    .map { parameter ->
+                        val type = parameter.type.resolve()
                         ClassProperty(
-                                name = requireNotNull(it.name?.getShortName()) { "${this.qualifiedName} contains nameless property" },
-                                type = type.toFQName(),
-                                hasDefaultValue = it.hasDefault,
-                                optional = type.nullability == Nullability.NULLABLE
-                        )
+                                name = requireNotNull(parameter.name?.getShortName()) { "$fqName contains nameless property" },
+                                type = type,
+                                hasDefaultValue = parameter.hasDefault,
+                                nullable = type.nullability == Nullability.NULLABLE,
+                                buildable = type.annotations
+                                        .any { annotation ->
+                                            annotation.annotationType.resolve().typeFQName() == BUILDABLE_FQNAME
+                                        }
+                        ).apply {
+                            if(buildable && (nullable || hasDefaultValue)) {
+                                throw IllegalStateException("""
+                                    Class $fqName contains property that is nullable or has default value, that is marked as @Buildable.
+                                    This feature is not supported yet.
+                                """.trimIndent())
+                            }
+                        }
                     }
     )
 }
@@ -37,63 +49,96 @@ internal class BuilderClassTemplate(
     private val propertiesWithDefault = properties.filter { it.hasDefaultValue }
     private val propertiesWithoutDefault = properties.filter { !it.hasDefaultValue }
 
-    val builderName = "${originalName}_Builder"
+    val builderName = createBuilderName(originalName)
 
     fun generateCode(codeBuilder: CodeBuilder): String {
         return codeBuilder.build {
             appendln("package $pkg")
             emptyLine()
             imports.forEach {
-                appendln("import $it")
+                appendln("import $it // ktlint-disable")
             }
             emptyLine()
-            appendln("fun KClass<$originalName>.builder(): $builderName {")
-            indent {
-                appendln("return $builderName()")
-            }
-            appendln("}")
+            generateClassBuilderExtension()
             emptyLine()
-            appendln("fun KClass<$originalName>.build(")
-            indent {
-                appendln("builder: $builderName.() -> Unit")
-            }
-            appendln("): $originalName {")
-            indent {
-                appendln("return $builderName().apply { builder() }.build()")
-            }
-            appendln("}")
+            generateClassBuildExtension()
             emptyLine()
-            appendln("@BuildataDSL")
-            appendln("class ${builderName}() : Builder<$originalName> {")
+            generateBuilderClass()
+        }
+    }
+
+    fun CodeBuilder.generateClassBuilderExtension() {
+
+        appendln("fun KClass<$originalName>.builder(): $builderName {")
+        indent {
+            appendln("return $builderName()")
+        }
+        appendln("}")
+    }
+
+    fun CodeBuilder.generateClassBuildExtension() {
+        appendln("fun KClass<$originalName>.build(")
+        indent {
+            appendln("builder: $builderName.() -> Unit")
+        }
+        appendln("): $originalName {")
+        indent {
+            appendln("return $builderName().apply { builder() }.build()")
+        }
+        appendln("}")
+    }
+
+    fun CodeBuilder.generateBuilderClass() {
+        appendln("@BuildataDSL")
+        appendln("class ${builderName}() : Builder<$originalName> {")
+        indent {
+            properties.forEach {
+                it.generatePropertyDeclaration(this)
+            }
+            emptyLine()
+            generateBuildFunction()
+            emptyLine()
+            generateBuilderPopulateWithFunction()
+        }
+        appendln("}")
+    }
+
+    fun CodeBuilder.generateBuildFunction() {
+        appendln("override fun build(): $originalName {")
+        indent {
+            appendln("var result = $originalName(")
             indent {
-                properties.forEach {
-                    it.generateCode(this)
+                propertiesWithoutDefault.forEach {
+                    it.generateDataClassInitialization(this)
                 }
-                emptyLine()
-                appendln("override fun build(): $originalName {")
+            }
+            appendln(")")
+
+            propertiesWithDefault.forEach {
+                appendln("if (${it.backingPropName}.initialized) {")
                 indent {
-                    appendln("var result = $originalName(")
-                    indent {
-                        propertiesWithoutDefault.forEach {
-                            appendln("${it.name} = ${it.name},")
-                        }
-                    }
-                    appendln(")")
-
-                    propertiesWithDefault.forEach {
-                        appendln("if (${it.backingPropName}.initialized) {")
-                        indent {
-                            appendln("result = result.copy(${it.name} = ${it.name})")
-                        }
-                        appendln("}")
-                    }
-
-                    appendln("return result")
+                    appendln("result = result.copy(${it.name} = ${it.name})")
                 }
                 appendln("}")
             }
+
+            appendln("return result")
+        }
+        appendln("}")
+    }
+
+    fun CodeBuilder.generateBuilderPopulateWithFunction() {
+        appendln("override fun populateWith(source: $originalName) {")
+        indent {
+            appendln("source.let {")
+            indent {
+                properties.forEach {
+                    it.generatePopulateWithLine(this)
+                }
+            }
             appendln("}")
         }
+        appendln("}")
     }
 
     companion object {
@@ -104,19 +149,9 @@ internal class BuilderClassTemplate(
                 "kotlin.reflect.KClass"
         ).sorted()
 
-    }
-}
+        fun createBuilderName(name: String): String {
+            return "${name}_Builder"
+        }
 
-internal class ClassProperty(
-        val name: String,
-        val type: String,
-        val hasDefaultValue: Boolean,
-        val optional: Boolean
-) {
-    val backingPropName = "${name}_Element"
-
-    fun generateCode(codeBuilder: CodeBuilder) {
-        codeBuilder.appendln("var $backingPropName = BuilderElementProperty<$type>($hasDefaultValue, $optional)")
-        codeBuilder.appendln("var ${name}: $type by $backingPropName")
     }
 }

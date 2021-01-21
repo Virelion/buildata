@@ -1,5 +1,6 @@
 package com.github.virelion.buildata.ksp
 
+import com.github.virelion.buildata.ksp.Constants.BUILDABLE_FQNAME
 import com.google.auto.service.AutoService
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
@@ -28,7 +29,7 @@ class BuildataSymbolProcessor : SymbolProcessor {
         logger.info("BuildataSymbolProcessor processing started")
 
         val classes = resolver
-                .getSymbolsWithAnnotation("com.github.virelion.buildata.Buildable")
+                .getSymbolsWithAnnotation(BUILDABLE_FQNAME)
                 .asSequence()
                 .filterIsInstance<KSClassDeclaration>()
                 .map {

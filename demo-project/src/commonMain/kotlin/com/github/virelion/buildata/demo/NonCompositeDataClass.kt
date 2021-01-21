@@ -9,8 +9,3 @@ data class NonCompositeDataClass(
     val requiredWithDefault: String = "defaultRequired",
     val optionalWithDefault: String? = "defaultOptional"
 )
-
-fun use() {
-    NonCompositeDataClass::class.build {
-    }
-}

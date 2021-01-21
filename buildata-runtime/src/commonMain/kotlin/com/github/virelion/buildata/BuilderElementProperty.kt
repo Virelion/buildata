@@ -3,10 +3,7 @@ package com.github.virelion.buildata
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class BuilderElementProperty<T>(
-        val hasDefaultValue: Boolean,
-        val optional: Boolean
-) : ReadWriteProperty<Any?, T> {
+class BuilderElementProperty<T> : ReadWriteProperty<Any?, T> {
     var initialized = false
         private set
     private var container: T? = null
