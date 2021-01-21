@@ -1,5 +1,6 @@
 package com.github.virelion.buildata
 
-interface Builder<T> {
+interface Builder<T: Any> {
     fun build(): T
+    fun populate(source: T)
 }

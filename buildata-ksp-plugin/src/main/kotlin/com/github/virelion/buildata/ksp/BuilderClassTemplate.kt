@@ -51,53 +51,86 @@ internal class BuilderClassTemplate(
                 appendln("import $it // ktlint-disable")
             }
             emptyLine()
-            appendln("fun KClass<$originalName>.builder(): $builderName {")
-            indent {
-                appendln("return $builderName()")
-            }
-            appendln("}")
+            generateClassBuilderExtension()
             emptyLine()
-            appendln("fun KClass<$originalName>.build(")
-            indent {
-                appendln("builder: $builderName.() -> Unit")
-            }
-            appendln("): $originalName {")
-            indent {
-                appendln("return $builderName().apply { builder() }.build()")
-            }
-            appendln("}")
+            generateClassBuildExtension()
             emptyLine()
-            appendln("@BuildataDSL")
-            appendln("class ${builderName}() : Builder<$originalName> {")
+            generateBuilderClass()
+        }
+    }
+
+    fun CodeBuilder.generateClassBuilderExtension() {
+
+        appendln("fun KClass<$originalName>.builder(): $builderName {")
+        indent {
+            appendln("return $builderName()")
+        }
+        appendln("}")
+    }
+
+    fun CodeBuilder.generateClassBuildExtension() {
+        appendln("fun KClass<$originalName>.build(")
+        indent {
+            appendln("builder: $builderName.() -> Unit")
+        }
+        appendln("): $originalName {")
+        indent {
+            appendln("return $builderName().apply { builder() }.build()")
+        }
+        appendln("}")
+    }
+
+    fun CodeBuilder.generateBuilderClass() {
+        appendln("@BuildataDSL")
+        appendln("class ${builderName}() : Builder<$originalName> {")
+        indent {
+            properties.forEach {
+                it.generatePropertyDeclaration(this)
+            }
+            emptyLine()
+            generateBuildFunction()
+            emptyLine()
+            generateBuilderPopulateFunction()
+        }
+        appendln("}")
+    }
+
+    fun CodeBuilder.generateBuildFunction() {
+        appendln("override fun build(): $originalName {")
+        indent {
+            appendln("var result = $originalName(")
             indent {
-                properties.forEach {
-                    it.generatePropertyDeclaration(this)
+                propertiesWithoutDefault.forEach {
+                    it.generateDataClassInitialization(this)
                 }
-                emptyLine()
-                appendln("override fun build(): $originalName {")
+            }
+            appendln(")")
+
+            propertiesWithDefault.forEach {
+                appendln("if (${it.backingPropName}.initialized) {")
                 indent {
-                    appendln("var result = $originalName(")
-                    indent {
-                        propertiesWithoutDefault.forEach {
-                            it.generateDataClassInitialization(this)
-                        }
-                    }
-                    appendln(")")
-
-                    propertiesWithDefault.forEach {
-                        appendln("if (${it.backingPropName}.initialized) {")
-                        indent {
-                            appendln("result = result.copy(${it.name} = ${it.name})")
-                        }
-                        appendln("}")
-                    }
-
-                    appendln("return result")
+                    appendln("result = result.copy(${it.name} = ${it.name})")
                 }
                 appendln("}")
             }
+
+            appendln("return result")
+        }
+        appendln("}")
+    }
+
+    fun CodeBuilder.generateBuilderPopulateFunction() {
+        appendln("override fun populate(source: $originalName) {")
+        indent {
+            appendln("source.let {")
+            indent {
+                properties.forEach {
+                    it.generateRepopulateLine(this)
+                }
+            }
             appendln("}")
         }
+        appendln("}")
     }
 
     companion object {

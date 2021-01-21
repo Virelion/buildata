@@ -41,4 +41,14 @@ internal class ClassProperty(
             }
         }
     }
+
+    fun generateRepopulateLine(codeBuilder: CodeBuilder) {
+        codeBuilder.build {
+            if(buildable) {
+                appendln("${name}.populate(it.$name)")
+            } else {
+                appendln("$name = it.$name")
+            }
+        }
+    }
 }

@@ -60,28 +60,28 @@ class CompositeBuilderTest {
         }
     }
 
-//    @Test
-//    fun canDirectlyAssignToBuildableProp() {
-//        val item = CompositeDataClass::class.build {
-//            innerClass {
-//                value = "INNER_CLASS"
-//                level2 {
-//                    value = "LEVEL2"
-//                    level3 = Level3Class("LEVEL3")
-//                }
-//            }
-//        }
-//
-//        with(item) {
-//            with(innerClass) {
-//                assertEquals("INNER_CLASS", value)
-//                with(level2) {
-//                    assertEquals("LEVEL2", value)
-//                    with(level3) {
-//                        assertEquals("LEVEL3", value)
-//                    }
-//                }
-//            }
-//        }
-//    }
+    @Test
+    fun canDirectlyAssignToBuildableProp() {
+        val item = CompositeDataClass::class.build {
+            innerClass {
+                value = "INNER_CLASS"
+                level2 {
+                    value = "LEVEL2"
+                    level3.populate(Level3Class("LEVEL3"))
+                }
+            }
+        }
+
+        with(item) {
+            with(innerClass) {
+                assertEquals("INNER_CLASS", value)
+                with(level2) {
+                    assertEquals("LEVEL2", value)
+                    with(level3) {
+                        assertEquals("LEVEL3", value)
+                    }
+                }
+            }
+        }
+    }
 }
