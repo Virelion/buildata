@@ -10,7 +10,7 @@ internal class ClassProperty(
         val name: String,
         val type: KSType,
         val hasDefaultValue: Boolean,
-        val optional: Boolean,
+        val nullable: Boolean,
         val buildable: Boolean
 ) {
     val backingPropName = "${name}_Element"

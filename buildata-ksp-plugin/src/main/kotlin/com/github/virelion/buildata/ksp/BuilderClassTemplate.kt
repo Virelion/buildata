@@ -11,24 +11,32 @@ internal fun KSClassDeclaration.buildClass(): BuilderClassTemplate {
     if(Modifier.DATA !in this.modifiers) {
         throw IllegalStateException("Cannot add create builder for non data class")
     }
+    val fqName = this.packageName.asString() + "." + this.simpleName.getShortName()
     return BuilderClassTemplate(
             pkg = this.packageName.asString(),
             originalName = this.simpleName.getShortName(),
-            properties = requireNotNull(this.primaryConstructor) { "${this.qualifiedName} needs to have primary constructor" }
+            properties = requireNotNull(this.primaryConstructor) { "$fqName needs to have primary constructor" }
                     .parameters
                     .filter { it.isVar || it.isVal }
                     .map { parameter ->
                         val type = parameter.type.resolve()
                         ClassProperty(
-                                name = requireNotNull(parameter.name?.getShortName()) { "${this.qualifiedName} contains nameless property" },
+                                name = requireNotNull(parameter.name?.getShortName()) { "$fqName contains nameless property" },
                                 type = type,
                                 hasDefaultValue = parameter.hasDefault,
-                                optional = type.nullability == Nullability.NULLABLE,
+                                nullable = type.nullability == Nullability.NULLABLE,
                                 buildable = type.annotations
                                         .any { annotation ->
                                             annotation.annotationType.resolve().typeFQName() == BUILDABLE_FQNAME
                                         }
-                        )
+                        ).apply {
+                            if(buildable && (nullable || hasDefaultValue)) {
+                                throw IllegalStateException("""
+                                    Class $fqName contains property that is nullable or has default value, that is marked as @Buildable.
+                                    This feature is not supported yet.
+                                """.trimIndent())
+                            }
+                        }
                     }
     )
 }
