@@ -30,7 +30,7 @@ internal fun KSClassDeclaration.buildClass(): BuilderClassTemplate {
                                             annotation.annotationType.resolve().typeFQName() == BUILDABLE_FQNAME
                                         }
                         ).apply {
-                            if(buildable && (nullable || hasDefaultValue)) {
+                            if(buildable && hasDefaultValue) {
                                 throw IllegalStateException("""
                                     Class $fqName contains property that is nullable or has default value, that is marked as @Buildable.
                                     This feature is not supported yet.
@@ -63,12 +63,13 @@ internal class BuilderClassTemplate(
             emptyLine()
             generateClassBuildExtension()
             emptyLine()
+            generateBuilderInvokeExtension()
+            emptyLine()
             generateBuilderClass()
         }
     }
 
     fun CodeBuilder.generateClassBuilderExtension() {
-
         appendln("fun KClass<$originalName>.builder(): $builderName {")
         indent {
             appendln("return $builderName()")
@@ -84,6 +85,18 @@ internal class BuilderClassTemplate(
         appendln("): $originalName {")
         indent {
             appendln("return $builderName().apply { builder() }.build()")
+        }
+        appendln("}")
+    }
+
+    fun CodeBuilder.generateBuilderInvokeExtension() {
+        appendln("operator fun $builderName.invoke(")
+        indent {
+           appendln("block: $builderName.() -> Unit")
+        }
+        appendln(") {")
+        indent {
+            appendln("block()")
         }
         appendln("}")
     }
@@ -143,9 +156,7 @@ internal class BuilderClassTemplate(
 
     companion object {
         val imports: List<String> = listOf(
-                "com.github.virelion.buildata.Builder",
-                "com.github.virelion.buildata.BuilderElementProperty",
-                "com.github.virelion.buildata.BuildataDSL",
+                "com.github.virelion.buildata.*",
                 "kotlin.reflect.KClass"
         ).sorted()
 

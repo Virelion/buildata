@@ -4,7 +4,7 @@ import com.github.virelion.buildata.Buildable
 
 @Buildable
 data class CompositeDataClass(
-    val innerClass: @Buildable Level1Class
+    val innerClass: @Buildable Level1Class?
 )
 
 @Buildable
