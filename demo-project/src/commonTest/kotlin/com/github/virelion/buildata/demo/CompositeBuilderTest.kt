@@ -2,6 +2,8 @@ package com.github.virelion.buildata.demo
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class CompositeBuilderTest {
     @Test
@@ -19,7 +21,7 @@ class CompositeBuilderTest {
         }
 
         with(item) {
-            with(innerClass) {
+            assertNotNull(innerClass).apply {
                 assertEquals("INNER_CLASS", value)
                 with(level2) {
                     assertEquals("LEVEL2", value)
@@ -45,10 +47,18 @@ class CompositeBuilderTest {
             }
         }
 
-        itemBuilder.innerClass.level2.level3.value = "CHANGED"
+        itemBuilder {
+            innerClass {
+                level2 {
+                    level3 {
+                        value = "CHANGED"
+                    }
+                }
+            }
+        }
 
         with(itemBuilder.build()) {
-            with(innerClass) {
+            assertNotNull(innerClass).apply {
                 assertEquals("INNER_CLASS", value)
                 with(level2) {
                     assertEquals("LEVEL2", value)
@@ -67,13 +77,13 @@ class CompositeBuilderTest {
                 value = "INNER_CLASS"
                 level2 {
                     value = "LEVEL2"
-                    level3.populateWith(Level3Class("LEVEL3"))
+                    level3 = Level3Class("LEVEL3")
                 }
             }
         }
 
         with(item) {
-            with(innerClass) {
+            assertNotNull(innerClass).apply {
                 assertEquals("INNER_CLASS", value)
                 with(level2) {
                     assertEquals("LEVEL2", value)
@@ -82,6 +92,17 @@ class CompositeBuilderTest {
                     }
                 }
             }
+        }
+    }
+
+    @Test
+    fun canSetNullOnNullableProperty() {
+        val item = CompositeDataClass::class.build {
+            innerClass = null
+        }
+
+        with(item) {
+            assertNull(innerClass)
         }
     }
 }

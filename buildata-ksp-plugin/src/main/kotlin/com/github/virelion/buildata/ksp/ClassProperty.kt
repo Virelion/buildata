@@ -19,10 +19,16 @@ internal class ClassProperty(
         codeBuilder.build {
             if (buildable) {
                 val builderName = BuilderClassTemplate.createBuilderName(type.classFQName())
-                appendln("val $name = $builderName()")
+                val elementPropName = if(nullable) {
+                    "BuilderNullableCompositeElementProperty"
+                } else {
+                    "BuilderCompositeElementProperty"
+                }
+                appendln("private val $backingPropName = $elementPropName<${type.classFQName()}, $builderName> { $builderName() }")
+                appendln("var $name by $backingPropName")
                 appendln("fun $name(block: $builderName.() -> Unit) {")
                 indent {
-                    appendln("$name.block()")
+                    appendln("$backingPropName.useBuilder(block)")
                 }
                 appendln("}")
             } else {
@@ -35,7 +41,7 @@ internal class ClassProperty(
     fun generateDataClassInitialization(codeBuilder: CodeBuilder) {
         codeBuilder.build {
             if(buildable) {
-                appendln("$name = ${name}.build(),")
+                appendln("$name = $name,")
             } else {
                 appendln("$name = $name,")
             }
@@ -45,7 +51,7 @@ internal class ClassProperty(
     fun generatePopulateWithLine(codeBuilder: CodeBuilder) {
         codeBuilder.build {
             if(buildable) {
-                appendln("${name}.populateWith(it.$name)")
+                appendln("$name = it.$name")
             } else {
                 appendln("$name = it.$name")
             }
