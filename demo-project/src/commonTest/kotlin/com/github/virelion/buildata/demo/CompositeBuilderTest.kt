@@ -105,4 +105,18 @@ class CompositeBuilderTest {
             assertNull(innerClass)
         }
     }
+
+    @Test
+    fun properDefaultsAreSet() {
+        val item = Level2Class::class.build {
+            level3 = Level3Class("")
+            value = ""
+        }
+
+        with(item) {
+            assertNull(nullableLevel3WithNullDefault)
+            assertEquals(Level3Class("DEFAULT"), nullableLevel3WithDefault)
+            assertEquals(Level3Class("DEFAULT"), level3WithDefault)
+        }
+    }
 }

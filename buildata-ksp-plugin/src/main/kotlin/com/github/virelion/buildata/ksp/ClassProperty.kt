@@ -40,21 +40,13 @@ internal class ClassProperty(
 
     fun generateDataClassInitialization(codeBuilder: CodeBuilder) {
         codeBuilder.build {
-            if(buildable) {
-                appendln("$name = $name,")
-            } else {
-                appendln("$name = $name,")
-            }
+            appendln("$name = $name,")
         }
     }
 
     fun generatePopulateWithLine(codeBuilder: CodeBuilder) {
         codeBuilder.build {
-            if(buildable) {
-                appendln("$name = it.$name")
-            } else {
-                appendln("$name = it.$name")
-            }
+            appendln("$name = it.$name")
         }
     }
 }
