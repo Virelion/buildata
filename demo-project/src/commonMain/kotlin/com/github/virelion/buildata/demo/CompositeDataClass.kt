@@ -16,6 +16,9 @@ data class Level1Class(
 @Buildable
 data class Level2Class(
     val level3: @Buildable Level3Class,
+    val level3WithDefault: @Buildable Level3Class = Level3Class("DEFAULT"),
+    val nullableLevel3WithDefault: @Buildable Level3Class? = Level3Class("DEFAULT"),
+    val nullableLevel3WithNullDefault: @Buildable Level3Class? = null,
     val value: String
 )
 

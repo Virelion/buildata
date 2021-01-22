@@ -8,7 +8,7 @@ import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.symbol.Nullability
 
 internal fun KSClassDeclaration.buildClass(): BuilderClassTemplate {
-    if(Modifier.DATA !in this.modifiers) {
+    if (Modifier.DATA !in this.modifiers) {
         throw IllegalStateException("Cannot add create builder for non data class")
     }
     val fqName = this.packageName.asString() + "." + this.simpleName.getShortName()
@@ -29,14 +29,7 @@ internal fun KSClassDeclaration.buildClass(): BuilderClassTemplate {
                                         .any { annotation ->
                                             annotation.annotationType.resolve().typeFQName() == BUILDABLE_FQNAME
                                         }
-                        ).apply {
-                            if(buildable && hasDefaultValue) {
-                                throw IllegalStateException("""
-                                    Class $fqName contains property that is nullable or has default value, that is marked as @Buildable.
-                                    This feature is not supported yet.
-                                """.trimIndent())
-                            }
-                        }
+                        )
                     }
     )
 }
@@ -92,7 +85,7 @@ internal class BuilderClassTemplate(
     fun CodeBuilder.generateBuilderInvokeExtension() {
         appendln("operator fun $builderName.invoke(")
         indent {
-           appendln("block: $builderName.() -> Unit")
+            appendln("block: $builderName.() -> Unit")
         }
         appendln(") {")
         indent {
