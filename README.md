@@ -1,19 +1,16 @@
 ![logo](logo.png)
 
-![verification](https://github.com/Virelion/buildata/workflows/verification/badge.svg)
-
-Codegen that makes builders easier.
-
-## Kotlin Multiplatform project
 ![badge](https://img.shields.io/badge/platform-JVM-orange)
 ![badge](https://img.shields.io/badge/platform-JS-red)
 ![badge](https://img.shields.io/badge/platform-Android-brightgreen)
 ![badge](https://img.shields.io/badge/platform-Linux--64-blue)
 ![badge](https://img.shields.io/badge/platform-mingw--64-blueviolet)
 
-# Why?
+![verification](https://github.com/Virelion/buildata/workflows/verification/badge.svg)
+![version](https://img.shields.io/github/v/tag/Virelion/buildata)
+![last-commit](https://img.shields.io/github/last-commit/Virelion/buildata)
 
-To allow easy building of immutable data classes.
+Kotlin multiplatform builder generator.
 
 # How to use?
 
