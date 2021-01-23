@@ -19,6 +19,8 @@ plugins {
     id("org.jetbrains.dokka") version "1.4.0"
 }
 
+val linuxTargetEnabled = project.findProperty("kotlin.native.linux.enabled") ?: "true" == "true"
+
 val androidEnabled = System.getenv("ANDROID_HOME") != null
 if (androidEnabled) {
     configureAndroid()
@@ -42,11 +44,15 @@ kotlin {
     }
     mingwX64()
     macosX64()
-    linuxX64()
+
+    if(linuxTargetEnabled) {
+        linuxX64()
+    }
+
     ios()
     val publicationsFromMainHost =
         listOf(jvm(), js())
-            .map { it.name } + "kotlinMultiplatform" + "androidDebug" + "androidRelease"
+            .map { it.name } + "kotlinMultiplatform" + "androidDebug" + "androidRelease" + "metadata"
     publishing {
         publications {
             matching { it.name in publicationsFromMainHost }.all {
@@ -108,8 +114,10 @@ kotlin {
             dependsOn(nativeMain)
         }
 
-        val linuxX64Main by getting {
-            dependsOn(nativeMain)
+        if(linuxTargetEnabled) {
+            val linuxX64Main by getting {
+                dependsOn(nativeMain)
+            }
         }
 
         val iosX64Main by getting {
