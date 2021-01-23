@@ -1,10 +1,11 @@
 # BuilData
 ![verification](https://github.com/Virelion/buildata/workflows/verification/badge.svg)
+
 Codegen that makes builders easier.
 
 # Why?
 
-To allow easy building of immutable data classes
+To allow easy building of immutable data classes.
 
 # How to use?
 

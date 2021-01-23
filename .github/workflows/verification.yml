@@ -20,7 +20,7 @@ jobs:
           ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMacosX64PublicationToMavenLocal publishIosX64PublicationToMavenLocal publishIosArm64PublicationToMavenLocal
           ./gradlew macosX64Test iosX64Test
       - name: Integration tests
-        working-directory: demo-project
+        working-directory: integration-test-project
         run: ./gradlew clean macosX64Test iosX64Test
 
   "Linux":
@@ -29,11 +29,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Unit tests
         run: |
+          ./gradlew ktlintCheck
           ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal
           ./gradlew linuxX64Test
       - name: Integration tests
-        working-directory: demo-project
-        run: ./gradlew clean linuxX64Test
+        working-directory: integration-test-project
+        run: ./gradlew clean ktlintCheck linuxX64Test
 
   "Windows":
     runs-on: windows-2019
@@ -45,7 +46,7 @@ jobs:
           .\gradlew.bat -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMingwX64PublicationToMavenLocal
           .\gradlew.bat mingwX64Test
       - name: Integration tests
-        working-directory: demo-project
+        working-directory: integration-test-project
         run: .\gradlew.bat clean mingwX64Test
 
   "JavaScript":
@@ -57,7 +58,7 @@ jobs:
           ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJsPublicationToMavenLocal
           ./gradlew jsTest jsNodeTest
       - name: Integration tests
-        working-directory: demo-project
+        working-directory: integration-test-project
         run: ./gradlew clean jsTest jsNodeTest
 
   "JVM":
@@ -69,7 +70,7 @@ jobs:
           ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJvmPublicationToMavenLocal
           ./gradlew jvmTest
       - name: Integration tests
-        working-directory: demo-project
+        working-directory: integration-test-project
         run: ./gradlew clean jvmTest
 
   "Android":
@@ -81,6 +82,6 @@ jobs:
           ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJvmPublicationToMavenLocal publishAndroidDebugPublicationToMavenLocal publishAndroidReleasePublicationToMavenLocal
           ./gradlew testDebugUnitTest
       - name: Integration tests
-        working-directory: demo-project
+        working-directory: integration-test-project
         run: ./gradlew clean testDebugUnitTest
 

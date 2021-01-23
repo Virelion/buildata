@@ -8,6 +8,6 @@ pluginManagement {
     }
 }
 
-rootProject.name = "demo-project"
+rootProject.name = "integration-test-project"
 
 enableFeaturePreview("GRADLE_METADATA")
