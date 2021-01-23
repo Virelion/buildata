@@ -45,7 +45,7 @@ kotlin {
     mingwX64()
     macosX64()
 
-    if(linuxTargetEnabled) {
+    if (linuxTargetEnabled) {
         linuxX64()
     }
 
@@ -114,7 +114,7 @@ kotlin {
             dependsOn(nativeMain)
         }
 
-        if(linuxTargetEnabled) {
+        if (linuxTargetEnabled) {
             val linuxX64Main by getting {
                 dependsOn(nativeMain)
             }
