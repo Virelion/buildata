@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Unit tests
         run: |
-          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMacosX64PublicationToMavenLocal publishIosX64PublicationToMavenLocal publishIosArm64PublicationToMavenLocal
+          ./gradlew -PisMainHost=true -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMacosX64PublicationToMavenLocal publishIosX64PublicationToMavenLocal publishIosArm64PublicationToMavenLocal
           ./gradlew macosX64Test iosX64Test
       - name: Integration tests
         working-directory: integration-test-project
@@ -30,7 +30,7 @@ jobs:
       - name: Unit tests
         run: |
           ./gradlew ktlintCheck
-          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal
+          ./gradlew -PisMainHost=true -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal
           ./gradlew linuxX64Test
       - name: Integration tests
         working-directory: integration-test-project
@@ -43,7 +43,7 @@ jobs:
       - name: Unit tests
         shell: cmd
         run: |
-          .\gradlew.bat -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMingwX64PublicationToMavenLocal
+          .\gradlew.bat -PisMainHost=true -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMingwX64PublicationToMavenLocal
           .\gradlew.bat mingwX64Test
       - name: Integration tests
         working-directory: integration-test-project
@@ -55,7 +55,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Unit tests
         run: |
-          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJsPublicationToMavenLocal
+          ./gradlew -PisMainHost=true -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJsPublicationToMavenLocal
           ./gradlew jsTest jsNodeTest
       - name: Integration tests
         working-directory: integration-test-project
@@ -67,7 +67,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Unit tests
         run: |
-          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJvmPublicationToMavenLocal
+          ./gradlew -PisMainHost=true -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJvmPublicationToMavenLocal
           ./gradlew jvmTest
       - name: Integration tests
         working-directory: integration-test-project
@@ -79,7 +79,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Unit tests
         run: |
-          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishLinuxX64PublicationToMavenLocal publishJvmPublicationToMavenLocal publishAndroidDebugPublicationToMavenLocal publishAndroidReleasePublicationToMavenLocal
+          ./gradlew -PisMainHost=true -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishAndroidDebugPublicationToMavenLocal publishAndroidReleasePublicationToMavenLocal
           ./gradlew testDebugUnitTest
       - name: Integration tests
         working-directory: integration-test-project
