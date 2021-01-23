@@ -36,8 +36,8 @@ subprojects {
                 name = "GitHubPackages"
                 url = uri("https://maven.pkg.github.com/Virelion/buildata")
                 credentials {
-                    username = project.findProperty("gpr.user") as? String ?: System.getenv("USERNAME")
-                    password = project.findProperty("gpr.key") as? String ?: System.getenv("TOKEN")
+                    username = System.getProperty("org.ajoberstar.grgit.auth.username") as? String ?: System.getenv("USERNAME")
+                    password = System.getProperty("org.ajoberstar.grgit.auth.password") as? String ?: System.getenv("TOKEN")
                 }
             }
         }

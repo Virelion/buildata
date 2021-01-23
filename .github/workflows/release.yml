@@ -1,12 +1,11 @@
 name: release
 
-inputs:
-  scope:
-    description: 'Scope of release. Use major|minor|patch'
-    required: true
-
 on:
   workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Scope of release. Use major|minor|patch'
+        required: true
 
 jobs:
   "Linux":
@@ -14,27 +13,23 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Release
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew final publish -Prelease.scope=${{ inputs.scope }} -PisMainHost=true
+        run: ./gradlew final publish -Prelease.scope=${{ github.event.inputs.scope }} -PisMainHost=true -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
 
   "MacOS-and-iOS":
     name: MacOS & iOS
+    needs: [Linux]
     runs-on: macos-lastest
     if: "false"
     steps:
       - uses: actions/checkout@v2
       - name: Release
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew final :buildata-runtime:publish -Prelease.scope=${{ inputs.scope }}
+        run: ./gradlew final :buildata-runtime:publish -Prelease.useLastTag -Prelease.scope=${{ github.event.inputs.scope }} -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
 
   "Windows":
     runs-on: windows-2019
+    needs: [ Linux ]
     steps:
       - uses: actions/checkout@v2
       - name: Release
         shell: cmd
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-        run: .\gradlew.bat final :buildata-runtime:publish -Prelease.scope=${{ inputs.scope }}
+        run: .\gradlew.bat final :buildata-runtime:publish -Prelease.useLastTag -Prelease.scope=${{ github.event.inputs.scope }} -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
