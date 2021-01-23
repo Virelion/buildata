@@ -3,14 +3,14 @@ package com.github.virelion.buildata
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class BuilderCompositeElementProperty<T: Any, B: Builder<T>>(
-        val builderProvider: () -> B
+class BuilderCompositeElementProperty<T : Any, B : Builder<T>>(
+    val builderProvider: () -> B
 ) : ReadWriteProperty<Any?, T> {
     var initialized = false
         private set
     var builder: B = builderProvider()
 
-    fun useBuilder(block: B.() -> Unit ) {
+    fun useBuilder(block: B.() -> Unit) {
         initialized = true
         builder.block()
     }

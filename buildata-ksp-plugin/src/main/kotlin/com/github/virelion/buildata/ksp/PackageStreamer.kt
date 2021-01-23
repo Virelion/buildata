@@ -10,14 +10,14 @@ internal class PackageStreamer(
     fun stream(sequence: Sequence<BuilderClassTemplate>) {
         sequence.forEach { template ->
             val packageDir = codegenDir +
-                    File.separator +
-                    template.pkg.getPathFromPackageName()
+                File.separator +
+                template.pkg.getPathFromPackageName()
             File(packageDir).mkdirs()
 
             val output = File(
-                    packageDir +
-                            File.separator +
-                            template.builderName + ".kt"
+                packageDir +
+                    File.separator +
+                    template.builderName + ".kt"
             )
             output.createNewFile()
 

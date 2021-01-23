@@ -3,15 +3,14 @@ package com.github.virelion.buildata.ksp
 import com.github.virelion.buildata.ksp.extensions.classFQName
 import com.github.virelion.buildata.ksp.extensions.typeFQName
 import com.github.virelion.buildata.ksp.utils.CodeBuilder
-import com.google.devtools.ksp.symbol.KSName
 import com.google.devtools.ksp.symbol.KSType
 
 internal class ClassProperty(
-        val name: String,
-        val type: KSType,
-        val hasDefaultValue: Boolean,
-        val nullable: Boolean,
-        val buildable: Boolean
+    val name: String,
+    val type: KSType,
+    val hasDefaultValue: Boolean,
+    val nullable: Boolean,
+    val buildable: Boolean
 ) {
     val backingPropName = "${name}_Element"
 
@@ -19,18 +18,17 @@ internal class ClassProperty(
         codeBuilder.build {
             if (buildable) {
                 val builderName = BuilderClassTemplate.createBuilderName(type.classFQName())
-                val elementPropName = if(nullable) {
+                val elementPropName = if (nullable) {
                     "BuilderNullableCompositeElementProperty"
                 } else {
                     "BuilderCompositeElementProperty"
                 }
                 appendln("private val $backingPropName = $elementPropName<${type.classFQName()}, $builderName> { $builderName() }")
                 appendln("var $name by $backingPropName")
-                appendln("fun $name(block: $builderName.() -> Unit) {")
-                indent {
+                appendln("@BuildataDSL")
+                indentBlock("fun $name(block: $builderName.() -> Unit)") {
                     appendln("$backingPropName.useBuilder(block)")
                 }
-                appendln("}")
             } else {
                 appendln("private val $backingPropName = BuilderElementProperty<${type.typeFQName()}>()")
                 appendln("var $name by $backingPropName")

@@ -28,13 +28,15 @@ class BuildataSymbolProcessor : SymbolProcessor {
     override fun process(resolver: Resolver) {
         logger.info("BuildataSymbolProcessor processing started")
 
+        val classProcessor = KSClassDeclarationProcessor(logger)
+
         val classes = resolver
-                .getSymbolsWithAnnotation(BUILDABLE_FQNAME)
-                .asSequence()
-                .filterIsInstance<KSClassDeclaration>()
-                .map {
-                    it.buildClass()
-                }
+            .getSymbolsWithAnnotation(BUILDABLE_FQNAME)
+            .asSequence()
+            .filterIsInstance<KSClassDeclaration>()
+            .map {
+                classProcessor.process(it)
+            }
 
         PackageStreamer(buildataCodegenDir).stream(classes)
     }
