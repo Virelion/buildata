@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Release
         run: ./gradlew final publish -Prelease.scope=${{ github.event.inputs.scope }} -PisMainHost=true -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
 
@@ -22,14 +24,18 @@ jobs:
     if: "false"
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Release
-        run: ./gradlew final :buildata-runtime:publish -Prelease.useLastTag -Prelease.scope=${{ github.event.inputs.scope }} -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew final :buildata-runtime:publish -Prelease.useLastTag=true -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
 
   "Windows":
     runs-on: windows-2019
     needs: [ Linux ]
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Release
         shell: cmd
-        run: .\gradlew.bat final :buildata-runtime:publish -Prelease.useLastTag -Prelease.scope=${{ github.event.inputs.scope }} -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
+        run: .\gradlew.bat final :buildata-runtime:publish -Prelease.useLastTag=true -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
