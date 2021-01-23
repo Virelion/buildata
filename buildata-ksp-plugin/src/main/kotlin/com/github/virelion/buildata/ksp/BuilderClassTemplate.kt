@@ -37,6 +37,7 @@ internal class BuilderClassTemplate(
     }
 
     fun CodeBuilder.generateClassBuildExtension() {
+        appendln("@BuildataDSL")
         appendln("fun KClass<$originalName>.build(")
         indent {
             appendln("builder: $builderName.() -> Unit")
@@ -49,6 +50,7 @@ internal class BuilderClassTemplate(
     }
 
     fun CodeBuilder.generateBuilderInvokeExtension() {
+        appendln("@BuildataDSL")
         appendln("operator fun $builderName.invoke(")
         indent {
             appendln("block: $builderName.() -> Unit")

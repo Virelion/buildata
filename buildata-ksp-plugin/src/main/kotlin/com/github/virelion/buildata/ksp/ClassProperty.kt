@@ -25,6 +25,7 @@ internal class ClassProperty(
                 }
                 appendln("private val $backingPropName = $elementPropName<${type.classFQName()}, $builderName> { $builderName() }")
                 appendln("var $name by $backingPropName")
+                appendln("@BuildataDSL")
                 indentBlock("fun $name(block: $builderName.() -> Unit)") {
                     appendln("$backingPropName.useBuilder(block)")
                 }
