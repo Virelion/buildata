@@ -26,6 +26,25 @@ allprojects {
     }
 }
 
+subprojects {
+    if(!this.plugins.hasPlugin("maven-publish")) {
+        apply(plugin = "maven-publish")
+    }
+    configure<PublishingExtension>  {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/Virelion/buildata")
+                credentials {
+                    username = project.findProperty("gpr.user") as? String ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.key") as? String ?: System.getenv("TOKEN")
+                }
+            }
+        }
+    }
+}
+
+
 tasks {
     val publishPluginsToMavenLocal by creating {
         dependsOn(

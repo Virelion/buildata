@@ -1,0 +1,40 @@
+name: release
+
+inputs:
+  scope:
+    description: 'Scope of release. Use major|minor|patch'
+    required: true
+
+on:
+  workflow_dispatch:
+
+jobs:
+  "Linux":
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Release
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew final publish -Prelease.scope=${{ inputs.scope }} -PisMainHost=true
+
+  "MacOS-and-iOS":
+    name: MacOS & iOS
+    runs-on: macos-lastest
+    if: "false"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Release
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew final :buildata-runtime:publish -Prelease.scope=${{ inputs.scope }}
+
+  "Windows":
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - name: Release
+        shell: cmd
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+        run: .\gradlew.bat final :buildata-runtime:publish -Prelease.scope=${{ inputs.scope }}
