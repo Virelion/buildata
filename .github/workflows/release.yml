@@ -26,7 +26,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Release
-        run: ./gradlew final :buildata-runtime:publish -Prelease.useLastTag=true -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew final :buildata-runtime:publish -Pkotlin.native.linux.enabled=false -Prelease.useLastTag=true -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
 
   "Windows":
     runs-on: windows-2019
