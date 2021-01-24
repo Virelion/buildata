@@ -11,7 +11,7 @@ on:
 jobs:
   "MacOS-and-iOS":
 #     name: MacOS & iOS
-    runs-on: macos-lastest
+    runs-on: macos-latest
 #     if: "false"
     steps:
       - uses: actions/checkout@v2
