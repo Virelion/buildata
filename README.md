@@ -5,6 +5,8 @@
 ![badge](https://img.shields.io/badge/platform-Android-brightgreen)
 ![badge](https://img.shields.io/badge/platform-Linux--64-blue)
 ![badge](https://img.shields.io/badge/platform-mingw--64-blueviolet)
+![badge](https://img.shields.io/badge/platform-iOS--64-yellowgreen)
+![badge](https://img.shields.io/badge/platform-MacOS--64-yellow)
 
 ![verification](https://github.com/Virelion/buildata/workflows/verification/badge.svg)
 ![version](https://img.shields.io/github/v/tag/Virelion/buildata)
