@@ -19,9 +19,8 @@ jobs:
 
   "MacOS-and-iOS":
     name: MacOS & iOS
-    needs: [Linux]
-    runs-on: macos-lastest
-    if: "false"
+    needs: [ Linux ]
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
         with:

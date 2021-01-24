@@ -11,8 +11,7 @@ on:
 jobs:
   "MacOS-and-iOS":
     name: MacOS & iOS
-    runs-on: macos-lastest
-    if: "false"
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: Unit tests
