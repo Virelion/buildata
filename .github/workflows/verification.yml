@@ -10,19 +10,17 @@ on:
 
 jobs:
   "MacOS-and-iOS":
-#     name: MacOS & iOS
+    name: MacOS & iOS
     runs-on: macos-latest
-#     if: "false"
     steps:
       - uses: actions/checkout@v2
-      - run: echo Hello world
-#       - name: Unit tests
-#         run: |
-#           ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMacosX64PublicationToMavenLocal publishIosX64PublicationToMavenLocal publishIosArm64PublicationToMavenLocal
-#           ./gradlew macosX64Test iosX64Test
-#       - name: Integration tests
-#         working-directory: demo-project
-#         run: ./gradlew clean macosX64Test iosX64Test
+      - name: Unit tests
+        run: |
+          ./gradlew -Prelease.version=0.0.0-SNAPSHOT clean publishPluginsToMavenLocal publishMetadataPublicationToMavenLocal publishKotlinMultiplatformPublicationToMavenLocal publishMacosX64PublicationToMavenLocal publishIosX64PublicationToMavenLocal publishIosArm64PublicationToMavenLocal
+          ./gradlew macosX64Test iosX64Test
+      - name: Integration tests
+        working-directory: demo-project
+        run: ./gradlew clean macosX64Test iosX64Test
 
 #   "Linux":
 #     runs-on: ubuntu-20.04
