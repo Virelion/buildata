@@ -7,6 +7,8 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
+description = "KSP codegen extension that generate builder code for annotated classes."
+
 publishing {
     publications {
         create<MavenPublication>("maven") {

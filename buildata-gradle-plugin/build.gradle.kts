@@ -9,9 +9,15 @@ plugins {
     `maven-publish`
 }
 
+description = "Plugin that connects Buildata KSP codegen engine to Kotlin gradle project."
+
 repositories {
     mavenLocal()
     mavenCentral()
+}
+
+publishing {
+    publications {  }
 }
 
 gradlePlugin {
@@ -22,6 +28,8 @@ gradlePlugin {
         }
     }
 }
+
+description = "Plugin that connects Buildata KSP codegen engine to Kotlin gradle project"
 
 val kspVersion: String by project
 
