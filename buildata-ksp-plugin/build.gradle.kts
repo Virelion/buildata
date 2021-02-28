@@ -9,6 +9,14 @@ plugins {
 
 description = "KSP codegen extension that generate builder code for annotated classes."
 
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+    }
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
