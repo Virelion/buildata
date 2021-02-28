@@ -27,23 +27,62 @@ allprojects {
 }
 
 subprojects {
-    if(!this.plugins.hasPlugin("maven-publish")) {
+    if (!this.plugins.hasPlugin("maven-publish")) {
         apply(plugin = "maven-publish")
     }
-    configure<PublishingExtension>  {
+    val isGradlePlugin = this.name == "buildata-gradle-plugin"
+    logger.info("Configuring $name as ${if (!isGradlePlugin) "mavenCentral module" else "gradle plugin"}")
+    if (!isGradlePlugin) {
+        configureMavenCentralRepository()
+    }
+}
+
+fun Project.configureMavenCentralRepository() {
+    configure<PublishingExtension> {
         repositories {
             maven {
                 name = "GitHubPackages"
                 url = uri("https://maven.pkg.github.com/Virelion/buildata")
                 credentials {
-                    username = System.getProperty("org.ajoberstar.grgit.auth.username") as? String ?: System.getenv("USERNAME")
-                    password = System.getProperty("org.ajoberstar.grgit.auth.password") as? String ?: System.getenv("TOKEN")
+                    username = System.getProperty("org.ajoberstar.grgit.auth.username") ?: System.getenv("USERNAME")
+                    password = System.getProperty("org.ajoberstar.grgit.auth.password") ?: System.getenv("TOKEN")
                 }
+            }
+        }
+        afterEvaluate {
+            publications {
+                filterIsInstance<MavenPublication>()
+                        .forEach {
+                            it.pom {
+                                name.set("${it.groupId}:${it.artifactId}")
+                                url.set("https://github.com/Virelion/buildata")
+                                description.set(this@afterEvaluate.description)
+                                inceptionYear.set("2021")
+                                licenses {
+                                    license {
+                                        name.set("The Apache License, Version 2.0")
+                                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                                    }
+                                }
+                                developers {
+                                    developer {
+                                        id.set("Virelion")
+                                        name.set("Maciej Ziemba")
+                                        email.set("m.ziemba95@gmail.com")
+                                    }
+                                }
+                                scm {
+                                    val projectPath = "Virelion/buildata"
+                                    connection.set("scm:git:git://github.com/${projectPath}.git")
+                                    developerConnection.set("scm:git:ssh://github.com:${projectPath}.git")
+                                    url.set("https://github.com/${projectPath}/tree/master")
+                                }
+                            }
+                        }
             }
         }
     }
 }
-
 
 tasks {
     val publishPluginsToMavenLocal by creating {

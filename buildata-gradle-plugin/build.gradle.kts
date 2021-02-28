@@ -9,19 +9,35 @@ plugins {
     `maven-publish`
 }
 
+description = "Plugin that connects Buildata KSP codegen engine to Kotlin gradle project."
+
 repositories {
     mavenLocal()
     mavenCentral()
 }
 
+publishing {
+    publications { }
+}
+
 gradlePlugin {
     plugins {
         register("BuildataGradlePlugin") {
-            id = "com.github.virelion.buildata"
-            implementationClass = "com.github.virelion.buildata.gradle.BuildataPlugin"
+            displayName = "Buildata Gradle Plugin"
+            description = project.description
+            id = "io.github.virelion.buildata"
+            implementationClass = "io.github.virelion.buildata.gradle.BuildataPlugin"
         }
     }
 }
+
+pluginBundle {
+    website = "https://github.com/Virelion/buildata"
+    vcsUrl = "https://github.com/Virelion/buildata.git"
+    tags = listOf("codegen", "Kotlin", "multiplatform")
+}
+
+description = "Plugin that connects Buildata KSP codegen engine to Kotlin gradle project"
 
 val kspVersion: String by project
 
@@ -37,6 +53,8 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
 }
 
 tasks.withType<KotlinCompile> {

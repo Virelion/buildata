@@ -19,6 +19,8 @@ plugins {
     id("org.jetbrains.dokka") version "1.4.0"
 }
 
+description = "Buildata runtime for generated builders."
+
 val linuxTargetEnabled = project.findProperty("kotlin.native.linux.enabled") ?: "true" == "true"
 
 val androidEnabled = System.getenv("ANDROID_HOME") != null

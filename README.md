@@ -21,7 +21,7 @@ Kotlin multiplatform builder generator.
 plugins {
     kotlin("multiplatform") version "1.4.21"
     // ...
-    id("com.github.virelion.buildata") version <LIBRARY_VERSION>
+    id("io.github.virelion.buildata") version <LIBRARY_VERSION>
 }
 ```
 
@@ -32,7 +32,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("com.github.virelion.buildata:buildata-runtime:<LIBRARY_VERSION>")
+                implementation("io.github.virelion.buildata:buildata-runtime:<LIBRARY_VERSION>")
             }
         }
 
@@ -44,7 +44,7 @@ kotlin {
 3. Add annotation to your `data class`
 ```kotlin
 
-import com.github.virelion.buildata.Buildable
+import io.github.virelion.buildata.Buildable
 // ...
 
 @Buildable
