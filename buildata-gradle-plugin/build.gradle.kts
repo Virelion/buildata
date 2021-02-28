@@ -23,10 +23,18 @@ publishing {
 gradlePlugin {
     plugins {
         register("BuildataGradlePlugin") {
+            displayName = "Buildata Gradle Plugin"
+            description = "Plugin that connects Buildata codegen to gradle project"
             id = "io.github.virelion.buildata"
             implementationClass = "io.github.virelion.buildata.gradle.BuildataPlugin"
         }
     }
+}
+
+pluginBundle {
+    website = "https://github.com/Virelion/buildata"
+    vcsUrl = "https://github.com/Virelion/buildata"
+    tags = listOf("codegen", "Kotlin", "multiplatform")
 }
 
 description = "Plugin that connects Buildata KSP codegen engine to Kotlin gradle project"
