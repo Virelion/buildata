@@ -23,8 +23,8 @@ publishing {
 gradlePlugin {
     plugins {
         register("BuildataGradlePlugin") {
-            id = "com.github.virelion.buildata"
-            implementationClass = "com.github.virelion.buildata.gradle.BuildataPlugin"
+            id = "io.github.virelion.buildata"
+            implementationClass = "io.github.virelion.buildata.gradle.BuildataPlugin"
         }
     }
 }
@@ -45,6 +45,8 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+    withSourcesJar()
+    withJavadocJar()
 }
 
 tasks.withType<KotlinCompile> {

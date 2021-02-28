@@ -55,7 +55,9 @@ subprojects {
                             println(it.artifactId)
                             it.pom {
                                 name.set("${it.groupId}:${it.artifactId}")
+                                url.set("https://github.com/Virelion/buildata")
                                 description.set(this@afterEvaluate.description)
+                                inceptionYear.set("2021")
                                 licenses {
                                     license {
                                         name.set("The Apache License, Version 2.0")

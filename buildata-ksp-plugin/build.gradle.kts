@@ -9,14 +9,6 @@ plugins {
 
 description = "KSP codegen extension that generate builder code for annotated classes."
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["kotlin"])
-        }
-    }
-}
-
 repositories {
     mavenLocal()
     mavenCentral()
@@ -32,6 +24,13 @@ dependencies {
     kapt("com.google.auto.service:auto-service:1.0-rc6")
 
     testImplementation(kotlin("test-junit"))
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+    withJavadocJar()
+    withSourcesJar()
 }
 
 tasks.withType<KotlinCompile> {

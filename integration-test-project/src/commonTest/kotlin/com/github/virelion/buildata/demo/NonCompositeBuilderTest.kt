@@ -1,4 +1,4 @@
-package com.github.virelion.buildata.demo
+package io.github.virelion.buildata.demo
 
 import kotlin.js.JsName
 import kotlin.test.Test

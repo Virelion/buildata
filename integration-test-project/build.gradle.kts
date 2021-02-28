@@ -16,7 +16,7 @@ buildscript {
 plugins {
     kotlin("multiplatform") version "1.4.21"
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
-    id("com.github.virelion.buildata") version "0.0.0-SNAPSHOT"
+    id("io.github.virelion.buildata") version "0.0.0-SNAPSHOT"
 }
 
 val androidEnabled = System.getenv("ANDROID_HOME") != null
@@ -53,7 +53,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("com.github.virelion.buildata:buildata-runtime:$buildataRuntimeVersion")
+                implementation("io.github.virelion.buildata:buildata-runtime:$buildataRuntimeVersion")
             }
         }
 
