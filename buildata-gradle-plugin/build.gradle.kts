@@ -24,7 +24,7 @@ gradlePlugin {
     plugins {
         register("BuildataGradlePlugin") {
             displayName = "Buildata Gradle Plugin"
-            description = "Plugin that connects Buildata codegen to gradle project"
+            description = project.description
             id = "io.github.virelion.buildata"
             implementationClass = "io.github.virelion.buildata.gradle.BuildataPlugin"
         }
@@ -33,7 +33,7 @@ gradlePlugin {
 
 pluginBundle {
     website = "https://github.com/Virelion/buildata"
-    vcsUrl = "https://github.com/Virelion/buildata"
+    vcsUrl = "https://github.com/Virelion/buildata.git"
     tags = listOf("codegen", "Kotlin", "multiplatform")
 }
 

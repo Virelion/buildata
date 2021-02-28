@@ -27,10 +27,18 @@ allprojects {
 }
 
 subprojects {
-    if(!this.plugins.hasPlugin("maven-publish")) {
+    if (!this.plugins.hasPlugin("maven-publish")) {
         apply(plugin = "maven-publish")
     }
-    configure<PublishingExtension>  {
+    val isGradlePlugin = this.name == "buildata-gradle-plugin"
+    logger.info("Configuring $name as ${if (!isGradlePlugin) "mavenCentral module" else "gradle plugin"}")
+    if (!isGradlePlugin) {
+        configureMavenCentralRepository()
+    }
+}
+
+fun Project.configureMavenCentralRepository() {
+    configure<PublishingExtension> {
         repositories {
             maven {
                 name = "GitHubPackages"
@@ -43,16 +51,8 @@ subprojects {
         }
         afterEvaluate {
             publications {
-                this.apply {
-                    println("#########################################")
-                    forEach {
-                        println(it::class.java.simpleName)
-                    }
-                }
-                        .filterIsInstance<MavenPublication>()
+                filterIsInstance<MavenPublication>()
                         .forEach {
-                            println(it.name)
-                            println(it.artifactId)
                             it.pom {
                                 name.set("${it.groupId}:${it.artifactId}")
                                 url.set("https://github.com/Virelion/buildata")
@@ -83,7 +83,6 @@ subprojects {
         }
     }
 }
-
 
 tasks {
     val publishPluginsToMavenLocal by creating {
