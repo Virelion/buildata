@@ -1,12 +1,12 @@
 package io.github.virelion.buildata.ksp
 
-import io.github.virelion.buildata.ksp.extensions.printableFqName
-import io.github.virelion.buildata.ksp.extensions.typeFQName
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSNode
 import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.symbol.Nullability
+import io.github.virelion.buildata.ksp.extensions.printableFqName
+import io.github.virelion.buildata.ksp.extensions.typeFQName
 
 internal class KSClassDeclarationProcessor(
     val logger: KSPLogger

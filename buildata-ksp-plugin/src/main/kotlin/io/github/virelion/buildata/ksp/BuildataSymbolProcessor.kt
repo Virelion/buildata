@@ -1,12 +1,12 @@
 package io.github.virelion.buildata.ksp
 
-import io.github.virelion.buildata.ksp.Constants.BUILDABLE_FQNAME
 import com.google.auto.service.AutoService
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import io.github.virelion.buildata.ksp.Constants.BUILDABLE_FQNAME
 
 @AutoService(SymbolProcessor::class)
 class BuildataSymbolProcessor : SymbolProcessor {

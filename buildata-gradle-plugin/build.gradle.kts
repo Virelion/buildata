@@ -17,7 +17,7 @@ repositories {
 }
 
 publishing {
-    publications {  }
+    publications { }
 }
 
 gradlePlugin {

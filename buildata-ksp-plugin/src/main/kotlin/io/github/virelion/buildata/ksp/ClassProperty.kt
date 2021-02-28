@@ -1,9 +1,9 @@
 package io.github.virelion.buildata.ksp
 
+import com.google.devtools.ksp.symbol.KSType
 import io.github.virelion.buildata.ksp.extensions.classFQName
 import io.github.virelion.buildata.ksp.extensions.typeFQName
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
-import com.google.devtools.ksp.symbol.KSType
 
 internal class ClassProperty(
     val name: String,
