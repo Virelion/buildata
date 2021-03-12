@@ -38,7 +38,7 @@ class BuildataPlugin : Plugin<Project> {
                 val taskName = "kspKotlin" + kspCodegenPlatformTarget.name.capitalize()
 
                 project.configurations.getByName("ksp").dependencies.add(
-                    project.dependencies.create("io.github.virelion.buildata:buildata-ksp-plugin:${Version.value}")
+                    project.dependencies.create("io.github.virelion:buildata-ksp-plugin:${Version.value}")
                 )
 
                 multiplatformExtension.targets

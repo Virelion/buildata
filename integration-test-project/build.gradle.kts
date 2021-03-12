@@ -53,7 +53,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("io.github.virelion.buildata:buildata-runtime:$buildataRuntimeVersion")
+                implementation("io.github.virelion:buildata-runtime:$buildataRuntimeVersion")
             }
         }
 

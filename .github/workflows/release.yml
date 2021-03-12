@@ -15,7 +15,15 @@ jobs:
         with:
           fetch-depth: 0
       - name: Release
-        run: ./gradlew final publish -Prelease.scope=${{ github.event.inputs.scope }} -PisMainHost=true -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }} -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
+        run: ./gradlew final publish \
+          -Prelease.scope=${{ github.event.inputs.scope }} \
+          -PisMainHost=true \
+          -Dorg.ajoberstar.grgit.auth.username=Virelion \
+          -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }} \
+          -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }} \
+          -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }} \
+          -Pnexus.token=${{ secrets.NEXUS_TOKEN }} \
+          -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
 
   "MacOS-and-iOS":
     name: MacOS & iOS
@@ -26,7 +34,11 @@ jobs:
         with:
           fetch-depth: 0
       - name: Release
-        run: ./gradlew final :buildata-runtime:publish -Pkotlin.native.linux.enabled=false -Prelease.useLastTag=true -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew final :buildata-runtime:publish \
+          -Pkotlin.native.linux.enabled=false \
+          -Prelease.useLastTag=true \
+          -Pnexus.token=${{ secrets.NEXUS_TOKEN }} \
+          -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
 
   "Windows":
     runs-on: windows-2019
@@ -37,4 +49,8 @@ jobs:
           fetch-depth: 0
       - name: Release
         shell: cmd
-        run: .\gradlew.bat final :buildata-runtime:publish -Pkotlin.native.linux.enabled=false -Prelease.useLastTag=true -Dorg.ajoberstar.grgit.auth.username=Virelion -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
+        run: .\gradlew.bat final :buildata-runtime:publish \
+          -Pkotlin.native.linux.enabled=false \
+          -Prelease.useLastTag=true \
+          -Pnexus.token=${{ secrets.NEXUS_TOKEN }} \
+          -Pnexus.username=${{ secrets.NEXUS_USERNAME }}

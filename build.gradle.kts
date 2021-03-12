@@ -41,11 +41,11 @@ fun Project.configureMavenCentralRepository() {
     configure<PublishingExtension> {
         repositories {
             maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/Virelion/buildata")
+                name = "MavenCentralStaging"
+                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
                 credentials {
-                    username = System.getProperty("org.ajoberstar.grgit.auth.username") ?: System.getenv("USERNAME")
-                    password = System.getProperty("org.ajoberstar.grgit.auth.password") ?: System.getenv("TOKEN")
+                    username = project.findProperty("nexus.username") as? String
+                    password = project.findProperty("nexus.token") as? String
                 }
             }
         }
