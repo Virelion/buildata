@@ -41,7 +41,7 @@ fun Project.configureMavenCentralRepository() {
     configure<PublishingExtension> {
         repositories {
             maven {
-                name = "MavenCentralStaging"
+                name = "MavenCentralReleaseStaging"
                 url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
                 credentials {
                     username = project.findProperty("nexus.username") as? String

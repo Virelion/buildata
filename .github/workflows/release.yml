@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
       - name: Release
         run: >
-          ./gradlew final publish
+          ./gradlew final publish publishPlugins
           -Prelease.scope=${{ github.event.inputs.scope }}
           -PisMainHost=true
           -Dorg.ajoberstar.grgit.auth.username=Virelion
