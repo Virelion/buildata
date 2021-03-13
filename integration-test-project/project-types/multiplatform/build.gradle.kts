@@ -1,18 +1,6 @@
 import com.android.build.gradle.AppExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-        jcenter()
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:3.6.2")
-    }
-}
-
 plugins {
     kotlin("multiplatform")
     id("io.github.virelion.buildata")
