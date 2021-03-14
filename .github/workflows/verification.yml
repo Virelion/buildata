@@ -102,7 +102,7 @@ jobs:
           jvmTest
       - name: Integration tests
         working-directory: integration-test-project
-        run: ./gradlew clean jvmTest
+        run: ./gradlew clean jvmTest project-types:jvm:test
 
   "Android":
     runs-on: ubuntu-20.04

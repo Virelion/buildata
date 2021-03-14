@@ -42,7 +42,7 @@ description = "Plugin that connects Buildata KSP codegen engine to Kotlin gradle
 val kspVersion: String by project
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib"))
     implementation(kotlin("gradle-plugin-api"))
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21")
     implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$kspVersion")
