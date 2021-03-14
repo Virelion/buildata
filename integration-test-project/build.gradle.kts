@@ -11,8 +11,9 @@ buildscript {
 }
 
 plugins {
-    kotlin("multiplatform") version "1.4.21" apply false
-    kotlin("jvm") version "1.4.21" apply false
+    val kotlinVersion = "1.4.21"
+    kotlin("multiplatform") version kotlinVersion apply false
+    kotlin("jvm") version kotlinVersion apply false
     id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
     id("io.github.virelion.buildata") version "0.0.0-SNAPSHOT" apply false
 }

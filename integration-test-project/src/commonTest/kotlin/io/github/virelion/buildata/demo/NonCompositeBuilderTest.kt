@@ -1,14 +1,12 @@
 package io.github.virelion.buildata.demo
 
-import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class NonCompositeBuilderTest {
     @Test
-    @JsName("Non_default_required")
-    fun `Non default required`() {
+    fun nonDefaultRequired() {
         val item = NonCompositeDataClass::class.build {
             noDefaultRequired = "TestValue"
             noDefaultOptional = null
@@ -22,8 +20,7 @@ class NonCompositeBuilderTest {
     }
 
     @Test
-    @JsName("Non_default_required_missing")
-    fun `Non default required - missing`() {
+    fun nonDefaultRequired_missing() {
         try {
             NonCompositeDataClass::class.build {
                 noDefaultOptional = null
@@ -34,8 +31,7 @@ class NonCompositeBuilderTest {
     }
 
     @Test
-    @JsName("Non_default_optional")
-    fun `Non default optional`() {
+    fun nonDefaultoptional() {
         val item = NonCompositeDataClass::class.build {
             noDefaultRequired = "TestValue"
             noDefaultOptional = "TestValue"
@@ -47,8 +43,7 @@ class NonCompositeBuilderTest {
     }
 
     @Test
-    @JsName("Non_default_optional_missing")
-    fun `Non default optional - missing`() {
+    fun nonDefaultoptional_missing() {
         try {
             NonCompositeDataClass::class.build {
                 noDefaultRequired = "TestValue"
@@ -59,8 +54,7 @@ class NonCompositeBuilderTest {
     }
 
     @Test
-    @JsName("default_required")
-    fun `Default required`() {
+    fun defaultRequired() {
         val item = NonCompositeDataClass::class.build {
             noDefaultRequired = "TestValue"
             noDefaultOptional = null
@@ -72,8 +66,7 @@ class NonCompositeBuilderTest {
     }
 
     @Test
-    @JsName("default_optional")
-    fun `Default optional`() {
+    fun defaultOptional() {
         val item = NonCompositeDataClass::class.build {
             noDefaultRequired = "TestValue"
             noDefaultOptional = null
@@ -85,8 +78,7 @@ class NonCompositeBuilderTest {
     }
 
     @Test
-    @JsName("default_optional_set_null")
-    fun `Default optional - set null`() {
+    fun defaultOptional_setNull() {
         val item = NonCompositeDataClass::class.build {
             noDefaultRequired = "TestValue"
             noDefaultOptional = null

@@ -51,14 +51,14 @@ kotlin {
 
     sourceSets {
         val commonMain by getting {
-            kotlin.srcDir(project.rootDir.absolutePath +"/src/commonMain")
+            kotlin.srcDir(project.rootDir.absolutePath +"/src/commonMain/kotlin")
             dependencies {
                 implementation("io.github.virelion:buildata-runtime:$buildataRuntimeVersion")
             }
         }
 
         val commonTest by getting {
-            kotlin.srcDir(project.rootDir.absolutePath +"/src/commonTest")
+            kotlin.srcDir(project.rootDir.absolutePath +"/src/commonTest/kotlin")
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
@@ -125,7 +125,6 @@ kotlin {
         }
         if (androidEnabled) {
             val androidMain by getting {
-                kotlin.srcDir(project.rootDir.absolutePath +"/src/androidMain")
                 dependencies {
                     implementation(kotlin("stdlib"))
                 }
@@ -167,14 +166,14 @@ fun Project.configureAndroid() {
         sourceSets.getByName("main").apply {
             java.srcDirs("src/commonMain/kotlin")
             res.srcDirs("src/androidMain/res")
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+            manifest.srcFile("../../src/androidMain/AndroidManifest.xml")
             assets.srcDirs("src/commonMain/resources/assets")
         }
 
         sourceSets.getByName("androidTest").apply {
             java.srcDirs("src/commonTest/kotlin")
             res.srcDirs("src/androidTest/res")
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
+            manifest.srcFile("../../src/androidMain/AndroidManifest.xml")
             assets.srcDirs("src/commonMain/resources/assets")
         }
 
