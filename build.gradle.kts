@@ -80,6 +80,16 @@ fun Project.configureMavenCentralRepository() {
                             }
                         }
             }
+
+            val isReleasing: Boolean = (findProperty("isReleasing") as? String)?.toBoolean() ?: false
+            if(isReleasing) {
+                val signingKey = findProperty("signing.secretKey") as? String ?: error("Missing signing.secretKey")
+                val signingPassword = findProperty("signing.password") as? String ?: error("Missing signing.password")
+                configure<SigningExtension> {
+                    useInMemoryPgpKeys(signingKey, signingPassword)
+                    sign(publications)
+                }
+            }
         }
     }
 }

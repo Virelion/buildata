@@ -5,6 +5,7 @@ plugins {
     kotlin("kapt")
     `maven-publish`
     id("org.jlleitschuh.gradle.ktlint")
+    signing
 }
 
 description = "KSP codegen extension that generate builder code for annotated classes."

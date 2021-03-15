@@ -17,6 +17,7 @@ plugins {
     `maven-publish`
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jetbrains.dokka") version "1.4.0"
+    signing
 }
 
 description = "Buildata runtime for generated builders."
