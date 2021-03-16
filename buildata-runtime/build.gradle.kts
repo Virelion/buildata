@@ -69,7 +69,7 @@ kotlin {
 
     if (androidEnabled) {
         android {
-            publishLibraryVariants("release", "debug")
+            publishLibraryVariants("release")
         }
     }
 
