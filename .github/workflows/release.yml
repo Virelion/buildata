@@ -10,6 +10,9 @@ on:
 jobs:
   "Linux":
     runs-on: ubuntu-20.04
+    env:
+      GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+      GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -17,15 +20,13 @@ jobs:
       - name: Release
         run: >
           ./gradlew final publish
-          -PisReleasing=true
+          -PisReleasingWithSigning=true
           -Prelease.scope=${{ github.event.inputs.scope }}
           -PisMainHost=true
           -Dorg.ajoberstar.grgit.auth.username=Virelion
           -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
           -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
-          -Psigning.secretKey="${{ secrets.GPG_SECRET_KEY }}"
-          -Psigning.password=${{ secrets.GPG_SECRET_PASSWORD }}
 
   "GradlePlugin":
     name: Gradle Plugin
@@ -38,7 +39,7 @@ jobs:
       - name: Release
         run: >
           ./gradlew final publishPlugins
-          -PisReleasing=true
+          -PisReleasingWithSigning=true
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
           -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }}
@@ -48,6 +49,9 @@ jobs:
     name: MacOS & iOS
     needs: [ Linux ]
     runs-on: macos-latest
+    env:
+      GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+      GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -55,17 +59,18 @@ jobs:
       - name: Release
         run: >
           ./gradlew final :buildata-runtime:publish
-          -PisReleasing=true
+          -PisReleasingWithSigning=true
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
           -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
-          -Psigning.secretKey="${{ secrets.GPG_SECRET_KEY }}"
-          -Psigning.password=${{ secrets.GPG_SECRET_PASSWORD }}
 
   "Windows":
     runs-on: windows-2019
     needs: [ Linux ]
+    env:
+      GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+      GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -74,10 +79,8 @@ jobs:
         shell: cmd
         run: >
           .\gradlew.bat final :buildata-runtime:publish
-          -PisReleasing=true
+          -PisReleasingWithSigning=true
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
           -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
-          -Psigning.secretKey="${{ secrets.GPG_SECRET_KEY }}"
-          -Psigning.password=${{ secrets.GPG_SECRET_PASSWORD }}

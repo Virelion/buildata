@@ -81,10 +81,10 @@ fun Project.configureMavenCentralRepository() {
                         }
             }
 
-            val isReleasing: Boolean = (findProperty("isReleasing") as? String)?.toBoolean() ?: false
-            if(isReleasing) {
-                val signingKey = findProperty("signing.secretKey") as? String ?: error("Missing signing.secretKey")
-                val signingPassword = findProperty("signing.password") as? String ?: error("Missing signing.password")
+            val isReleasingWithSigning: Boolean = (findProperty("isReleasingWithSigning") as? String)?.toBoolean() ?: false
+            if(isReleasingWithSigning) {
+                val signingKey = System.getenv("GPG_SECRET_KEY") ?: error("Missing signing.secretKey")
+                val signingPassword = System.getenv("GPG_SECRET_PASSWORD") ?: error("Missing signing.password")
                 configure<SigningExtension> {
                     useInMemoryPgpKeys(signingKey, signingPassword)
                     sign(publications)
