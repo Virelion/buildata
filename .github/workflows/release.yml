@@ -16,15 +16,33 @@ jobs:
           fetch-depth: 0
       - name: Release
         run: >
-          ./gradlew final publish publishPlugins
+          ./gradlew final publish
+          -PisReleasing=true
           -Prelease.scope=${{ github.event.inputs.scope }}
           -PisMainHost=true
           -Dorg.ajoberstar.grgit.auth.username=Virelion
           -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
-          -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }}
-          -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
           -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
+          -Psigning.secretKey=${{ secrets.GPG_SECRET_KEY }}
+          -Psigning.password=${{ secrets.GPG_SECRET_PASSWORD }}
+
+  "GradlePlugin":
+    name: Gradle Plugin
+    needs: [ Linux ]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Release
+        run: >
+          ./gradlew final publishPlugins
+          -PisReleasing=true
+          -Pkotlin.native.linux.enabled=false
+          -Prelease.useLastTag=true
+          -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }}
+          -Pgradle.publish.secret=${{ secrets.GRADLE_PUBLISH_SECRET }}
 
   "MacOS-and-iOS":
     name: MacOS & iOS
@@ -37,10 +55,13 @@ jobs:
       - name: Release
         run: >
           ./gradlew final :buildata-runtime:publish
+          -PisReleasing=true
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
           -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
+          -Psigning.secretKey=${{ secrets.GPG_SECRET_KEY }}
+          -Psigning.password=${{ secrets.GPG_SECRET_PASSWORD }}
 
   "Windows":
     runs-on: windows-2019
@@ -53,7 +74,10 @@ jobs:
         shell: cmd
         run: >
           .\gradlew.bat final :buildata-runtime:publish
+          -PisReleasing=true
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
           -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
+          -Psigning.secretKey=${{ secrets.GPG_SECRET_KEY }}
+          -Psigning.password=${{ secrets.GPG_SECRET_PASSWORD }}
