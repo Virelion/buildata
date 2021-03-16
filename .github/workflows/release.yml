@@ -24,7 +24,7 @@ jobs:
           -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
           -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
-          -Psigning.secretKey=${{ secrets.GPG_SECRET_KEY }}
+          -Psigning.secretKey="${{ secrets.GPG_SECRET_KEY }}"
           -Psigning.password=${{ secrets.GPG_SECRET_PASSWORD }}
 
   "GradlePlugin":
@@ -60,7 +60,7 @@ jobs:
           -Prelease.useLastTag=true
           -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
-          -Psigning.secretKey=${{ secrets.GPG_SECRET_KEY }}
+          -Psigning.secretKey="${{ secrets.GPG_SECRET_KEY }}"
           -Psigning.password=${{ secrets.GPG_SECRET_PASSWORD }}
 
   "Windows":
@@ -79,5 +79,5 @@ jobs:
           -Prelease.useLastTag=true
           -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
-          -Psigning.secretKey=${{ secrets.GPG_SECRET_KEY }}
+          -Psigning.secretKey="${{ secrets.GPG_SECRET_KEY }}"
           -Psigning.password=${{ secrets.GPG_SECRET_PASSWORD }}
