@@ -192,10 +192,26 @@ tasks {
     }
 }
 
-publishing {
-    publications {
-        this.getByName<MavenPublication>("jvm") {
-            artifact(tasks["javadocJar"])
+afterEvaluate {
+    publishing {
+        publications {
+            this.getByName<MavenPublication>("jvm") {
+                artifact(tasks["javadocJar"])
+            }
+
+            // Android targets require additional config for some reason
+            if (androidEnabled) {
+                apply(from = "$rootDir/gradle/pom.gradle.kts")
+                val configurePOM: ((MavenPublication, Project) -> Unit) by extra
+
+                this.getByName<MavenPublication>("androidRelease") {
+                    configurePOM(this, project)
+                }
+
+                this.getByName<MavenPublication>("androidDebug") {
+                    configurePOM(this, project)
+                }
+            }
         }
     }
 }
