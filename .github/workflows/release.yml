@@ -39,7 +39,6 @@ jobs:
       - name: Release
         run: >
           ./gradlew final publishPlugins
-          -PisReleasingWithSigning=true
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
           -Pgradle.publish.key=${{ secrets.GRADLE_PUBLISH_KEY }}
