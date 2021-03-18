@@ -1,3 +1,5 @@
+apply(from = "$rootDir/gradle/pom.gradle.kts")
+
 buildscript {
     repositories {
         mavenLocal()
@@ -37,6 +39,8 @@ subprojects {
     }
 }
 
+val configurePOM: ((MavenPublication, Project) -> Unit) by extra
+
 fun Project.configureMavenCentralRepository() {
     configure<PublishingExtension> {
         repositories {
@@ -53,31 +57,7 @@ fun Project.configureMavenCentralRepository() {
             publications {
                 filterIsInstance<MavenPublication>()
                         .forEach {
-                            it.pom {
-                                name.set("${it.groupId}:${it.artifactId}")
-                                url.set("https://github.com/Virelion/buildata")
-                                description.set(this@afterEvaluate.description)
-                                inceptionYear.set("2021")
-                                licenses {
-                                    license {
-                                        name.set("The Apache License, Version 2.0")
-                                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                                    }
-                                }
-                                developers {
-                                    developer {
-                                        id.set("Virelion")
-                                        name.set("Maciej Ziemba")
-                                        email.set("m.ziemba95@gmail.com")
-                                    }
-                                }
-                                scm {
-                                    val projectPath = "Virelion/buildata"
-                                    connection.set("scm:git:git://github.com/${projectPath}.git")
-                                    developerConnection.set("scm:git:ssh://github.com:${projectPath}.git")
-                                    url.set("https://github.com/${projectPath}/tree/master")
-                                }
-                            }
+                            configurePOM(it, this@afterEvaluate)
                         }
             }
 

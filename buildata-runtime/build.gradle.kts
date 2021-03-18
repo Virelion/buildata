@@ -37,7 +37,7 @@ repositories {
 }
 
 kotlin {
-    jvm()
+    jvm {}
     js {
         nodejs {
             testTask {
@@ -171,10 +171,45 @@ tasks {
     }
 
     withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
+        outputDirectory.set(file("$buildDir/javadoc"))
         dokkaSourceSets {
             configureEach {
                 if (platform.get() == org.jetbrains.dokka.Platform.native) {
                     displayName.set("native")
+                }
+            }
+        }
+    }
+
+    val javadocJar by registering(org.gradle.jvm.tasks.Jar::class) {
+        dependsOn("dokkaJavadoc")
+        archiveClassifier.set("javadoc")
+        from("$buildDir/javadoc")
+    }
+
+    artifacts {
+        archives(javadocJar)
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            this.getByName<MavenPublication>("jvm") {
+                artifact(tasks["javadocJar"])
+            }
+
+            // Android targets require additional config for some reason
+            if (androidEnabled) {
+                apply(from = "$rootDir/gradle/pom.gradle.kts")
+                val configurePOM: ((MavenPublication, Project) -> Unit) by extra
+
+                this.getByName<MavenPublication>("androidRelease") {
+                    configurePOM(this, project)
+                }
+
+                this.getByName<MavenPublication>("androidDebug") {
+                    configurePOM(this, project)
                 }
             }
         }
