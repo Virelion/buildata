@@ -15,17 +15,32 @@
 Kotlin multiplatform builder generator.
 
 # How to use?
+0. Have open source repositories connected to project:
+```kotlin
+buildscript {
+    repositories {
+        gradlePluginPortal()
+        // ...
+    }
+}
 
-1. Add plugin to your build
+repositories {
+    mavenCentral()
+    // ...
+}
+```
+
+1. Add buildata plugin to your build
 ```kotlin
 plugins {
     kotlin("multiplatform") version "1.4.21"
+    kotlin("jvm") version "1.4.21" // alternatively
     // ...
     id("io.github.virelion.buildata") version <LIBRARY_VERSION>
 }
 ```
 
-2. Add runtime to your dependencies
+2. Add buildata runtime to your dependencies
 ```kotlin
 kotlin {
     // ...
