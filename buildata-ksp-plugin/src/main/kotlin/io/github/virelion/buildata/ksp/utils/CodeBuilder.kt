@@ -25,6 +25,20 @@ internal class CodeBuilder(private val indentationDelta: String = "    ") {
         }
     }
 
+    fun appendDocumentation(
+        vararg commentBlocks: String
+    ) {
+        appendln("/**")
+        commentBlocks
+            .flatMap {
+                it.split("\n")
+            }
+            .forEach {
+                builder.appendLine("$indentation * $it")
+            }
+        builder.appendLine("$indentation */")
+    }
+
     fun emptyLine() {
         builder.appendLine()
     }
