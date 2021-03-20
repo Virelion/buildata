@@ -1,5 +1,6 @@
 package io.github.virelion.buildata.ksp
 
+import io.github.virelion.buildata.ksp.extensions.typeForDocumentation
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
 
 internal class BuilderClassTemplate(
@@ -9,6 +10,23 @@ internal class BuilderClassTemplate(
 ) {
     private val propertiesWithDefault = properties.filter { it.hasDefaultValue }
     private val propertiesWithoutDefault = properties.filter { !it.hasDefaultValue }
+
+    private val propertiesDocumentation = buildString {
+        if (propertiesWithoutDefault.isNotEmpty()) {
+            appendLine()
+            appendLine("__Required elements__: ")
+            propertiesWithoutDefault.forEach {
+                appendLine("- ${it.name}: ${it.type.typeForDocumentation()}")
+            }
+        }
+        if (propertiesWithDefault.isNotEmpty()) {
+            appendLine()
+            appendLine("__Optional elements__:")
+            propertiesWithDefault.forEach {
+                appendLine("- ${it.name}: ${it.type.typeForDocumentation()}")
+            }
+        }
+    }
 
     val builderName = createBuilderName(originalName)
 
@@ -31,12 +49,22 @@ internal class BuilderClassTemplate(
     }
 
     fun CodeBuilder.generateClassBuilderExtension() {
+        appendDocumentation("Create builder for [$originalName]")
         indentBlock("fun KClass<$originalName>.builder(): $builderName") {
             appendln("return $builderName()")
         }
     }
 
     fun CodeBuilder.generateClassBuildExtension() {
+        appendDocumentation(
+            "Construct [$originalName] using builder DSL.",
+            propertiesDocumentation,
+            """
+                    @param builder DSL lambda
+                    @throws [io.gihtub.virelion.buildata.UninitializedPropertyException] when any required property is not set
+                    @return [$originalName] 
+            """.trimIndent()
+        )
         appendln("@BuildataDSL")
         appendln("fun KClass<$originalName>.build(")
         indent {
@@ -50,6 +78,14 @@ internal class BuilderClassTemplate(
     }
 
     fun CodeBuilder.generateBuilderInvokeExtension() {
+        appendDocumentation(
+            "Invoke [$originalName] building DSL",
+            propertiesDocumentation,
+            """
+                    @param builder DSL lambda
+                    @throws [io.gihtub.virelion.buildata.UninitializedPropertyException] when any required property is not set
+            """.trimIndent()
+        )
         appendln("@BuildataDSL")
         appendln("operator fun $builderName.invoke(")
         indent {
@@ -63,6 +99,10 @@ internal class BuilderClassTemplate(
     }
 
     fun CodeBuilder.generateBuilderClass() {
+        appendDocumentation(
+            "Builder for [$originalName]",
+            propertiesDocumentation
+        )
         appendln("@BuildataDSL")
         indentBlock("class $builderName() : Builder<$originalName>") {
             properties.forEach {
@@ -74,8 +114,15 @@ internal class BuilderClassTemplate(
             generateBuilderPopulateWithFunction()
         }
     }
-
     fun CodeBuilder.generateBuildFunction() {
+        appendDocumentation(
+            """
+                    Build [$originalName] object
+                    
+                    @return data object 
+                    @throws [io.gihtub.virelion.buildata.UninitializedPropertyException] when any required property is not set
+            """.trimIndent()
+        )
         indentBlock("override fun build(): $originalName") {
             indentBlock("var result = $originalName", separator = "", enclosingCharacter = "(") {
                 propertiesWithoutDefault.forEach {
@@ -94,6 +141,13 @@ internal class BuilderClassTemplate(
     }
 
     fun CodeBuilder.generateBuilderPopulateWithFunction() {
+        appendDocumentation(
+            """
+            Sets all builder properties from source object.
+            
+            @param source object that will populate builder.
+            """.trimIndent()
+        )
         indentBlock("override fun populateWith(source: $originalName)") {
             indentBlock("source.let") {
                 properties.forEach {

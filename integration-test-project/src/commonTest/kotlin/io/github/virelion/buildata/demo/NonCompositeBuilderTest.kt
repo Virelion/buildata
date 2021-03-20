@@ -1,5 +1,6 @@
 package io.github.virelion.buildata.demo
 
+import io.github.virelion.buildata.UninitializedPropertyException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -25,8 +26,8 @@ class NonCompositeBuilderTest {
             NonCompositeDataClass::class.build {
                 noDefaultOptional = null
             }
-        } catch (e: IllegalArgumentException) {
-            assertEquals(e.message, "Property noDefaultRequired was not initialized")
+        } catch (e: UninitializedPropertyException) {
+            assertEquals(e.message, "Property noDefaultRequired was not set during build process.")
         }
     }
 
@@ -48,8 +49,8 @@ class NonCompositeBuilderTest {
             NonCompositeDataClass::class.build {
                 noDefaultRequired = "TestValue"
             }
-        } catch (e: IllegalArgumentException) {
-            assertEquals(e.message, "Property noDefaultOptional was not initialized")
+        } catch (e: UninitializedPropertyException) {
+            assertEquals(e.message, "Property noDefaultOptional was not set during build process.")
         }
     }
 
