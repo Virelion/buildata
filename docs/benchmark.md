@@ -29,9 +29,7 @@ You can observe already run results in
 ## Results
 |Scenario|Score|Error|Unit|
 |--------|-----|-----|----|
-|1 - regularConstructor|0,013| ± 0,001|s/op|
-|2 - buildNoDefaults|0,142|± 0,003|s/op|
-|3 - buildWithPopulatedDefaults|0,474|± 0,017|s/op|
-|4 - buildWithDefaults|0,73|± 0,004|s/op|
-
-Slowness of scenario 3 will be addressed in [ISSUE-22](https://github.com/Virelion/buildata/issues/22)
+|1 - regularConstructor|0,013| ± 0,003|s/op|
+|2 - buildNoDefaults|0,170|± 0,016|s/op|
+|3 - buildWithPopulatedDefaults|0,285|± 0,001|s/op|
+|4 - buildWithDefaults|0,095|± 0,005|s/op|

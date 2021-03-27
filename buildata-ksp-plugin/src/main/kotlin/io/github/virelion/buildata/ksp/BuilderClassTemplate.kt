@@ -60,9 +60,9 @@ internal class BuilderClassTemplate(
             "Construct [$originalName] using builder DSL.",
             propertiesDocumentation,
             """
-                    @param builder DSL lambda
-                    @throws [io.gihtub.virelion.buildata.UninitializedPropertyException] when any required property is not set
-                    @return [$originalName] 
+                @param builder DSL lambda
+                @throws [io.gihtub.virelion.buildata.UninitializedPropertyException] when any required property is not set
+                @return [$originalName] 
             """.trimIndent()
         )
         appendln("@BuildataDSL")
@@ -82,8 +82,8 @@ internal class BuilderClassTemplate(
             "Invoke [$originalName] building DSL",
             propertiesDocumentation,
             """
-                    @param builder DSL lambda
-                    @throws [io.gihtub.virelion.buildata.UninitializedPropertyException] when any required property is not set
+                @param builder DSL lambda
+                @throws [io.gihtub.virelion.buildata.UninitializedPropertyException] when any required property is not set
             """.trimIndent()
         )
         appendln("@BuildataDSL")
@@ -117,10 +117,10 @@ internal class BuilderClassTemplate(
     fun CodeBuilder.generateBuildFunction() {
         appendDocumentation(
             """
-                    Build [$originalName] object
-                    
-                    @return data object 
-                    @throws [io.gihtub.virelion.buildata.UninitializedPropertyException] when any required property is not set
+                Build [$originalName] object
+                
+                @return data object 
+                @throws [io.gihtub.virelion.buildata.UninitializedPropertyException] when any required property is not set
             """.trimIndent()
         )
         indentBlock("override fun build(): $originalName") {
@@ -130,12 +130,21 @@ internal class BuilderClassTemplate(
                 }
             }
 
-            propertiesWithDefault.forEach {
-                indentBlock("if (${it.backingPropName}.initialized)") {
-                    appendln("result = result.copy(${it.name} = ${it.name})")
+            if (propertiesWithDefault.isNotEmpty()) {
+                propertiesWithDefault.forEach {
+                    appendln("var ${it.name}_Component = result.${it.name}")
+
+                    indentBlock("if (${it.backingPropName}.initialized)") {
+                        appendln("${it.name}_Component = ${it.name}")
+                    }
+                }
+
+                indentBlock("result = result.copy", enclosingCharacter = "(", separator = "") {
+                    propertiesWithDefault.forEach {
+                        appendln("${it.name} = ${it.name}_Component,")
+                    }
                 }
             }
-
             appendln("return result")
         }
     }
@@ -143,9 +152,9 @@ internal class BuilderClassTemplate(
     fun CodeBuilder.generateBuilderPopulateWithFunction() {
         appendDocumentation(
             """
-            Sets all builder properties from source object.
-            
-            @param source object that will populate builder.
+                Sets all builder properties from source object.
+                
+                @param source object that will populate builder.
             """.trimIndent()
         )
         indentBlock("override fun populateWith(source: $originalName)") {
