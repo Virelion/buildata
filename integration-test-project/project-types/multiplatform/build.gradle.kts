@@ -66,65 +66,65 @@ kotlin {
             }
         }
 
-        val jsMain by getting {
-            dependencies {
-            }
-        }
-
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
-        }
-
-        val nativeMain by creating {
-            dependencies {
-            }
-        }
-
-        val linuxX64Main by getting {
-            dependsOn(nativeMain)
-            dependencies {
-            }
-        }
-
-        val macosX64Main by getting {
-            dependsOn(nativeMain)
-            dependencies {
-            }
-        }
-
-        val iosX64Main by getting {
-            dependsOn(nativeMain)
-            dependencies {
-            }
-        }
-
-        val iosArm64Main by getting {
-            dependsOn(nativeMain)
-            dependencies {
-            }
-        }
-
-        val mingwX64Main by getting {
-            dependsOn(nativeMain)
-            dependencies {
-            }
-        }
-        if (androidEnabled) {
-            val androidMain by getting {
-                dependencies {
-                    implementation(kotlin("stdlib"))
-                }
-            }
-
-            val androidTest by getting {
-                dependencies {
-                    implementation(kotlin("test"))
-                    implementation(kotlin("test-junit"))
-                }
-            }
-        }
+//        val jsMain by getting {
+//            dependencies {
+//            }
+//        }
+//
+//        val jsTest by getting {
+//            dependencies {
+//                implementation(kotlin("test-js"))
+//            }
+//        }
+//
+//        val nativeMain by creating {
+//            dependencies {
+//            }
+//        }
+//
+//        val linuxX64Main by getting {
+//            dependsOn(nativeMain)
+//            dependencies {
+//            }
+//        }
+//
+//        val macosX64Main by getting {
+//            dependsOn(nativeMain)
+//            dependencies {
+//            }
+//        }
+//
+//        val iosX64Main by getting {
+//            dependsOn(nativeMain)
+//            dependencies {
+//            }
+//        }
+//
+//        val iosArm64Main by getting {
+//            dependsOn(nativeMain)
+//            dependencies {
+//            }
+//        }
+//
+//        val mingwX64Main by getting {
+//            dependsOn(nativeMain)
+//            dependencies {
+//            }
+//        }
+//        if (androidEnabled) {
+//            val androidMain by getting {
+//                dependencies {
+//                    implementation(kotlin("stdlib"))
+//                }
+//            }
+//
+//            val androidTest by getting {
+//                dependencies {
+//                    implementation(kotlin("test"))
+//                    implementation(kotlin("test-junit"))
+//                }
+//            }
+//        }
     }
 }
 
