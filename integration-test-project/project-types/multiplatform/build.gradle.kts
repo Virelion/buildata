@@ -128,10 +128,6 @@ kotlin {
     }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.6"
-}
-
 fun Project.configureAndroid() {
     apply(plugin = "com.android.application")
 

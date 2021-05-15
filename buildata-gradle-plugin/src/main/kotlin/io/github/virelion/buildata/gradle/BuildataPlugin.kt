@@ -14,22 +14,23 @@ class BuildataPlugin : Plugin<Project> {
         private set
 
     override fun apply(project: Project) {
-        project.plugins.apply("com.google.devtools.ksp")
-        val kspExtension = project.extensions.getByType(KspExtension::class.java)
-        projectType = project.getProjectType() ?: return
-
-        val buildataCodegenDir =
-            mutableListOf(project.buildDir.path, "generated", "buildata").apply {
-                when (projectType) {
-                    ProjectType.MULTIPLATFORM -> this.add("commonMain")
-                    ProjectType.JVM -> this.add("main")
-                }
-            }
-                .joinToString(separator = File.separator)
-
-        kspExtension.arg("buildataCodegenDir", buildataCodegenDir)
-
         project.afterEvaluate {
+            project.plugins.apply("com.google.devtools.ksp")
+            val kspExtension = project.extensions.getByType(KspExtension::class.java)
+            projectType = project.getProjectType() ?: return@afterEvaluate
+
+            val buildataCodegenDir =
+                mutableListOf(project.buildDir.path, "generated", "buildata").apply {
+                    when (projectType) {
+                        ProjectType.MULTIPLATFORM -> this.add("commonMain")
+                        ProjectType.JVM -> this.add("main")
+                    }
+                }
+                    .joinToString(separator = File.separator)
+
+            kspExtension.arg("buildataCodegenDir", buildataCodegenDir)
+
+
             when (projectType) {
                 ProjectType.MULTIPLATFORM -> configureMultiplatformPlugin(project, buildataCodegenDir)
                 ProjectType.JVM -> configureJVMPlugin(project, buildataCodegenDir)
@@ -55,6 +56,7 @@ class BuildataPlugin : Plugin<Project> {
     }
 
     fun configureMultiplatformPlugin(project: Project, buildataCodegenDir: String) {
+        project.logger.info("Configuring multiplatform Buildata variant")
         val multiplatformExtension = project.extensions.getByType(KotlinMultiplatformExtension::class.java)
 
         val commonMain = multiplatformExtension.sourceSets.getByName("commonMain")
@@ -83,9 +85,11 @@ class BuildataPlugin : Plugin<Project> {
     }
 
     fun configureJVMPlugin(project: Project, buildataCodegenDir: String) {
-        val multiplatformExtension = project.extensions.getByType(KotlinJvmProjectExtension::class.java)
+        project.logger.info("Configuring JVM Buildata variant")
 
-        val main = multiplatformExtension.sourceSets.getByName("main")
+        val jvmProjectExtension = project.extensions.getByType(KotlinJvmProjectExtension::class.java)
+
+        val main = jvmProjectExtension.sourceSets.getByName("main")
 
         project.logger.info("Buildata codegen directory: $buildataCodegenDir")
         main.kotlin.srcDir(buildataCodegenDir)
