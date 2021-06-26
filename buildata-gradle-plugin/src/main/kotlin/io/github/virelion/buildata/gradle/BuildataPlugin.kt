@@ -61,7 +61,6 @@ class BuildataPlugin : Plugin<Project> {
 
         project.logger.info("Buildata codegen directory: $buildataCodegenDir")
         commonMain.kotlin.srcDir(buildataCodegenDir)
-
         val kspCodegenPlatformTarget =
             multiplatformExtension.targets
                 .firstOrNull { it.platformType == KotlinPlatformType.jvm && it.publishable }
