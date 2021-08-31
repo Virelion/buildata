@@ -150,14 +150,14 @@ fun Project.configureAndroid() {
         sourceSets.getByName("main").apply {
             java.srcDirs("src/commonMain/kotlin")
             res.srcDirs("src/androidMain/res")
-            manifest.srcFile("../../src/androidMain/AndroidManifest.xml")
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
             assets.srcDirs("src/commonMain/resources/assets")
         }
 
         sourceSets.getByName("androidTest").apply {
             java.srcDirs("src/commonTest/kotlin")
             res.srcDirs("src/androidTest/res")
-            manifest.srcFile("../../src/androidMain/AndroidManifest.xml")
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
             assets.srcDirs("src/commonMain/resources/assets")
         }
 
