@@ -78,24 +78,29 @@ class BuildataPlugin : Plugin<Project> {
 
         LOGGER.info("Buildata codegen directory: $buildataCodegenDir")
         commonMain.kotlin.srcDir(buildataCodegenDir)
-        val kspCodegenPlatformTarget =
-            multiplatformExtension.targets
-                .firstOrNull { it.platformType == KotlinPlatformType.jvm && it.publishable }
-                ?: multiplatformExtension.targets
-                    .firstOrNull { it.platformType == KotlinPlatformType.androidJvm && it.publishable }
 
-        if (kspCodegenPlatformTarget != null) {
-            val taskName = "kspKotlin" + kspCodegenPlatformTarget.name.capitalize()
+        project.afterEvaluate {
+            LOGGER.info("Multiplatform targets: ${multiplatformExtension.targets.joinToString { it.name }}")
 
-            multiplatformExtension.targets
-                .fold(mutableListOf<KotlinCompilation<*>>()) { acc, next ->
-                    acc += next.compilations
-                    acc
-                }.forEach {
-                    project.tasks.getByName(it.compileKotlinTask.name).dependsOn(taskName)
-                }
-        } else {
-            LOGGER.error("Buildata cannot generate classes for projects with no jvm or android targets")
+            val kspCodegenPlatformTarget =
+                multiplatformExtension.targets
+                    .firstOrNull { it.platformType == KotlinPlatformType.jvm && it.publishable }
+                    ?: multiplatformExtension.targets
+                        .firstOrNull { it.platformType == KotlinPlatformType.androidJvm && it.publishable }
+
+            if (kspCodegenPlatformTarget != null) {
+                val taskName = "kspKotlin" + kspCodegenPlatformTarget.name.capitalize()
+
+                multiplatformExtension.targets
+                    .fold(mutableListOf<KotlinCompilation<*>>()) { acc, next ->
+                        acc += next.compilations
+                        acc
+                    }.forEach {
+                        project.tasks.getByName(it.compileKotlinTask.name).dependsOn(taskName)
+                    }
+            } else {
+                LOGGER.error("Buildata cannot generate classes for projects with no jvm or android targets")
+            }
         }
     }
 
