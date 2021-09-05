@@ -14,14 +14,6 @@ repositories {
 
 val buildataRuntimeVersion = "0.0.0-SNAPSHOT"
 
-sourceSets["main"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
-    kotlin.srcDir(project.rootDir.absolutePath + "/src/commonMain/kotlin")
-}
-
-sourceSets["test"].withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
-    kotlin.srcDir(project.rootDir.absolutePath + "/src/commonTest/kotlin")
-}
-
 dependencies {
     implementation("io.github.virelion:buildata-runtime:$buildataRuntimeVersion")
 

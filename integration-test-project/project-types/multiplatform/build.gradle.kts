@@ -1,18 +1,6 @@
 import com.android.build.gradle.AppExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    repositories {
-        gradlePluginPortal()
-        jcenter()
-        mavenCentral()
-        google()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:3.6.2")
-    }
-}
-
 plugins {
     kotlin("multiplatform")
     id("io.github.virelion.buildata")
@@ -140,10 +128,6 @@ kotlin {
     }
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.6"
-}
-
 fun Project.configureAndroid() {
     apply(plugin = "com.android.application")
 
@@ -166,14 +150,14 @@ fun Project.configureAndroid() {
         sourceSets.getByName("main").apply {
             java.srcDirs("src/commonMain/kotlin")
             res.srcDirs("src/androidMain/res")
-            manifest.srcFile("../../src/androidMain/AndroidManifest.xml")
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
             assets.srcDirs("src/commonMain/resources/assets")
         }
 
         sourceSets.getByName("androidTest").apply {
             java.srcDirs("src/commonTest/kotlin")
             res.srcDirs("src/androidTest/res")
-            manifest.srcFile("../../src/androidMain/AndroidManifest.xml")
+            manifest.srcFile("src/androidMain/AndroidManifest.xml")
             assets.srcDirs("src/commonMain/resources/assets")
         }
 
