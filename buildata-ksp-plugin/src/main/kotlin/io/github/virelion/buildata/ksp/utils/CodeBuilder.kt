@@ -1,6 +1,6 @@
 package io.github.virelion.buildata.ksp.utils
 
-internal class CodeBuilder(private val indentationDelta: String = "    ") {
+class CodeBuilder(private val indentationDelta: String = "    ") {
     val builder = StringBuilder()
     private var indentation = ""
 
