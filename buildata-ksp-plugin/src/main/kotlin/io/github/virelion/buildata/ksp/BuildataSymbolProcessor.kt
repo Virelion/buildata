@@ -6,6 +6,7 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import io.github.virelion.buildata.ksp.Constants.BUILDABLE_FQNAME
+import io.github.virelion.buildata.ksp.Constants.DYNAMICALLY_ACCESSIBLE_FQNAME
 
 class BuildataSymbolProcessor(
     val logger: KSPLogger,
@@ -20,17 +21,30 @@ class BuildataSymbolProcessor(
         logger.info("BuildataSymbolProcessor processing started")
 
         val classProcessor = KSClassDeclarationProcessor(logger)
+        val streamer = PackageStreamer(buildataCodegenDir)
 
-        val annotated = resolver
+        // Stream Buildable code-generated classes
+        val buildableAnnotated = resolver
             .getSymbolsWithAnnotation(BUILDABLE_FQNAME)
-        val classes = annotated
-            .asSequence()
-            .filterIsInstance<KSClassDeclaration>()
-            .map {
-                classProcessor.process(it)
+            .apply {
+                filterIsInstance<KSClassDeclaration>()
+                    .map {
+                        classProcessor.processBuilderClasses(it)
+                    }
+                    .forEach(streamer::consume)
             }
 
-        PackageStreamer(buildataCodegenDir).stream(classes)
-        return annotated.toList()
+        // Stream Dynamically accessible code-generated classes
+        val dynamicAccessorAnnotated = resolver
+            .getSymbolsWithAnnotation(DYNAMICALLY_ACCESSIBLE_FQNAME)
+            .apply {
+                filterIsInstance<KSClassDeclaration>()
+                    .map {
+                        classProcessor.processAccessorClasses(it)
+                    }
+                    .forEach(streamer::consume)
+            }
+
+        return buildableAnnotated.toList() + dynamicAccessorAnnotated.toList()
     }
 }

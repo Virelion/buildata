@@ -4,10 +4,10 @@ import io.github.virelion.buildata.ksp.extensions.typeForDocumentation
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
 
 internal class BuilderClassTemplate(
-    val pkg: String,
+    override val pkg: String,
     val originalName: String,
     val properties: List<ClassProperty>
-) {
+) : GeneratedFileTemplate {
     private val propertiesWithDefault = properties.filter { it.hasDefaultValue }
     private val propertiesWithoutDefault = properties.filter { !it.hasDefaultValue }
 
@@ -29,8 +29,9 @@ internal class BuilderClassTemplate(
     }
 
     val builderName = createBuilderName(originalName)
+    override val name get() = builderName
 
-    fun generateCode(codeBuilder: CodeBuilder): String {
+    override fun generateCode(codeBuilder: CodeBuilder): String {
         return codeBuilder.build {
             appendln("package $pkg")
             emptyLine()
@@ -114,6 +115,7 @@ internal class BuilderClassTemplate(
             generateBuilderPopulateWithFunction()
         }
     }
+
     fun CodeBuilder.generateBuildFunction() {
         appendDocumentation(
             """

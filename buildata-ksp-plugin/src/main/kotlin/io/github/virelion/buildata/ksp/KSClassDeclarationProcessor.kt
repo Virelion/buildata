@@ -1,17 +1,29 @@
 package io.github.virelion.buildata.ksp
 
+import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSNode
 import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.symbol.Nullability
+import io.github.virelion.buildata.ksp.access.AccessorExtensionsTemplate
 import io.github.virelion.buildata.ksp.extensions.printableFqName
 import io.github.virelion.buildata.ksp.extensions.typeFQName
 
 internal class KSClassDeclarationProcessor(
     val logger: KSPLogger
 ) {
-    fun process(ksClassDeclaration: KSClassDeclaration): BuilderClassTemplate {
+    fun processAccessorClasses(ksClassDeclaration: KSClassDeclaration): AccessorExtensionsTemplate {
+        ksClassDeclaration.apply {
+            return AccessorExtensionsTemplate(
+                pkg = this.packageName.asString(),
+                originalName = this.simpleName.getShortName(),
+                properties = ksClassDeclaration.getDeclaredProperties().map { it.simpleName.asString() }.toList()
+            )
+        }
+    }
+
+    fun processBuilderClasses(ksClassDeclaration: KSClassDeclaration): BuilderClassTemplate {
         ksClassDeclaration.apply {
             if (Modifier.DATA !in this.modifiers) {
                 error("Cannot add create builder for non data class", this)

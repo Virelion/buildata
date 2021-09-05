@@ -7,24 +7,22 @@ import java.io.PrintWriter
 internal class PackageStreamer(
     private val codegenDir: String
 ) {
-    fun stream(sequence: Sequence<BuilderClassTemplate>) {
-        sequence.forEach { template ->
-            val packageDir = codegenDir +
+    fun consume(template: GeneratedFileTemplate) {
+        val packageDir = codegenDir +
+            File.separator +
+            template.pkg.getPathFromPackageName()
+        File(packageDir).mkdirs()
+
+        val output = File(
+            packageDir +
                 File.separator +
-                template.pkg.getPathFromPackageName()
-            File(packageDir).mkdirs()
+                template.name + ".kt"
+        )
+        output.createNewFile()
 
-            val output = File(
-                packageDir +
-                    File.separator +
-                    template.builderName + ".kt"
-            )
-            output.createNewFile()
-
-            val printWriter = PrintWriter(output)
-            printWriter.use {
-                it.print(template.generateCode(CodeBuilder()))
-            }
+        val printWriter = PrintWriter(output)
+        printWriter.use {
+            it.print(template.generateCode(CodeBuilder()))
         }
     }
 

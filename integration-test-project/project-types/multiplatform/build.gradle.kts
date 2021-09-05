@@ -1,5 +1,4 @@
 import com.android.build.gradle.AppExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
@@ -39,14 +38,12 @@ kotlin {
 
     sourceSets {
         val commonMain by getting {
-            kotlin.srcDir(project.rootDir.absolutePath +"/src/commonMain/kotlin")
             dependencies {
                 implementation("io.github.virelion:buildata-runtime:$buildataRuntimeVersion")
             }
         }
 
         val commonTest by getting {
-            kotlin.srcDir(project.rootDir.absolutePath +"/src/commonTest/kotlin")
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
