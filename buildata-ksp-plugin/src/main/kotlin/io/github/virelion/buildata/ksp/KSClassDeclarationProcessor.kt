@@ -9,6 +9,7 @@ import com.google.devtools.ksp.symbol.Nullability
 import io.github.virelion.buildata.ksp.access.AccessorExtensionsTemplate
 import io.github.virelion.buildata.ksp.extensions.printableFqName
 import io.github.virelion.buildata.ksp.extensions.typeFQName
+import io.github.virelion.buildata.ksp.path.PathPropertyWrapperTemplate
 
 internal class KSClassDeclarationProcessor(
     val logger: KSPLogger
@@ -29,6 +30,19 @@ internal class KSClassDeclarationProcessor(
                 error("Cannot add create builder for non data class", this)
             }
             return BuilderClassTemplate(
+                pkg = this.packageName.asString(),
+                originalName = this.simpleName.getShortName(),
+                properties = getClassProperties()
+            )
+        }
+    }
+
+    fun processPathWrapperClasses(ksClassDeclaration: KSClassDeclaration): PathPropertyWrapperTemplate {
+        ksClassDeclaration.apply {
+            if (Modifier.DATA !in this.modifiers) {
+                error("Cannot add create builder for non data class", this)
+            }
+            return PathPropertyWrapperTemplate(
                 pkg = this.packageName.asString(),
                 originalName = this.simpleName.getShortName(),
                 properties = getClassProperties()

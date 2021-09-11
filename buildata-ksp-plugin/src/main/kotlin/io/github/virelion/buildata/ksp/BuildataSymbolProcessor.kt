@@ -34,6 +34,17 @@ class BuildataSymbolProcessor(
                     .forEach(streamer::consume)
             }
 
+        // Stream Buildable code-generated classes
+        val pathWrappers = resolver
+            .getSymbolsWithAnnotation(BUILDABLE_FQNAME)
+            .apply {
+                filterIsInstance<KSClassDeclaration>()
+                    .map {
+                        classProcessor.processPathWrapperClasses(it)
+                    }
+                    .forEach(streamer::consume)
+            }
+
         // Stream Dynamically accessible code-generated classes
         val dynamicAccessorAnnotated = resolver
             .getSymbolsWithAnnotation(DYNAMICALLY_ACCESSIBLE_FQNAME)
@@ -45,6 +56,6 @@ class BuildataSymbolProcessor(
                     .forEach(streamer::consume)
             }
 
-        return buildableAnnotated.toList() + dynamicAccessorAnnotated.toList()
+        return buildableAnnotated.toList() + dynamicAccessorAnnotated.toList() + pathWrappers.toList()
     }
 }

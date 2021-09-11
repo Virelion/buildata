@@ -5,7 +5,7 @@ import io.github.virelion.buildata.ksp.extensions.classFQName
 import io.github.virelion.buildata.ksp.extensions.typeFQName
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
 
-internal class ClassProperty(
+class ClassProperty(
     val name: String,
     val type: KSType,
     val hasDefaultValue: Boolean,
