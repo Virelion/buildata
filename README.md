@@ -112,7 +112,7 @@ data class InnerItem(
 
 @Buildable 
 data class ParentDataClass(
-    val innerItem: @Buildable InnerItem
+    val innerItem: InnerItem
 )
 ```
 

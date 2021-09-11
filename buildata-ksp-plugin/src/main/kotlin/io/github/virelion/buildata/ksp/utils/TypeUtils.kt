@@ -1,7 +1,7 @@
 package io.github.virelion.buildata.ksp.utils
 
 import com.google.devtools.ksp.symbol.KSType
-import io.github.virelion.buildata.ksp.extensions.classFQName
+import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.utils.TypeConstants.SCALARS
 
 object TypeConstants {
@@ -23,7 +23,7 @@ object TypeConstants {
 }
 
 fun KSType.isScalar(): Boolean {
-    return this.classFQName() in SCALARS
+    return this.className() in SCALARS
 }
 
 fun nullableIdentifier(nullable: Boolean) = if(nullable) "?" else ""

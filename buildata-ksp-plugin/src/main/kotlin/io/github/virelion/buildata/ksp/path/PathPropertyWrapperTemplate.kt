@@ -3,7 +3,7 @@ package io.github.virelion.buildata.ksp.path
 import com.google.devtools.ksp.symbol.Nullability
 import io.github.virelion.buildata.ksp.ClassProperty
 import io.github.virelion.buildata.ksp.GeneratedFileTemplate
-import io.github.virelion.buildata.ksp.extensions.classFQName
+import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.typeFQName
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
 import io.github.virelion.buildata.ksp.utils.isScalar
@@ -61,9 +61,9 @@ class PathPropertyWrapperTemplate(
             "ScalarPathPropertyWrapper"
         } else {
             if (nullable) {
-                classProperty.type.classFQName() + "_NullablePathPropertyWrapper"
+                classProperty.type.className() + "_NullablePathPropertyWrapper"
             } else {
-                classProperty.type.classFQName() + "_PathPropertyWrapper"
+                classProperty.type.className() + "_PathPropertyWrapper"
             }
         }
 

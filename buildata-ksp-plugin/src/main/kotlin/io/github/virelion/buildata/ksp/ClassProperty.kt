@@ -1,7 +1,7 @@
 package io.github.virelion.buildata.ksp
 
 import com.google.devtools.ksp.symbol.KSType
-import io.github.virelion.buildata.ksp.extensions.classFQName
+import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.typeFQName
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
 
@@ -17,13 +17,13 @@ class ClassProperty(
     fun generatePropertyDeclaration(codeBuilder: CodeBuilder) {
         codeBuilder.build {
             if (buildable) {
-                val builderName = BuilderClassTemplate.createBuilderName(type.classFQName())
+                val builderName = BuilderClassTemplate.createBuilderName(type.className())
                 val elementPropName = if (nullable) {
                     "BuilderNullableCompositeElementProperty"
                 } else {
                     "BuilderCompositeElementProperty"
                 }
-                appendln("private val $backingPropName = $elementPropName<${type.classFQName()}, $builderName> { $builderName() }")
+                appendln("private val $backingPropName = $elementPropName<${type.className()}, $builderName> { $builderName() }")
                 appendln("var $name by $backingPropName")
                 appendln("@BuildataDSL")
                 indentBlock("fun $name(block: $builderName.() -> Unit)") {

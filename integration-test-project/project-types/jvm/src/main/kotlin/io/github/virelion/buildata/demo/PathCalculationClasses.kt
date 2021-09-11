@@ -4,21 +4,21 @@ import io.github.virelion.buildata.Buildable
 
 @Buildable
 data class Root(
-    val inner1: @Buildable Inner1 = Inner1(),
-    val nullableLeaf: @Buildable LeafNode? = null
+    val inner1: Inner1 = Inner1(),
+    val nullableLeaf: LeafNode? = null
 )
 
 @Buildable
 data class Inner1(
-    val inner2: @Buildable Inner2 = Inner2(),
-//    val innerList: List< Inner2> = listOf(),
+    val inner2: Inner2 = Inner2(),
+//    val innerList: List<Inner2> = listOf(),
 //    val innerMap: Map<String, Inner2> = mapOf(),
-    val leafWithNullables: @Buildable LeafWithNullables = LeafWithNullables()
+    val leafWithNullables: LeafWithNullables = LeafWithNullables()
 )
 
 @Buildable
 data class Inner2(
-    val leaf: @Buildable LeafNode = LeafNode()
+    val leaf: LeafNode = LeafNode()
 )
 
 @Buildable

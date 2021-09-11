@@ -4,16 +4,16 @@ import io.github.virelion.buildata.Buildable
 
 @Buildable
 data class Root(
-    val a: @Buildable Lvl1,
-    val b: @Buildable Lvl1,
-    val c: @Buildable Lvl1,
-    val d: @Buildable Lvl1,
-    val e: @Buildable Lvl1,
-    val f: @Buildable Lvl1,
-    val g: @Buildable Lvl1,
-    val i: @Buildable Lvl1,
-    val j: @Buildable Lvl1,
-    val k: @Buildable Lvl1
+    val a: Lvl1,
+    val b: Lvl1,
+    val c: Lvl1,
+    val d: Lvl1,
+    val e: Lvl1,
+    val f: Lvl1,
+    val g: Lvl1,
+    val i: Lvl1,
+    val j: Lvl1,
+    val k: Lvl1
 )
 
 fun root() = Root(lvl1(), lvl1(), lvl1(), lvl1(), lvl1(), lvl1(), lvl1(), lvl1(), lvl1(), lvl1())
@@ -35,16 +35,16 @@ fun Root_Builder.fill() {
 
 @Buildable
 data class Lvl1(
-    val a: @Buildable Lvl2,
-    val b: @Buildable Lvl2,
-    val c: @Buildable Lvl2,
-    val d: @Buildable Lvl2,
-    val e: @Buildable Lvl2,
-    val f: @Buildable Lvl2,
-    val g: @Buildable Lvl2,
-    val i: @Buildable Lvl2,
-    val j: @Buildable Lvl2,
-    val k: @Buildable Lvl2
+    val a: Lvl2,
+    val b: Lvl2,
+    val c: Lvl2,
+    val d: Lvl2,
+    val e: Lvl2,
+    val f: Lvl2,
+    val g: Lvl2,
+    val i: Lvl2,
+    val j: Lvl2,
+    val k: Lvl2
 )
 
 fun lvl1() = Lvl1(lvl2(), lvl2(), lvl2(), lvl2(), lvl2(), lvl2(), lvl2(), lvl2(), lvl2(), lvl2())
@@ -66,16 +66,16 @@ fun Lvl1_Builder.fill() {
 
 @Buildable
 data class Lvl2(
-    val a: @Buildable Lvl3,
-    val b: @Buildable Lvl3,
-    val c: @Buildable Lvl3,
-    val d: @Buildable Lvl3,
-    val e: @Buildable Lvl3,
-    val f: @Buildable Lvl3,
-    val g: @Buildable Lvl3,
-    val i: @Buildable Lvl3,
-    val j: @Buildable Lvl3,
-    val k: @Buildable Lvl3
+    val a: Lvl3,
+    val b: Lvl3,
+    val c: Lvl3,
+    val d: Lvl3,
+    val e: Lvl3,
+    val f: Lvl3,
+    val g: Lvl3,
+    val i: Lvl3,
+    val j: Lvl3,
+    val k: Lvl3
 )
 
 fun lvl2() = Lvl2(lvl3(), lvl3(), lvl3(), lvl3(), lvl3(), lvl3(), lvl3(), lvl3(), lvl3(), lvl3())
@@ -97,16 +97,16 @@ inline fun Lvl2_Builder.fill() {
 
 @Buildable
 data class Lvl3(
-    val a: @Buildable Lvl4,
-    val b: @Buildable Lvl4,
-    val c: @Buildable Lvl4,
-    val d: @Buildable Lvl4,
-    val e: @Buildable Lvl4,
-    val f: @Buildable Lvl4,
-    val g: @Buildable Lvl4,
-    val i: @Buildable Lvl4,
-    val j: @Buildable Lvl4,
-    val k: @Buildable Lvl4
+    val a: Lvl4,
+    val b: Lvl4,
+    val c: Lvl4,
+    val d: Lvl4,
+    val e: Lvl4,
+    val f: Lvl4,
+    val g: Lvl4,
+    val i: Lvl4,
+    val j: Lvl4,
+    val k: Lvl4
 )
 
 fun lvl3() = Lvl3(lvl4(), lvl4(), lvl4(), lvl4(), lvl4(), lvl4(), lvl4(), lvl4(), lvl4(), lvl4())
@@ -128,16 +128,16 @@ inline fun Lvl3_Builder.fill() {
 
 @Buildable
 data class Lvl4(
-    val a: @Buildable Lvl5,
-    val b: @Buildable Lvl5,
-    val c: @Buildable Lvl5,
-    val d: @Buildable Lvl5,
-    val e: @Buildable Lvl5,
-    val f: @Buildable Lvl5,
-    val g: @Buildable Lvl5,
-    val i: @Buildable Lvl5,
-    val j: @Buildable Lvl5,
-    val k: @Buildable Lvl5
+    val a: Lvl5,
+    val b: Lvl5,
+    val c: Lvl5,
+    val d: Lvl5,
+    val e: Lvl5,
+    val f: Lvl5,
+    val g: Lvl5,
+    val i: Lvl5,
+    val j: Lvl5,
+    val k: Lvl5
 )
 
 fun lvl4() = Lvl4(lvl5(), lvl5(), lvl5(), lvl5(), lvl5(), lvl5(), lvl5(), lvl5(), lvl5(), lvl5())
@@ -159,16 +159,16 @@ inline fun Lvl4_Builder.fill() {
 
 @Buildable
 data class Lvl5(
-    val a: @Buildable Lvl6,
-    val b: @Buildable Lvl6,
-    val c: @Buildable Lvl6,
-    val d: @Buildable Lvl6,
-    val e: @Buildable Lvl6,
-    val f: @Buildable Lvl6,
-    val g: @Buildable Lvl6,
-    val i: @Buildable Lvl6,
-    val j: @Buildable Lvl6,
-    val k: @Buildable Lvl6
+    val a: Lvl6,
+    val b: Lvl6,
+    val c: Lvl6,
+    val d: Lvl6,
+    val e: Lvl6,
+    val f: Lvl6,
+    val g: Lvl6,
+    val i: Lvl6,
+    val j: Lvl6,
+    val k: Lvl6
 )
 
 fun lvl5() = Lvl5(lvl6(), lvl6(), lvl6(), lvl6(), lvl6(), lvl6(), lvl6(), lvl6(), lvl6(), lvl6())

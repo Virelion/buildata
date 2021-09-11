@@ -2,17 +2,16 @@ package io.github.virelion.buildata.ksp
 
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSNode
-import com.google.devtools.ksp.symbol.Modifier
-import com.google.devtools.ksp.symbol.Nullability
+import com.google.devtools.ksp.symbol.*
 import io.github.virelion.buildata.ksp.access.AccessorExtensionsTemplate
+import io.github.virelion.buildata.ksp.extensions.classFQName
+import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.printableFqName
-import io.github.virelion.buildata.ksp.extensions.typeFQName
 import io.github.virelion.buildata.ksp.path.PathPropertyWrapperTemplate
 
 internal class KSClassDeclarationProcessor(
-    val logger: KSPLogger
+    val logger: KSPLogger,
+    val buildableAnnotated: Set<String>
 ) {
     fun processAccessorClasses(ksClassDeclaration: KSClassDeclaration): AccessorExtensionsTemplate {
         ksClassDeclaration.apply {
@@ -24,7 +23,9 @@ internal class KSClassDeclarationProcessor(
         }
     }
 
-    fun processBuilderClasses(ksClassDeclaration: KSClassDeclaration): BuilderClassTemplate {
+    fun processBuilderClasses(
+        ksClassDeclaration: KSClassDeclaration
+    ): BuilderClassTemplate {
         ksClassDeclaration.apply {
             if (Modifier.DATA !in this.modifiers) {
                 error("Cannot add create builder for non data class", this)
@@ -37,7 +38,9 @@ internal class KSClassDeclarationProcessor(
         }
     }
 
-    fun processPathWrapperClasses(ksClassDeclaration: KSClassDeclaration): PathPropertyWrapperTemplate {
+    fun processPathWrapperClasses(
+        ksClassDeclaration: KSClassDeclaration
+    ): PathPropertyWrapperTemplate {
         ksClassDeclaration.apply {
             if (Modifier.DATA !in this.modifiers) {
                 error("Cannot add create builder for non data class", this)
@@ -61,10 +64,7 @@ internal class KSClassDeclarationProcessor(
                     type = type,
                     hasDefaultValue = parameter.hasDefault,
                     nullable = type.nullability == Nullability.NULLABLE,
-                    buildable = type.annotations
-                        .any { annotation ->
-                            annotation.annotationType.resolve().typeFQName() == Constants.BUILDABLE_FQNAME
-                        }
+                    buildable = (type.classFQName() in buildableAnnotated)
                 )
             }
     }

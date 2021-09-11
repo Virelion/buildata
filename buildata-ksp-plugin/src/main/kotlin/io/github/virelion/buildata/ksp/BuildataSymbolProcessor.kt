@@ -7,6 +7,7 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import io.github.virelion.buildata.ksp.Constants.BUILDABLE_FQNAME
 import io.github.virelion.buildata.ksp.Constants.DYNAMICALLY_ACCESSIBLE_FQNAME
+import io.github.virelion.buildata.ksp.extensions.printableFqName
 
 class BuildataSymbolProcessor(
     val logger: KSPLogger,
@@ -20,30 +21,22 @@ class BuildataSymbolProcessor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         logger.info("BuildataSymbolProcessor processing started")
 
-        val classProcessor = KSClassDeclarationProcessor(logger)
         val streamer = PackageStreamer(buildataCodegenDir)
 
         // Stream Buildable code-generated classes
         val buildableAnnotated = resolver
             .getSymbolsWithAnnotation(BUILDABLE_FQNAME)
-            .apply {
-                filterIsInstance<KSClassDeclaration>()
-                    .map {
-                        classProcessor.processBuilderClasses(it)
-                    }
-                    .forEach(streamer::consume)
-            }
+            .filterIsInstance<KSClassDeclaration>()
+            .toList()
 
-        // Stream Buildable code-generated classes
-        val pathWrappers = resolver
-            .getSymbolsWithAnnotation(BUILDABLE_FQNAME)
-            .apply {
-                filterIsInstance<KSClassDeclaration>()
-                    .map {
-                        classProcessor.processPathWrapperClasses(it)
-                    }
-                    .forEach(streamer::consume)
-            }
+        val buildableAnnotatedFQClasses = buildableAnnotated.map { it.printableFqName }.toSet()
+
+        val classProcessor = KSClassDeclarationProcessor(logger, buildableAnnotatedFQClasses)
+
+        buildableAnnotated.forEach {
+            streamer.consume(classProcessor.processBuilderClasses(it))
+            streamer.consume(classProcessor.processPathWrapperClasses(it))
+        }
 
         // Stream Dynamically accessible code-generated classes
         val dynamicAccessorAnnotated = resolver
@@ -56,6 +49,6 @@ class BuildataSymbolProcessor(
                     .forEach(streamer::consume)
             }
 
-        return buildableAnnotated.toList() + dynamicAccessorAnnotated.toList() + pathWrappers.toList()
+        return buildableAnnotated.toList() + dynamicAccessorAnnotated.toList()
     }
 }

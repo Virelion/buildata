@@ -5,15 +5,19 @@ import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.Nullability
 
 fun KSType.typeFQName(): String {
-    return "${declaration.qualifiedName!!.getQualifier()}.${classFQName()}${nullability.toCode()}"
+    return "${declaration.qualifiedName!!.getQualifier()}.${className()}${nullability.toCode()}"
 }
 
 fun KSType.classFQName(): String {
+    return "${declaration.qualifiedName!!.getQualifier()}.${className()}"
+}
+
+fun KSType.className(): String {
     return this.declaration.qualifiedName!!.getShortName()
 }
 
 fun KSType.typeForDocumentation(): String {
-    return "[${declaration.qualifiedName!!.getQualifier()}.${classFQName()}]${nullability.toCode()}"
+    return "[${declaration.qualifiedName!!.getQualifier()}.${className()}]${nullability.toCode()}"
 }
 
 val KSClassDeclaration.printableFqName: String get() {
