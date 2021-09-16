@@ -11,7 +11,10 @@ data class Root(
 @Buildable
 data class Inner1(
     val inner2: Inner2 = Inner2(),
-//    val innerList: List<Inner2> = listOf(),
+    val innerList: List<Inner2> = listOf(),
+    val listOfNullables: List<Inner2?> = listOf(null),
+    val nullableList: List<Inner2>? = null,
+    val nullableListOfNullables: List<Inner2?>? = listOf(null),
 //    val innerMap: Map<String, Inner2> = mapOf(),
     val leafWithNullables: LeafWithNullables = LeafWithNullables()
 )

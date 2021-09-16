@@ -6,6 +6,9 @@ class ListPathRecorder<T, Wrapped : PathPropertyWrapper<T>>(
     private val wrapMethod: (PathRecorder, T?) -> Wrapped
 ) : PathPropertyWrapper<List<T>> {
     operator fun get(index: Int): Wrapped {
+        if (index >= item.size) {
+            throw MissingElementException(index.toString(), pathRecorder.identifiers)
+        }
         pathRecorder.push(IntIndexPathIdentifier(index))
         return wrapMethod(pathRecorder, item[index])
     }

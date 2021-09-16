@@ -151,43 +151,43 @@ class Playground {
     @Test
     fun testSimpleValueWithPath() {
         with(root.valueWithPath { value }) {
-            assertEquals("$.value", xpath)
+            assertEquals("$.value", jsonPath)
             assertEquals("root", this.value)
         }
         with(root.valueWithPath { inner1 }) {
-            assertEquals("$.inner1", xpath)
+            assertEquals("$.inner1", jsonPath)
             assertSame(root.inner1, this.value)
         }
         with(root.valueWithPath { inner1.innerList[0] }) {
-            assertEquals("$.inner1.innerList[0]", xpath)
+            assertEquals("$.inner1.innerList[0]", jsonPath)
             assertSame(root.inner1.innerList[0], this.value)
         }
         with(root.valueWithPath { inner1.innerList[0].value }) {
-            assertEquals("$.inner1.innerList[0].value", xpath)
+            assertEquals("$.inner1.innerList[0].value", jsonPath)
             assertSame(root.inner1.innerList[0].value, this.value)
         }
         with(root.valueWithPath { inner1.innerMap["key"] }) {
-            assertEquals("$.inner1.innerMap['key']", xpath)
+            assertEquals("$.inner1.innerMap['key']", jsonPath)
             assertSame(root.inner1.innerMap["key"], this.value)
         }
         with(root.valueWithPath { inner1.innerMap["key"].value }) {
-            assertEquals("$.inner1.innerMap['key'].value", xpath)
+            assertEquals("$.inner1.innerMap['key'].value", jsonPath)
             assertSame(root.inner1.innerMap["key"]?.value, this.value)
         }
         with(root.valueWithPath { inner1.innerList[0].value }) {
-            assertEquals("$.inner1.innerList[0].value", xpath)
+            assertEquals("$.inner1.innerList[0].value", jsonPath)
             assertSame(root.inner1.innerList[0].value, this.value)
         }
         with(root.valueWithPath { inner1.value }) {
-            assertEquals("$.inner1.value", xpath)
+            assertEquals("$.inner1.value", jsonPath)
             assertEquals(root.inner1.value, this.value)
         }
         with(root.valueWithPath { inner1.inner2 }) {
-            assertEquals("$.inner1.inner2", xpath)
+            assertEquals("$.inner1.inner2", jsonPath)
             assertEquals(root.inner1.inner2, value)
         }
         with(root.valueWithPath { inner1.inner2.value }) {
-            assertEquals("$.inner1.inner2.value", xpath)
+            assertEquals("$.inner1.inner2.value", jsonPath)
             assertEquals(root.inner1.inner2.value, this.value)
         }
     }
@@ -197,23 +197,23 @@ class Playground {
         val wrapper = root.path { inner1 }.path { inner2 }
 
         with(wrapper.path { value }) {
-            assertEquals("$.inner1.inner2.value", path.xpath)
+            assertEquals("$.inner1.inner2.value", path.jsonPath)
         }
 
 
         with(wrapper.valueWithPath { value }) {
-            assertEquals("$.inner1.inner2.value", xpath)
+            assertEquals("$.inner1.inner2.value", jsonPath)
             assertEquals("inner2", value)
         }
 
         val wrapper2 = root.path { inner1 }.path { nullableInner2 }
 
         with(wrapper2.path { value }) {
-            assertEquals("$.inner1.nullableInner2.value", path.xpath)
+            assertEquals("$.inner1.nullableInner2.value", path.jsonPath)
         }
 
         with(wrapper2.valueWithPath { value }) {
-            assertEquals("$.inner1.nullableInner2.value", xpath)
+            assertEquals("$.inner1.nullableInner2.value", jsonPath)
             assertEquals(null, value)
         }
     }
@@ -221,19 +221,19 @@ class Playground {
     @Test
     fun testNullables() {
         with(root.valueWithPath { nullable }) {
-            assertEquals("$.nullable", xpath)
+            assertEquals("$.nullable", jsonPath)
             assertEquals(null, this.value)
         }
         with(root.valueWithPath { inner1.nullable }) {
-            assertEquals("$.inner1.nullable", xpath)
+            assertEquals("$.inner1.nullable", jsonPath)
             assertEquals(null, this.value)
         }
         with(root.valueWithPath { inner1.nullableInner2.value }) {
-            assertEquals("$.inner1.nullableInner2.value", xpath)
+            assertEquals("$.inner1.nullableInner2.value", jsonPath)
             assertEquals(null, this.value)
         }
         with(root.valueWithPath { inner1.listOfNullables[0].value }) {
-            assertEquals("$.inner1.listOfNullables[0].value", xpath)
+            assertEquals("$.inner1.listOfNullables[0].value", jsonPath)
             assertEquals(null, this.value)
         }
     }
@@ -243,11 +243,11 @@ class Playground {
         val listWrapper = root.path { inner1.innerList }
         with(listWrapper.toList()) {
             with(this[0].value) {
-                assertEquals("$.inner1.innerList[0].value", this.path.xpath)
+                assertEquals("$.inner1.innerList[0].value", this.path.jsonPath)
                 assertSame(root.inner1.innerList[0].value, this.item)
             }
             with(this[1].value) {
-                assertEquals("$.inner1.innerList[1].value", this.path.xpath)
+                assertEquals("$.inner1.innerList[1].value", this.path.jsonPath)
                 assertSame(root.inner1.innerList[1].value, this.item)
             }
         }
@@ -258,11 +258,11 @@ class Playground {
         val listWrapper = root.path { inner1.innerMap }
         with(listWrapper.toMap()) {
             with(assertNotNull(this["key"]).value) {
-                assertEquals("$.inner1.innerMap['key'].value", this.path.xpath)
+                assertEquals("$.inner1.innerMap['key'].value", this.path.jsonPath)
                 assertSame(root.inner1.innerMap["key"]!!.value, this.item)
             }
             with(assertNotNull(this["key2"]).value) {
-                assertEquals("$.inner1.innerMap['key2'].value", this.path.xpath)
+                assertEquals("$.inner1.innerMap['key2'].value", this.path.jsonPath)
                 assertSame(root.inner1.innerMap["key2"]!!.value, this.item)
             }
         }

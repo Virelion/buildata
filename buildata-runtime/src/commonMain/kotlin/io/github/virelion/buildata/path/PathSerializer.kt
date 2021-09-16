@@ -1,6 +1,6 @@
 package io.github.virelion.buildata.path
 
-val List<PathIdentifier>.xpath : String get() {
+val List<PathIdentifier>.jsonPath : String get() {
     val builder = StringBuilder()
     builder.append("$")
     forEach {

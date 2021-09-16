@@ -1,6 +1,7 @@
 package io.github.virelion.buildata.ksp.utils
 
 import com.google.devtools.ksp.symbol.KSType
+import io.github.virelion.buildata.ksp.extensions.classFQName
 import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.utils.TypeConstants.SCALARS
 
@@ -19,6 +20,7 @@ object TypeConstants {
         "UShort",
         "Float",
         "Double",
+        "Any"
     )
 }
 
@@ -27,3 +29,7 @@ fun KSType.isScalar(): Boolean {
 }
 
 fun nullableIdentifier(nullable: Boolean) = if(nullable) "?" else ""
+
+fun KSType.isList(): Boolean {
+    return "kotlin.collections.List" == this.classFQName()
+}

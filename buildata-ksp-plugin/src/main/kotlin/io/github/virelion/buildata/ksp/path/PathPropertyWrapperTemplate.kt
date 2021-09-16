@@ -1,11 +1,14 @@
 package io.github.virelion.buildata.ksp.path
 
+import com.google.devtools.ksp.innerArguments
+import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.Nullability
 import io.github.virelion.buildata.ksp.ClassProperty
 import io.github.virelion.buildata.ksp.GeneratedFileTemplate
 import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.typeFQName
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
+import io.github.virelion.buildata.ksp.utils.isList
 import io.github.virelion.buildata.ksp.utils.isScalar
 import io.github.virelion.buildata.ksp.utils.nullableIdentifier
 
@@ -15,7 +18,7 @@ class PathPropertyWrapperTemplate(
     val properties: List<ClassProperty>
 ) : GeneratedFileTemplate {
     override val name: String = "${originalName}_PathPropertyWrapper"
-    private val nullableName: String = "${originalName}_NullablePathPropertyWrapper"
+    private val nullableWrapperName: String = "${originalName}_NullablePathPropertyWrapper"
 
     override fun generateCode(codeBuilder: CodeBuilder): String {
         return codeBuilder.build {
@@ -37,7 +40,7 @@ class PathPropertyWrapperTemplate(
     private fun CodeBuilder.createPathPropertyWrapperClass(nullable: Boolean) {
         val nId = nullableIdentifier(nullable)
         val className = if (nullable) {
-            nullableName
+            nullableWrapperName
         } else {
             name
         }
@@ -55,17 +58,15 @@ class PathPropertyWrapperTemplate(
         }
     }
 
-    private fun CodeBuilder.createPropertyEntry(classProperty: ClassProperty, nullable: Boolean = false) {
-        val nId = nullableIdentifier(nullable)
-        val wrapperName = if (classProperty.type.isScalar()) {
-            "ScalarPathPropertyWrapper"
-        } else {
-            if (nullable) {
-                classProperty.type.className() + "_NullablePathPropertyWrapper"
-            } else {
-                classProperty.type.className() + "_PathPropertyWrapper"
-            }
+
+    private fun CodeBuilder.createPropertyEntry(classProperty: ClassProperty, nullable: Boolean) {
+        if (classProperty.type.isList()) {
+            createListPropertyEntry(classProperty, nullable)
+            return
         }
+
+        val nId = nullableIdentifier(nullable)
+        val wrapperName = getWrapperName(classProperty.type, nullable)
 
         val wrapperType = if (classProperty.type.isScalar()) {
             wrapperName + "<${classProperty.type.typeFQName()}$nId>"
@@ -77,6 +78,55 @@ class PathPropertyWrapperTemplate(
             indentBlock(wrapperName, enclosingCharacter = "(") {
                 appendln("item$nId.${classProperty.name},")
                 appendln("pathRecorder")
+            }
+        }
+    }
+
+    private fun getWrapperName(type: KSType, nullable: Boolean): String {
+        return if (type.isScalar()) {
+            "ScalarPathPropertyWrapper"
+        } else {
+            if (nullable) {
+                type.className() + "_NullablePathPropertyWrapper"
+            } else {
+                type.className() + "_PathPropertyWrapper"
+            }
+        }
+    }
+
+    private fun getWrapperType(type: KSType, nullable: Boolean): String {
+        return if (type.isScalar()) {
+            getWrapperName(type, nullable) + "<${type.typeFQName()}>"
+        } else {
+            getWrapperName(type, nullable)
+        }
+    }
+
+    /*
+        val innerList: ListPathRecorder<Inner2, Inner2_PathPropertyWrapper> by PathRecorderProperty(pathRecorder) {
+        ListPathRecorder(item.innerList, pathRecorder) { recorder, it ->
+            Inner2_PathPropertyWrapper(it!!, recorder)
+        }
+    }
+    val listOfNullables: ListPathRecorder<Inner2?, Inner2_NullablePathPropertyWrapper> by PathRecorderProperty(
+        pathRecorder
+    ) {
+        ListPathRecorder(item.listOfNullables, pathRecorder) { recorder, it ->
+            Inner2_NullablePathPropertyWrapper(it, recorder)
+        }
+    }
+     */
+
+    private fun CodeBuilder.createListPropertyEntry(classProperty: ClassProperty, nullable: Boolean) {
+        val itemType = requireNotNull(classProperty.type.innerArguments.last().type?.resolve()) { "Unable to resolve type of list ${classProperty.name} in $name"}
+        val itemNullable = itemType.nullability != Nullability.NOT_NULL || nullable
+
+        val itemNId = nullableIdentifier(itemNullable)
+        val forceNotNull = if(!itemNullable) { "!!" } else { "" }
+        val wrapperType = getWrapperType(itemType, itemNullable)
+        indentBlock("val ${classProperty.name}: ListPathRecorder<${itemType.typeFQName()}$itemNId, $wrapperType> by PathRecorderProperty(pathRecorder)") {
+            indentBlock("ListPathRecorder(item${itemNId}.${classProperty.name}${if(itemNullable) { " ?: listOf()"} else {""} }, pathRecorder)") {
+                appendln("recorder, it -> ${getWrapperName(itemType, itemNullable)}(it$forceNotNull, recorder)")
             }
         }
     }

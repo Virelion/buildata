@@ -1,9 +1,12 @@
 package io.github.virelion.buildata.demo
 
+import io.github.virelion.buildata.path.MissingElementException
+import io.github.virelion.buildata.path.jsonPath
 import io.github.virelion.buildata.path.valueWithPath
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class PathCalculation {
     @Test
@@ -32,51 +35,51 @@ class PathCalculation {
         with(root.path { inner1.inner2.leaf }) {
             with(valueWithPath { string }) {
                 assertEquals("Test", value)
-                assertEquals("$.inner1.inner2.leaf.string", xpath)
+                assertEquals("$.inner1.inner2.leaf.string", jsonPath)
             }
             with(valueWithPath { boolean }) {
-                assertEquals( true, value)
-                assertEquals("$.inner1.inner2.leaf.boolean", xpath)
+                assertEquals(true, value)
+                assertEquals("$.inner1.inner2.leaf.boolean", jsonPath)
             }
             with(valueWithPath { int }) {
-                assertEquals( 1, value)
-                assertEquals("$.inner1.inner2.leaf.int", xpath)
+                assertEquals(1, value)
+                assertEquals("$.inner1.inner2.leaf.int", jsonPath)
             }
             with(valueWithPath { uInt }) {
-                assertEquals( 2u, value)
-                assertEquals("$.inner1.inner2.leaf.uInt", xpath)
+                assertEquals(2u, value)
+                assertEquals("$.inner1.inner2.leaf.uInt", jsonPath)
             }
             with(valueWithPath { long }) {
-                assertEquals( 3, value)
-                assertEquals("$.inner1.inner2.leaf.long", xpath)
+                assertEquals(3, value)
+                assertEquals("$.inner1.inner2.leaf.long", jsonPath)
             }
             with(valueWithPath { uLong }) {
-                assertEquals( 4u, value)
-                assertEquals("$.inner1.inner2.leaf.uLong", xpath)
+                assertEquals(4u, value)
+                assertEquals("$.inner1.inner2.leaf.uLong", jsonPath)
             }
             with(valueWithPath { byte }) {
-                assertEquals( 0x5, value)
-                assertEquals("$.inner1.inner2.leaf.byte", xpath)
+                assertEquals(0x5, value)
+                assertEquals("$.inner1.inner2.leaf.byte", jsonPath)
             }
             with(valueWithPath { uByte }) {
-                assertEquals( 0x6u, value)
-                assertEquals("$.inner1.inner2.leaf.uByte", xpath)
+                assertEquals(0x6u, value)
+                assertEquals("$.inner1.inner2.leaf.uByte", jsonPath)
             }
             with(valueWithPath { short }) {
-                assertEquals( 7, value)
-                assertEquals("$.inner1.inner2.leaf.short", xpath)
+                assertEquals(7, value)
+                assertEquals("$.inner1.inner2.leaf.short", jsonPath)
             }
             with(valueWithPath { uShort }) {
-                assertEquals( 8u, value)
-                assertEquals("$.inner1.inner2.leaf.uShort", xpath)
+                assertEquals(8u, value)
+                assertEquals("$.inner1.inner2.leaf.uShort", jsonPath)
             }
             with(valueWithPath { float }) {
-                assertEquals( 9.0f, value)
-                assertEquals("$.inner1.inner2.leaf.float", xpath)
+                assertEquals(9.0f, value)
+                assertEquals("$.inner1.inner2.leaf.float", jsonPath)
             }
             with(valueWithPath { double }) {
-                assertEquals( 10.0, value)
-                assertEquals("$.inner1.inner2.leaf.double", xpath)
+                assertEquals(10.0, value)
+                assertEquals("$.inner1.inner2.leaf.double", jsonPath)
             }
         }
     }
@@ -105,51 +108,51 @@ class PathCalculation {
         with(root.path { inner1.leafWithNullables }) {
             with(valueWithPath { string }) {
                 assertEquals("Test", value)
-                assertEquals("$.inner1.leafWithNullables.string", xpath)
+                assertEquals("$.inner1.leafWithNullables.string", jsonPath)
             }
             with(valueWithPath { boolean }) {
-                assertEquals( true, value)
-                assertEquals("$.inner1.leafWithNullables.boolean", xpath)
+                assertEquals(true, value)
+                assertEquals("$.inner1.leafWithNullables.boolean", jsonPath)
             }
             with(valueWithPath { int }) {
-                assertEquals( 1, value)
-                assertEquals("$.inner1.leafWithNullables.int", xpath)
+                assertEquals(1, value)
+                assertEquals("$.inner1.leafWithNullables.int", jsonPath)
             }
             with(valueWithPath { uInt }) {
-                assertEquals( 2u, value)
-                assertEquals("$.inner1.leafWithNullables.uInt", xpath)
+                assertEquals(2u, value)
+                assertEquals("$.inner1.leafWithNullables.uInt", jsonPath)
             }
             with(valueWithPath { long }) {
-                assertEquals( 3, value)
-                assertEquals("$.inner1.leafWithNullables.long", xpath)
+                assertEquals(3, value)
+                assertEquals("$.inner1.leafWithNullables.long", jsonPath)
             }
             with(valueWithPath { uLong }) {
-                assertEquals( 4u, value)
-                assertEquals("$.inner1.leafWithNullables.uLong", xpath)
+                assertEquals(4u, value)
+                assertEquals("$.inner1.leafWithNullables.uLong", jsonPath)
             }
             with(valueWithPath { byte }) {
-                assertEquals( 0x5, value)
-                assertEquals("$.inner1.leafWithNullables.byte", xpath)
+                assertEquals(0x5, value)
+                assertEquals("$.inner1.leafWithNullables.byte", jsonPath)
             }
             with(valueWithPath { uByte }) {
-                assertEquals( 0x6u, value)
-                assertEquals("$.inner1.leafWithNullables.uByte", xpath)
+                assertEquals(0x6u, value)
+                assertEquals("$.inner1.leafWithNullables.uByte", jsonPath)
             }
             with(valueWithPath { short }) {
-                assertEquals( 7, value)
-                assertEquals("$.inner1.leafWithNullables.short", xpath)
+                assertEquals(7, value)
+                assertEquals("$.inner1.leafWithNullables.short", jsonPath)
             }
             with(valueWithPath { uShort }) {
-                assertEquals( 8u, value)
-                assertEquals("$.inner1.leafWithNullables.uShort", xpath)
+                assertEquals(8u, value)
+                assertEquals("$.inner1.leafWithNullables.uShort", jsonPath)
             }
             with(valueWithPath { float }) {
-                assertEquals( 9.0f, value)
-                assertEquals("$.inner1.leafWithNullables.float", xpath)
+                assertEquals(9.0f, value)
+                assertEquals("$.inner1.leafWithNullables.float", jsonPath)
             }
             with(valueWithPath { double }) {
-                assertEquals( 10.0, value)
-                assertEquals("$.inner1.leafWithNullables.double", xpath)
+                assertEquals(10.0, value)
+                assertEquals("$.inner1.leafWithNullables.double", jsonPath)
             }
         }
     }
@@ -161,51 +164,51 @@ class PathCalculation {
         with(root.path { nullableLeaf }) {
             with(valueWithPath { string }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.string", xpath)
+                assertEquals("$.nullableLeaf.string", jsonPath)
             }
             with(valueWithPath { boolean }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.boolean", xpath)
+                assertEquals("$.nullableLeaf.boolean", jsonPath)
             }
             with(valueWithPath { int }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.int", xpath)
+                assertEquals("$.nullableLeaf.int", jsonPath)
             }
             with(valueWithPath { uInt }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.uInt", xpath)
+                assertEquals("$.nullableLeaf.uInt", jsonPath)
             }
             with(valueWithPath { long }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.long", xpath)
+                assertEquals("$.nullableLeaf.long", jsonPath)
             }
             with(valueWithPath { uLong }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.uLong", xpath)
+                assertEquals("$.nullableLeaf.uLong", jsonPath)
             }
             with(valueWithPath { byte }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.byte", xpath)
+                assertEquals("$.nullableLeaf.byte", jsonPath)
             }
             with(valueWithPath { uByte }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.uByte", xpath)
+                assertEquals("$.nullableLeaf.uByte", jsonPath)
             }
             with(valueWithPath { short }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.short", xpath)
+                assertEquals("$.nullableLeaf.short", jsonPath)
             }
             with(valueWithPath { uShort }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.uShort", xpath)
+                assertEquals("$.nullableLeaf.uShort", jsonPath)
             }
             with(valueWithPath { float }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.float", xpath)
+                assertEquals("$.nullableLeaf.float", jsonPath)
             }
             with(valueWithPath { double }) {
                 assertNull(value)
-                assertEquals("$.nullableLeaf.double", xpath)
+                assertEquals("$.nullableLeaf.double", jsonPath)
             }
         }
     }
@@ -214,8 +217,83 @@ class PathCalculation {
     fun testRelativePath() {
         val leaf = LeafNode(string = "TestString")
         with(leaf.valueWithPath { string }) {
-            assertEquals( "TestString", value)
-            assertEquals("$.string", xpath)
+            assertEquals("TestString", value)
+            assertEquals("$.string", jsonPath)
+        }
+    }
+
+    @Test
+    fun testListAccess() {
+        val root = Root::class.build {
+            inner1 {
+                innerList = listOf(Inner2())
+            }
+        }
+
+        with(root.valueWithPath { inner1.innerList[0].leaf.string }) {
+            assertEquals("", value)
+            assertEquals("$.inner1.innerList[0].leaf.string", jsonPath)
+        }
+    }
+
+    @Test
+    fun testListAccessOutOfBoundsElement() {
+        val root = Root::class.build {
+            inner1 {
+                innerList = listOf(Inner2())
+            }
+        }
+        var failed = false
+        try {
+            root.valueWithPath { inner1.innerList[1].leaf.string }
+        } catch (e: MissingElementException) {
+            failed = true
+            assertEquals("1", e.index)
+            assertEquals("$.inner1.innerList", e.path.jsonPath)
+            assertEquals("There is no item on index '1' of '$.inner1.innerList'", e.message)
+        }
+        assertTrue(failed)
+    }
+
+    @Test
+    fun testListOfNullablesAccess() {
+        val root = Root::class.build {
+            inner1 {
+                listOfNullables = listOf(null)
+            }
+        }
+
+        with(root.valueWithPath { inner1.listOfNullables[0].leaf.string }) {
+            assertEquals(null, value)
+            assertEquals("$.inner1.listOfNullables[0].leaf.string", jsonPath)
+        }
+    }
+
+    @Test
+    fun testNullableListAccess() {
+        val root = Root::class.build {
+            inner1 {
+                nullableList = listOf(Inner2())
+            }
+        }
+
+        with(root.valueWithPath { inner1.nullableList[0].leaf.string }) {
+            assertEquals("", value)
+            assertEquals("$.inner1.nullableList[0].leaf.string", jsonPath)
+        }
+    }
+
+    @Test
+    fun testNullableListOfNullablesAccess() {
+        val root = Root::class.build {
+            inner1 {
+                nullableListOfNullables = listOf(Inner2())
+            }
+        }
+
+        with(root.valueWithPath { inner1.nullableListOfNullables[0].leaf.string }) {
+            assertEquals("", value)
+            assertEquals("$.inner1.nullableListOfNullables[0].leaf.string", jsonPath)
         }
     }
 }
