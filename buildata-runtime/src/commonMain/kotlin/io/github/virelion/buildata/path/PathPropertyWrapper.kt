@@ -12,6 +12,7 @@ interface PathPropertyWrapper<out T> {
 fun <R, Node : PathPropertyWrapper<R>, T, Wrapper : PathPropertyWrapper<T>> Node.valueWithPath(
     recording: Node.() -> Wrapper
 ): ValueWithPath<T> {
+    @Suppress("UNCHECKED_CAST")
     val cloned = this.clone() as Node
     val wrapper = cloned.path(recording)
 
@@ -21,6 +22,7 @@ fun <R, Node : PathPropertyWrapper<R>, T, Wrapper : PathPropertyWrapper<T>> Node
 fun <R, Node : PathPropertyWrapper<R>, T, Wrapper : PathPropertyWrapper<T>> Node.path(
     recording: Node.() -> Wrapper
 ): Wrapper {
+    @Suppress("UNCHECKED_CAST")
     val cloned = this.clone() as Node
     return cloned.recording()
 }

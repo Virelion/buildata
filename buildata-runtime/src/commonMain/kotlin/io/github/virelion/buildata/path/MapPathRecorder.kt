@@ -6,8 +6,9 @@ class MapPathRecorder<T, Wrapped : PathPropertyWrapper<T>>(
     private val wrapMethod: (PathRecorder, T?) -> Wrapped
 ) : PathPropertyWrapper<Map<String, T>> {
     operator fun get(key: String): Wrapped {
+        if(key !in item) throw MissingElementException(key, pathRecorder.identifiers)
         pathRecorder.push(StringIndexPathIdentifier(key))
-        return item[key]?.let{ wrapMethod(pathRecorder, it) } ?: throw NoSuchElementException(key)
+        return wrapMethod(pathRecorder, item[key])
     }
 
     override fun clone(): PathPropertyWrapper<Map<String, T>> {
