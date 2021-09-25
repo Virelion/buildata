@@ -7,6 +7,7 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import io.github.virelion.buildata.ksp.Constants.BUILDABLE_FQNAME
 import io.github.virelion.buildata.ksp.Constants.DYNAMICALLY_ACCESSIBLE_FQNAME
+import io.github.virelion.buildata.ksp.Constants.PATH_REFLECTION_FQNAME
 import io.github.virelion.buildata.ksp.extensions.printableFqName
 
 class BuildataSymbolProcessor(
@@ -29,12 +30,23 @@ class BuildataSymbolProcessor(
             .filterIsInstance<KSClassDeclaration>()
             .toList()
 
-        val buildableAnnotatedFQClasses = buildableAnnotated.map { it.printableFqName }.toSet()
+        val pathReflectionAnnotated = resolver
+            .getSymbolsWithAnnotation(PATH_REFLECTION_FQNAME)
+            .filterIsInstance<KSClassDeclaration>()
+            .toList()
 
-        val classProcessor = KSClassDeclarationProcessor(logger, buildableAnnotatedFQClasses)
+        val annotatedClasses = AnnotatedClasses(
+            buildableAnnotated.map { it.printableFqName }.toSet(),
+            pathReflectionAnnotated.map { it.printableFqName }.toSet()
+        )
+
+        val classProcessor = KSClassDeclarationProcessor(logger, annotatedClasses)
 
         buildableAnnotated.forEach {
             streamer.consume(classProcessor.processBuilderClasses(it))
+        }
+
+        pathReflectionAnnotated.forEach {
             streamer.consume(classProcessor.processPathWrapperClasses(it))
         }
 

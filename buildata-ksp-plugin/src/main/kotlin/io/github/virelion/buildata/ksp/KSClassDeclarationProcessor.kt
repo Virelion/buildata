@@ -11,7 +11,7 @@ import io.github.virelion.buildata.ksp.path.PathPropertyWrapperTemplate
 
 internal class KSClassDeclarationProcessor(
     val logger: KSPLogger,
-    val buildableAnnotated: Set<String>
+    val annotatedClasses: AnnotatedClasses
 ) {
     fun processAccessorClasses(ksClassDeclaration: KSClassDeclaration): AccessorExtensionsTemplate {
         ksClassDeclaration.apply {
@@ -64,7 +64,8 @@ internal class KSClassDeclarationProcessor(
                     type = type,
                     hasDefaultValue = parameter.hasDefault,
                     nullable = type.nullability == Nullability.NULLABLE,
-                    buildable = (type.classFQName() in buildableAnnotated)
+                    buildable = (type.classFQName() in annotatedClasses.buildable),
+                    pathReflection = (type.classFQName() in annotatedClasses.pathReflection)
                 )
             }
     }

@@ -1,14 +1,17 @@
 package io.github.virelion.buildata.demo
 
 import io.github.virelion.buildata.Buildable
+import io.github.virelion.buildata.path.PathReflection
 
 @Buildable
+@PathReflection
 data class Root(
     val inner1: Inner1 = Inner1(),
     val nullableLeaf: LeafNode? = null
 )
 
 @Buildable
+@PathReflection
 data class Inner1(
     val inner2: Inner2 = Inner2(),
     val leafWithNullables: LeafWithNullables = LeafWithNullables(),
@@ -25,11 +28,13 @@ data class Inner1(
 )
 
 @Buildable
+@PathReflection
 data class Inner2(
     val leaf: LeafNode = LeafNode()
 )
 
 @Buildable
+@PathReflection
 data class LeafNode(
     val string: String = "",
     val boolean: Boolean = false,
@@ -46,6 +51,7 @@ data class LeafNode(
 )
 
 @Buildable
+@PathReflection
 data class LeafWithNullables(
     val string: String? = "",
     val boolean: Boolean? = false,

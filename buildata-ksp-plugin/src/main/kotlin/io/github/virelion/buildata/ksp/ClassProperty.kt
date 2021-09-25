@@ -10,7 +10,8 @@ class ClassProperty(
     val type: KSType,
     val hasDefaultValue: Boolean,
     val nullable: Boolean,
-    val buildable: Boolean
+    val buildable: Boolean,
+    val pathReflection: Boolean
 ) {
     val backingPropName = "${name}_Element"
 
