@@ -1,7 +1,6 @@
 package io.github.virelion.buildata.demo
 
 import io.github.virelion.buildata.path.MissingElementException
-import io.github.virelion.buildata.path.jsonPath
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -15,9 +14,9 @@ class ListPathCalculation {
             }
         }
 
-        with(root.valueWithPath { inner1.innerList[0].leaf.string }) {
-            assertEquals("", value)
-            assertEquals("$.inner1.innerList[0].leaf.string", jsonPath)
+        with(root.withPath().inner1.innerList[0].leaf.string) {
+            assertEquals("", value())
+            assertEquals("$.inner1.innerList[0].leaf.string",  path().jsonPath)
         }
     }
 
@@ -30,7 +29,7 @@ class ListPathCalculation {
         }
         var failed = false
         try {
-            root.valueWithPath { inner1.innerList[1].leaf.string }
+            root.withPath().inner1.innerList[1].leaf.string
         } catch (e: MissingElementException) {
             failed = true
             assertEquals("1", e.index)
@@ -48,9 +47,9 @@ class ListPathCalculation {
             }
         }
 
-        with(root.valueWithPath { inner1.listOfNullables[0].leaf.string }) {
-            assertEquals(null, value)
-            assertEquals("$.inner1.listOfNullables[0].leaf.string", jsonPath)
+        with(root.withPath().inner1.listOfNullables[0].leaf.string) {
+            assertEquals(null,  value())
+            assertEquals("$.inner1.listOfNullables[0].leaf.string", path().jsonPath)
         }
     }
 
@@ -62,9 +61,9 @@ class ListPathCalculation {
             }
         }
 
-        with(root.valueWithPath { inner1.nullableList[0].leaf.string }) {
-            assertEquals("", value)
-            assertEquals("$.inner1.nullableList[0].leaf.string", jsonPath)
+        with(root.withPath().inner1.nullableList[0].leaf.string) {
+            assertEquals("",  value())
+            assertEquals("$.inner1.nullableList[0].leaf.string",  path().jsonPath)
         }
     }
 
@@ -76,9 +75,9 @@ class ListPathCalculation {
             }
         }
 
-        with(root.valueWithPath { inner1.nullableListOfNullables[0].leaf.string }) {
-            assertEquals("", value)
-            assertEquals("$.inner1.nullableListOfNullables[0].leaf.string", jsonPath)
+        with(root.withPath().inner1.nullableListOfNullables[0].leaf.string) {
+            assertEquals("",  value())
+            assertEquals("$.inner1.nullableListOfNullables[0].leaf.string", path().jsonPath)
         }
     }
 }

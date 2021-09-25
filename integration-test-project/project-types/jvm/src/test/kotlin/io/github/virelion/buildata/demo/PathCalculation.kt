@@ -1,6 +1,5 @@
 package io.github.virelion.buildata.demo
 
-import io.github.virelion.buildata.path.valueWithPath
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -29,54 +28,54 @@ class PathCalculation {
             }
         }
 
-        with(root.path { inner1.inner2.leaf }) {
-            with(valueWithPath { string }) {
-                assertEquals("Test", value)
-                assertEquals("$.inner1.inner2.leaf.string", jsonPath)
+        with(root.withPath().inner1.inner2.leaf) {
+            with(string) {
+                assertEquals("Test", value())
+                assertEquals("$.inner1.inner2.leaf.string",  path().jsonPath)
             }
-            with(valueWithPath { boolean }) {
-                assertEquals(true, value)
-                assertEquals("$.inner1.inner2.leaf.boolean", jsonPath)
+            with(boolean ) {
+                assertEquals(true, value())
+                assertEquals("$.inner1.inner2.leaf.boolean",  path().jsonPath)
             }
-            with(valueWithPath { int }) {
-                assertEquals(1, value)
-                assertEquals("$.inner1.inner2.leaf.int", jsonPath)
+            with(int) {
+                assertEquals(1, value())
+                assertEquals("$.inner1.inner2.leaf.int",  path().jsonPath)
             }
-            with(valueWithPath { uInt }) {
-                assertEquals(2u, value)
-                assertEquals("$.inner1.inner2.leaf.uInt", jsonPath)
+            with(uInt) {
+                assertEquals(2u, value())
+                assertEquals("$.inner1.inner2.leaf.uInt",  path().jsonPath)
             }
-            with(valueWithPath { long }) {
-                assertEquals(3, value)
-                assertEquals("$.inner1.inner2.leaf.long", jsonPath)
+            with(long) {
+                assertEquals(3, value())
+                assertEquals("$.inner1.inner2.leaf.long",  path().jsonPath)
             }
-            with(valueWithPath { uLong }) {
-                assertEquals(4u, value)
-                assertEquals("$.inner1.inner2.leaf.uLong", jsonPath)
+            with(uLong) {
+                assertEquals(4u, value())
+                assertEquals("$.inner1.inner2.leaf.uLong",  path().jsonPath)
             }
-            with(valueWithPath { byte }) {
-                assertEquals(0x5, value)
-                assertEquals("$.inner1.inner2.leaf.byte", jsonPath)
+            with(byte) {
+                assertEquals(0x5, value())
+                assertEquals("$.inner1.inner2.leaf.byte",  path().jsonPath)
             }
-            with(valueWithPath { uByte }) {
-                assertEquals(0x6u, value)
-                assertEquals("$.inner1.inner2.leaf.uByte", jsonPath)
+            with(uByte) {
+                assertEquals(0x6u, value())
+                assertEquals("$.inner1.inner2.leaf.uByte",  path().jsonPath)
             }
-            with(valueWithPath { short }) {
-                assertEquals(7, value)
-                assertEquals("$.inner1.inner2.leaf.short", jsonPath)
+            with(short) {
+                assertEquals(7, value())
+                assertEquals("$.inner1.inner2.leaf.short",  path().jsonPath)
             }
-            with(valueWithPath { uShort }) {
-                assertEquals(8u, value)
-                assertEquals("$.inner1.inner2.leaf.uShort", jsonPath)
+            with(uShort) {
+                assertEquals(8u, value())
+                assertEquals("$.inner1.inner2.leaf.uShort",  path().jsonPath)
             }
-            with(valueWithPath { float }) {
-                assertEquals(9.0f, value)
-                assertEquals("$.inner1.inner2.leaf.float", jsonPath)
+            with(float) {
+                assertEquals(9.0f, value())
+                assertEquals("$.inner1.inner2.leaf.float",  path().jsonPath)
             }
-            with(valueWithPath { double }) {
-                assertEquals(10.0, value)
-                assertEquals("$.inner1.inner2.leaf.double", jsonPath)
+            with(double) {
+                assertEquals(10.0, value())
+                assertEquals("$.inner1.inner2.leaf.double",  path().jsonPath)
             }
         }
     }
@@ -102,54 +101,54 @@ class PathCalculation {
             }
         }
 
-        with(root.path { inner1.leafWithNullables }) {
-            with(valueWithPath { string }) {
-                assertEquals("Test", value)
-                assertEquals("$.inner1.leafWithNullables.string", jsonPath)
+        with(root.withPath().inner1.leafWithNullables) {
+            with(string) {
+                assertEquals("Test", value())
+                assertEquals("$.inner1.leafWithNullables.string",  path().jsonPath)
             }
-            with(valueWithPath { boolean }) {
-                assertEquals(true, value)
-                assertEquals("$.inner1.leafWithNullables.boolean", jsonPath)
+            with(boolean) {
+                assertEquals(true, value())
+                assertEquals("$.inner1.leafWithNullables.boolean",  path().jsonPath)
             }
-            with(valueWithPath { int }) {
-                assertEquals(1, value)
-                assertEquals("$.inner1.leafWithNullables.int", jsonPath)
+            with(int) {
+                assertEquals(1, value())
+                assertEquals("$.inner1.leafWithNullables.int",  path().jsonPath)
             }
-            with(valueWithPath { uInt }) {
-                assertEquals(2u, value)
-                assertEquals("$.inner1.leafWithNullables.uInt", jsonPath)
+            with(uInt) {
+                assertEquals(2u, value())
+                assertEquals("$.inner1.leafWithNullables.uInt",  path().jsonPath)
             }
-            with(valueWithPath { long }) {
-                assertEquals(3, value)
-                assertEquals("$.inner1.leafWithNullables.long", jsonPath)
+            with(long) {
+                assertEquals(3, value())
+                assertEquals("$.inner1.leafWithNullables.long",  path().jsonPath)
             }
-            with(valueWithPath { uLong }) {
-                assertEquals(4u, value)
-                assertEquals("$.inner1.leafWithNullables.uLong", jsonPath)
+            with(uLong) {
+                assertEquals(4u, value())
+                assertEquals("$.inner1.leafWithNullables.uLong",  path().jsonPath)
             }
-            with(valueWithPath { byte }) {
-                assertEquals(0x5, value)
-                assertEquals("$.inner1.leafWithNullables.byte", jsonPath)
+            with(byte) {
+                assertEquals(0x5, value())
+                assertEquals("$.inner1.leafWithNullables.byte",  path().jsonPath)
             }
-            with(valueWithPath { uByte }) {
-                assertEquals(0x6u, value)
-                assertEquals("$.inner1.leafWithNullables.uByte", jsonPath)
+            with(uByte) {
+                assertEquals(0x6u, value())
+                assertEquals("$.inner1.leafWithNullables.uByte",  path().jsonPath)
             }
-            with(valueWithPath { short }) {
-                assertEquals(7, value)
-                assertEquals("$.inner1.leafWithNullables.short", jsonPath)
+            with(short) {
+                assertEquals(7, value())
+                assertEquals("$.inner1.leafWithNullables.short",  path().jsonPath)
             }
-            with(valueWithPath { uShort }) {
-                assertEquals(8u, value)
-                assertEquals("$.inner1.leafWithNullables.uShort", jsonPath)
+            with(uShort) {
+                assertEquals(8u, value())
+                assertEquals("$.inner1.leafWithNullables.uShort",  path().jsonPath)
             }
-            with(valueWithPath { float }) {
-                assertEquals(9.0f, value)
-                assertEquals("$.inner1.leafWithNullables.float", jsonPath)
+            with(float) {
+                assertEquals(9.0f, value())
+                assertEquals("$.inner1.leafWithNullables.float",  path().jsonPath)
             }
-            with(valueWithPath { double }) {
-                assertEquals(10.0, value)
-                assertEquals("$.inner1.leafWithNullables.double", jsonPath)
+            with(double) {
+                assertEquals(10.0, value())
+                assertEquals("$.inner1.leafWithNullables.double",  path().jsonPath)
             }
         }
     }
@@ -158,54 +157,54 @@ class PathCalculation {
     fun testScalarsFromNullNode() {
         val root = Root()
 
-        with(root.path { nullableLeaf }) {
-            with(valueWithPath { string }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.string", jsonPath)
+        with(root.withPath().nullableLeaf) {
+            with(string) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.string",  path().jsonPath)
             }
-            with(valueWithPath { boolean }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.boolean", jsonPath)
+            with(boolean) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.boolean",  path().jsonPath)
             }
-            with(valueWithPath { int }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.int", jsonPath)
+            with(int) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.int",  path().jsonPath)
             }
-            with(valueWithPath { uInt }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.uInt", jsonPath)
+            with(uInt) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.uInt",  path().jsonPath)
             }
-            with(valueWithPath { long }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.long", jsonPath)
+            with(long) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.long",  path().jsonPath)
             }
-            with(valueWithPath { uLong }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.uLong", jsonPath)
+            with(uLong) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.uLong",  path().jsonPath)
             }
-            with(valueWithPath { byte }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.byte", jsonPath)
+            with(byte) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.byte",  path().jsonPath)
             }
-            with(valueWithPath { uByte }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.uByte", jsonPath)
+            with(uByte) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.uByte",  path().jsonPath)
             }
-            with(valueWithPath { short }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.short", jsonPath)
+            with(short) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.short",  path().jsonPath)
             }
-            with(valueWithPath { uShort }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.uShort", jsonPath)
+            with(uShort) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.uShort",  path().jsonPath)
             }
-            with(valueWithPath { float }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.float", jsonPath)
+            with(float) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.float",  path().jsonPath)
             }
-            with(valueWithPath { double }) {
-                assertNull(value)
-                assertEquals("$.nullableLeaf.double", jsonPath)
+            with(double) {
+                assertNull(value())
+                assertEquals("$.nullableLeaf.double",  path().jsonPath)
             }
         }
     }
@@ -213,9 +212,9 @@ class PathCalculation {
     @Test
     fun testRelativePath() {
         val leaf = LeafNode(string = "TestString")
-        with(leaf.valueWithPath { string }) {
-            assertEquals("TestString", value)
-            assertEquals("$.string", jsonPath)
+        with(leaf.withPath().string) {
+            assertEquals("TestString", value())
+            assertEquals("$.string",  path().jsonPath)
         }
     }
 }

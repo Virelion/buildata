@@ -14,8 +14,14 @@ class PathPropertyWrapperTemplate(
     val originalName: String,
     val properties: List<ClassProperty>
 ) : GeneratedFileTemplate {
-    override val name: String = "${originalName}_PathPropertyWrapper"
-    private val nullableWrapperName: String = "${originalName}_NullablePathPropertyWrapper"
+    companion object {
+        val imports: List<String> = listOf(
+            "io.github.virelion.buildata.path.*",
+        ).sorted()
+    }
+
+    override val name: String = "${originalName}_PathReflectionPropertyWrapper"
+    private val nullableWrapperName: String = "${originalName}_NullablePathReflectionPropertyWrapper"
 
     override fun generateCode(codeBuilder: CodeBuilder): String {
         return codeBuilder.build {
@@ -25,16 +31,16 @@ class PathPropertyWrapperTemplate(
                 appendln("import $it // ktlint-disable")
             }
             emptyLine()
-            createPathPropertyWrapperClass(nullable = false)
+            createPathReflectionPropertyWrapperClass(nullable = false)
             emptyLine()
-            createPathPropertyWrapperClass(nullable = true)
+            createPathReflectionPropertyWrapperClass(nullable = true)
             emptyLine()
             createExtensionPathMethod()
             emptyLine()
         }
     }
 
-    private fun CodeBuilder.createPathPropertyWrapperClass(nullable: Boolean) {
+    private fun CodeBuilder.createPathReflectionPropertyWrapperClass(nullable: Boolean) {
         val nId = nullableIdentifier(nullable)
         val className = if (nullable) {
             nullableWrapperName
@@ -46,13 +52,22 @@ class PathPropertyWrapperTemplate(
                 TODO
             """.trimIndent()
         )
-        indentBlock("class $className(override val item: $originalName$nId, override val pathRecorder: PathRecorder) : PathPropertyWrapper<$originalName${nId}>") {
+        indentBlock(
+            "class $className",
+            enclosingCharacter = "(",
+            sufix = " : PathReflectionPropertyWrapper<$originalName${nId}> {"
+        ) {
+            appendln("private val __value: $originalName$nId,")
+            appendln("private val __path: RecordedPath")
+        }
+        indent {
             properties.forEach {
                 createPropertyEntry(it, nullable || it.type.nullability == Nullability.NULLABLE)
             }
             emptyLine()
-            createCloneMethod(className)
+            createOverrides()
         }
+        appendln("}")
     }
 
 
@@ -61,8 +76,8 @@ class PathPropertyWrapperTemplate(
             createCollectionPropertyEntry(classProperty, nullable, CollectionType.LIST)
             return
         }
-        if(classProperty.type.isMapWithStringKey()) {
-            createCollectionPropertyEntry(classProperty, nullable, CollectionType.STRING_KEY_MAP)
+        if (classProperty.type.isMapWithStringKey()) {
+            createCollectionPropertyEntry(classProperty, nullable, CollectionType.STRING)
             return
         }
 
@@ -75,22 +90,22 @@ class PathPropertyWrapperTemplate(
             wrapperName
         }
 
-        indentBlock("val ${classProperty.name}: $wrapperType by PathRecorderProperty(pathRecorder)") {
+        indentBlock("val ${classProperty.name}: $wrapperType by lazy") {
             indentBlock(wrapperName, enclosingCharacter = "(") {
-                appendln("item$nId.${classProperty.name},")
-                appendln("pathRecorder")
+                appendln("value()$nId.${classProperty.name},")
+                appendln("""path() + StringNamePathIdentifier("${classProperty.name}")""")
             }
         }
     }
 
     private fun getWrapperName(type: KSType, nullable: Boolean): String {
         return if (type.isScalar()) {
-            "ScalarPathPropertyWrapper"
+            "ScalarPathReflectionPropertyWrapper"
         } else {
             if (nullable) {
-                type.className() + "_NullablePathPropertyWrapper"
+                type.className() + "_NullablePathReflectionPropertyWrapper"
             } else {
-                type.className() + "_PathPropertyWrapper"
+                type.className() + "_PathReflectionPropertyWrapper"
             }
         }
     }
@@ -103,28 +118,71 @@ class PathPropertyWrapperTemplate(
         }
     }
 
-    private fun CodeBuilder.createCollectionPropertyEntry(classProperty: ClassProperty, nullable: Boolean, collectionType: CollectionType) {
-        val defaultInitializer = when(collectionType) {
+    private fun CodeBuilder.createCollectionPropertyEntry(
+        classProperty: ClassProperty,
+        nullable: Boolean,
+        collectionType: CollectionType
+    ) {
+        val defaultInitializer = when (collectionType) {
             CollectionType.LIST -> "listOf()"
-            CollectionType.STRING_KEY_MAP -> "mapOf()"
+            CollectionType.STRING -> "mapOf()"
         }
 
-        val recorderClassImpl = when(collectionType) {
-            CollectionType.LIST -> "ListPathRecorder"
-            CollectionType.STRING_KEY_MAP -> "MapPathRecorder"
+        val recorderClassImpl = when (collectionType) {
+            CollectionType.LIST -> "ListPathReflectionRecorder"
+            CollectionType.STRING -> "MapPathReflectionRecorder"
         }
 
-        val itemType = requireNotNull(classProperty.type.innerArguments.last().type?.resolve()) { "Unable to resolve type of list ${classProperty.name} in $name"}
+        val indexClassIdentifierImpl = when (collectionType) {
+            CollectionType.LIST -> "IntIndexPathIdentifier"
+            CollectionType.STRING -> "StringIndexPathIdentifier"
+        }
+
+        val itemType =
+            requireNotNull(classProperty.type.innerArguments.last().type?.resolve()) { "Unable to resolve type of list ${classProperty.name} in $name" }
         val itemNullable = itemType.nullability != Nullability.NOT_NULL || nullable
 
         val itemNId = nullableIdentifier(itemNullable)
-        val forceNotNull = if(!itemNullable) { "!!" } else { "" }
+        val forceNotNull = if (!itemNullable) {
+            "!!"
+        } else {
+            ""
+        }
+
         val wrapperType = getWrapperType(itemType, itemNullable)
-        indentBlock("val ${classProperty.name}: $recorderClassImpl<${itemType.typeFQName()}$itemNId, $wrapperType> by PathRecorderProperty(pathRecorder)") {
-            indentBlock("$recorderClassImpl(item${itemNId}.${classProperty.name}${if(itemNullable) { " ?: $defaultInitializer"} else {""} }, pathRecorder)") {
-                appendln("recorder, it -> ${getWrapperName(itemType, itemNullable)}(it$forceNotNull, recorder)")
+        indentBlock("val ${classProperty.name}: $recorderClassImpl<${itemType.typeFQName()}$itemNId, $wrapperType> by lazy") {
+            indentBlock(
+                """$recorderClassImpl(value()${itemNId}.${classProperty.name}${
+                    if (itemNullable) {
+                        " ?: $defaultInitializer"
+                    } else {
+                        ""
+                    }
+                }, path() + StringNamePathIdentifier("${classProperty.name}"))"""
+            ) {
+                appendln("path, index, item ->")
+                indentBlock(getWrapperName(itemType, itemNullable), enclosingCharacter = "(") {
+                    appendln("item$forceNotNull,")
+                    appendln("""path + $indexClassIdentifierImpl(index)""")
+                }
             }
         }
+    }
+
+    private fun CodeBuilder.createOverrides() {
+        appendDocumentation(
+            """
+                TODO
+            """.trimIndent()
+        )
+        appendln("override fun value() = __value")
+        emptyLine()
+        appendDocumentation(
+            """
+                TODO
+            """.trimIndent()
+        )
+        appendln("override fun path() = __path")
     }
 
     private fun CodeBuilder.createExtensionPathMethod() {
@@ -133,36 +191,6 @@ class PathPropertyWrapperTemplate(
                 TODO
             """.trimIndent()
         )
-        indentBlock("fun <T, Wrapper : PathPropertyWrapper<T>> $originalName.valueWithPath", enclosingCharacter = "(") {
-            appendln("recording: $name.() -> Wrapper")
-        }
-        append("= $name(this, PathRecorder()).valueWithPath(recording)")
-        emptyLine()
-        appendDocumentation(
-            """
-                TODO
-            """.trimIndent()
-        )
-        indentBlock("fun <T, Wrapper : PathPropertyWrapper<T>> $originalName.path", enclosingCharacter = "(") {
-            appendln("recording: $name.() -> Wrapper")
-        }
-        append("= $name(this, PathRecorder()).path(recording)")
-    }
-
-    private fun CodeBuilder.createCloneMethod(className: String) {
-        appendDocumentation(
-            """
-                TODO
-            """.trimIndent()
-        )
-        indentBlock("override fun clone(): $className") {
-            appendln("return $className(item, pathRecorder.clone())")
-        }
-    }
-
-    companion object {
-        val imports: List<String> = listOf(
-            "io.github.virelion.buildata.path.*",
-        ).sorted()
+        appendln("fun $originalName.withPath() = $name(this, RecordedPath())")
     }
 }

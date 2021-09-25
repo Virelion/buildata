@@ -1,7 +1,6 @@
 package io.github.virelion.buildata.demo
 
 import io.github.virelion.buildata.path.MissingElementException
-import io.github.virelion.buildata.path.jsonPath
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -15,9 +14,9 @@ class MapPathCalculation {
             }
         }
 
-        with(root.valueWithPath { inner1.innerMap["key"].leaf.string }) {
-            assertEquals("", value)
-            assertEquals("$.inner1.innerMap['key'].leaf.string", jsonPath)
+        with(root.withPath().inner1.innerMap["key"].leaf.string) {
+            assertEquals("", value())
+            assertEquals("$.inner1.innerMap['key'].leaf.string", path().jsonPath)
         }
     }
 
@@ -30,7 +29,7 @@ class MapPathCalculation {
         }
         var failed = false
         try {
-            root.valueWithPath { inner1.innerMap["notAKey"].leaf.string }
+            root.withPath().inner1.innerMap["notAKey"].leaf.string
         } catch (e: MissingElementException) {
             failed = true
             assertEquals("notAKey", e.index)
@@ -48,9 +47,9 @@ class MapPathCalculation {
             }
         }
 
-        with(root.valueWithPath { inner1.mapOfNullables["null"].leaf.string }) {
-            assertEquals(null, value)
-            assertEquals("$.inner1.mapOfNullables['null'].leaf.string", jsonPath)
+        with(root.withPath().inner1.mapOfNullables["null"].leaf.string) {
+            assertEquals(null, value())
+            assertEquals("$.inner1.mapOfNullables['null'].leaf.string",  path().jsonPath)
         }
     }
 
@@ -62,9 +61,9 @@ class MapPathCalculation {
             }
         }
 
-        with(root.valueWithPath { inner1.nullableMap["key"].leaf.string }) {
-            assertEquals("", value)
-            assertEquals("$.inner1.nullableMap['key'].leaf.string", jsonPath)
+        with(root.withPath().inner1.nullableMap["key"].leaf.string) {
+            assertEquals("",  value())
+            assertEquals("$.inner1.nullableMap['key'].leaf.string",  path().jsonPath)
         }
     }
 
@@ -76,9 +75,9 @@ class MapPathCalculation {
             }
         }
 
-        with(root.valueWithPath { inner1.nullableMapOfNullables["key"].leaf.string }) {
-            assertEquals("", value)
-            assertEquals("$.inner1.nullableMapOfNullables['key'].leaf.string", jsonPath)
+        with(root.withPath().inner1.nullableMapOfNullables["key"].leaf.string) {
+            assertEquals("",  value())
+            assertEquals("$.inner1.nullableMapOfNullables['key'].leaf.string",  path().jsonPath)
         }
     }
 }

@@ -44,20 +44,21 @@ class CodeBuilder(private val indentationDelta: String = "    ") {
     }
 
     fun indent(block: CodeBuilder.() -> Unit) {
-        indentBlock(openingLine = "", enclosingCharacter = "", separator = "", block)
+        indentBlock(openingLine = "", enclosingCharacter = "", separator = "", sufix = "", block)
     }
 
     fun indentBlock(
         openingLine: String,
         enclosingCharacter: String = "{",
         separator: String = " ",
+        sufix: String = "",
         block: CodeBuilder.() -> Unit
     ) {
         appendln(openingLine.trim() + separator + enclosingCharacter)
         indent++
         this.block()
         indent--
-        appendln(REVERSE_ENCLOSING_CHARACTER[enclosingCharacter])
+        appendln(REVERSE_ENCLOSING_CHARACTER[enclosingCharacter] + sufix)
     }
 
     fun build(block: CodeBuilder.() -> Unit): String {
@@ -75,7 +76,8 @@ class CodeBuilder(private val indentationDelta: String = "    ") {
                 "{" to "}",
                 "[" to "]",
                 "(" to ")",
-                "<" to ">"
+                "<" to ">",
+                "" to ""
             )
     }
 }
