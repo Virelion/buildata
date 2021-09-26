@@ -1,9 +1,9 @@
 package io.github.virelion.buildata.path
 
-data class ScalarPathReflectionPropertyWrapper<T>(
+data class ScalarPathReflectionWrapper<T>(
     val __value: T,
     val __path: RecordedPath
-) : PathReflectionPropertyWrapper<T> {
+) : PathReflectionWrapper<T> {
     override fun value() = __value
     override fun path() = __path
 }

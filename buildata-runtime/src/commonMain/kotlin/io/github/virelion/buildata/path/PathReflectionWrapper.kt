@@ -1,6 +1,6 @@
 package io.github.virelion.buildata.path
 
-interface PathReflectionPropertyWrapper<out T> {
+interface PathReflectionWrapper<out T> {
     fun value(): T
     fun path(): RecordedPath
 }

@@ -1,9 +1,8 @@
 package io.github.virelion.buildata.demo
 
-import io.github.virelion.buildata.path.MissingElementException
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.assertNull
 
 class MapPathCalculation {
     @Test
@@ -27,16 +26,10 @@ class MapPathCalculation {
                 innerMap = mapOf("key" to Inner2())
             }
         }
-        var failed = false
-        try {
-            root.withPath().inner1.innerMap["notAKey"].leaf.string
-        } catch (e: MissingElementException) {
-            failed = true
-            assertEquals("notAKey", e.index)
-            assertEquals("$.inner1.innerMap", e.path.jsonPath)
-            assertEquals("There is no item on index 'notAKey' of '$.inner1.innerMap'", e.message)
+        with(root.withPath().inner1.innerMap["missingKey"].leaf.string) {
+            assertNull(value())
+            assertEquals("$.inner1.innerMap['missingKey'].leaf.string", path().jsonPath)
         }
-        assertTrue(failed)
     }
 
     @Test

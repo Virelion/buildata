@@ -4,6 +4,7 @@ import io.github.virelion.buildata.path.*
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertSame
 
 data class Root(
@@ -12,7 +13,7 @@ data class Root(
     val nullable: String? = null
 )
 
-fun Root.withPath() = Root_PathReflectionPropertyWrapper(this, RecordedPath())
+fun Root.withPath() = Root_PathReflectionWrapper(this, RecordedPath())
 // generate nullable on KClass
 
 data class Inner1(
@@ -29,25 +30,25 @@ data class Inner2(
     val value: String
 )
 
-class Root_PathReflectionPropertyWrapper(private val __item: Root, private val __path: RecordedPath) :
-    PathReflectionPropertyWrapper<Root> {
+class Root_PathReflectionWrapper(private val __item: Root, private val __path: RecordedPath) :
+    PathReflectionWrapper<Root> {
 
-    val value: ScalarPathReflectionPropertyWrapper<String> by lazy {
-        ScalarPathReflectionPropertyWrapper(
+    val value: ScalarPathReflectionWrapper<String> by lazy {
+        ScalarPathReflectionWrapper(
             value().value,
             path() + StringNamePathIdentifier("value")
         )
     }
 
-    val nullable: ScalarPathReflectionPropertyWrapper<String?> by lazy {
-        ScalarPathReflectionPropertyWrapper(
+    val nullable: ScalarPathReflectionWrapper<String?> by lazy {
+        ScalarPathReflectionWrapper(
             value().value,
             path() + StringNamePathIdentifier("nullable")
         )
     }
 
-    val inner1: Inner1_PathReflectionPropertyWrapper by lazy {
-        Inner1_PathReflectionPropertyWrapper(
+    val inner1: Inner1_PathReflectionWrapper by lazy {
+        Inner1_PathReflectionWrapper(
             value().inner1,
             path() + StringNamePathIdentifier("inner1")
         )
@@ -57,62 +58,59 @@ class Root_PathReflectionPropertyWrapper(private val __item: Root, private val _
     override fun path() = __path
 }
 
-class Inner1_PathReflectionPropertyWrapper(private val __item: Inner1, private val __path: RecordedPath) :
-    PathReflectionPropertyWrapper<Inner1> {
-    val value: ScalarPathReflectionPropertyWrapper<String> by lazy {
-        ScalarPathReflectionPropertyWrapper(
+class Inner1_PathReflectionWrapper(private val __item: Inner1, private val __path: RecordedPath) :
+    PathReflectionWrapper<Inner1> {
+    val value: ScalarPathReflectionWrapper<String> by lazy {
+        ScalarPathReflectionWrapper(
             value().value,
             path() + StringNamePathIdentifier("value")
         )
     }
-    val inner2: Inner2_PathReflectionPropertyWrapper by lazy {
-        Inner2_PathReflectionPropertyWrapper(
+    val inner2: Inner2_PathReflectionWrapper by lazy {
+        Inner2_PathReflectionWrapper(
             value().inner2,
             path() + StringNamePathIdentifier("inner2")
         )
     }
 
-    val innerList: ListPathReflectionRecorder<Inner2, Inner2_PathReflectionPropertyWrapper> by lazy {
-        ListPathReflectionRecorder(value().innerList, path()) { path, index, item ->
-            Inner2_PathReflectionPropertyWrapper(
-                item!!,
-                path + StringNamePathIdentifier("innerList") + IntIndexPathIdentifier(index)
-            )
-        }
+    val innerList: List<Inner2_NullablePathReflectionWrapper> by lazy {
+        PathReflectionList(
+            value().innerList,
+            path() + StringNamePathIdentifier("innerList"),
+            ::Inner2_NullablePathReflectionWrapper
+        )
     }
 
-    val innerMap: MapPathReflectionRecorder<Inner2, Inner2_PathReflectionPropertyWrapper> by lazy {
-        MapPathReflectionRecorder(value().innerMap, path()) { path, index, item ->
-            Inner2_PathReflectionPropertyWrapper(
-                item!!,
-                path + RecordedPath(StringNamePathIdentifier("innerMap"), StringIndexPathIdentifier(index))
-            )
-        }
+    val innerMap: PathReflectionMap<Inner2, Inner2_NullablePathReflectionWrapper> by lazy {
+        PathReflectionMap(
+            value().innerMap,
+            path() + StringNamePathIdentifier("innerMap"),
+            ::Inner2_NullablePathReflectionWrapper
+        )
     }
-    val nullable: ScalarPathReflectionPropertyWrapper<String?> by lazy {
-        ScalarPathReflectionPropertyWrapper(value().nullable, path())
+    val nullable: ScalarPathReflectionWrapper<String?> by lazy {
+        ScalarPathReflectionWrapper(value().nullable, path())
     }
-    val nullableInner2: Inner2_NullablePathReflectionPropertyWrapper by lazy {
-        Inner2_NullablePathReflectionPropertyWrapper(value().nullableInner2, path())
+    val nullableInner2: Inner2_NullablePathReflectionWrapper by lazy {
+        Inner2_NullablePathReflectionWrapper(value().nullableInner2, path())
     }
-    val listOfNullables: ListPathReflectionRecorder<Inner2?, Inner2_NullablePathReflectionPropertyWrapper> by lazy {
-        ListPathReflectionRecorder(value().listOfNullables, path() + StringNamePathIdentifier("listOfNullables")) { path, index, item ->
-            Inner2_NullablePathReflectionPropertyWrapper(
-                item!!,
-                path + IntIndexPathIdentifier(index)
-            )
-        }
+    val listOfNullables: PathReflectionList<Inner2?, Inner2_NullablePathReflectionWrapper> by lazy {
+        PathReflectionList(
+            value().listOfNullables,
+            path() + StringNamePathIdentifier("listOfNullables"),
+            ::Inner2_NullablePathReflectionWrapper
+        )
     }
 
     override fun value() = __item
     override fun path() = __path
 }
 
-class Inner2_PathReflectionPropertyWrapper(private val __item: Inner2, private val __path: RecordedPath) :
-    PathReflectionPropertyWrapper<Inner2> {
+class Inner2_PathReflectionWrapper(private val __item: Inner2, private val __path: RecordedPath) :
+    PathReflectionWrapper<Inner2> {
 
-    val value: ScalarPathReflectionPropertyWrapper<String> by lazy {
-        ScalarPathReflectionPropertyWrapper(
+    val value: ScalarPathReflectionWrapper<String> by lazy {
+        ScalarPathReflectionWrapper(
             value().value,
             path() + StringNamePathIdentifier("value")
         )
@@ -122,14 +120,14 @@ class Inner2_PathReflectionPropertyWrapper(private val __item: Inner2, private v
     override fun path(): RecordedPath = __path
 }
 
-class Inner2_NullablePathReflectionPropertyWrapper(
+class Inner2_NullablePathReflectionWrapper(
     private val __value: Inner2?,
     private val __path: RecordedPath
-) : PathReflectionPropertyWrapper<Inner2?> {
-    val value: ScalarPathReflectionPropertyWrapper<String?> by lazy {
-        ScalarPathReflectionPropertyWrapper(
+) : PathReflectionWrapper<Inner2?> {
+    val value: ScalarPathReflectionWrapper<String?> by lazy {
+        ScalarPathReflectionWrapper(
             value()?.value,
-            path()
+            path() + StringNamePathIdentifier("value")
         )
     }
 
@@ -196,9 +194,9 @@ class Playground {
     }
 
     @Test
-    fun testListConversion() {
+    fun testList() {
         val listWrapper =root.withPath().inner1.innerList
-        with(listWrapper.toList()) {
+        with(listWrapper) {
             with(this[0].value) {
                 assertEquals("$.inner1.innerList[0].value", this.path().jsonPath)
                 assertSame(root.inner1.innerList[0].value, value())
@@ -207,13 +205,16 @@ class Playground {
                 assertEquals("$.inner1.innerList[1].value", this.path().jsonPath)
                 assertSame(root.inner1.innerList[1].value, value())
             }
+            with(this[100000].value) {
+                assertEquals("$.inner1.innerList[100000].value", this.path().jsonPath)
+                assertNull(value())
+            }
         }
     }
 
     @Test
     fun testMapConversion() {
-        val listWrapper = root.withPath().inner1.innerMap
-        with(listWrapper.toMap()) {
+        with(root.withPath().inner1.innerMap) {
             with(assertNotNull(this["key"]).value) {
                 assertEquals("$.inner1.innerMap['key'].value", this.path().jsonPath)
                 assertSame(root.inner1.innerMap["key"]!!.value, value())
@@ -221,6 +222,10 @@ class Playground {
             with(assertNotNull(this["key2"]).value) {
                 assertEquals("$.inner1.innerMap['key2'].value", this.path().jsonPath)
                 assertSame(root.inner1.innerMap["key2"]!!.value, value())
+            }
+            with(assertNotNull(this["nothing"]).value) {
+                assertEquals("$.inner1.innerMap['nothing'].value", this.path().jsonPath)
+                assertNull(value())
             }
         }
     }

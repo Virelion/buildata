@@ -20,8 +20,8 @@ class PathPropertyWrapperTemplate(
         ).sorted()
     }
 
-    override val name: String = "${originalName}_PathReflectionPropertyWrapper"
-    private val nullableWrapperName: String = "${originalName}_NullablePathReflectionPropertyWrapper"
+    override val name: String = "${originalName}_PathReflectionWrapper"
+    private val nullableWrapperName: String = "${originalName}_NullablePathReflectionWrapper"
 
     override fun generateCode(codeBuilder: CodeBuilder): String {
         return codeBuilder.build {
@@ -31,16 +31,16 @@ class PathPropertyWrapperTemplate(
                 appendln("import $it // ktlint-disable")
             }
             emptyLine()
-            createPathReflectionPropertyWrapperClass(nullable = false)
+            createPathReflectionWrapperClass(nullable = false)
             emptyLine()
-            createPathReflectionPropertyWrapperClass(nullable = true)
+            createPathReflectionWrapperClass(nullable = true)
             emptyLine()
             createExtensionPathMethod()
             emptyLine()
         }
     }
 
-    private fun CodeBuilder.createPathReflectionPropertyWrapperClass(nullable: Boolean) {
+    private fun CodeBuilder.createPathReflectionWrapperClass(nullable: Boolean) {
         val nId = nullableIdentifier(nullable)
         val className = if (nullable) {
             nullableWrapperName
@@ -55,7 +55,7 @@ class PathPropertyWrapperTemplate(
         indentBlock(
             "class $className",
             enclosingCharacter = "(",
-            sufix = " : PathReflectionPropertyWrapper<$originalName${nId}> {"
+            sufix = " : PathReflectionWrapper<$originalName${nId}> {"
         ) {
             appendln("private val __value: $originalName$nId,")
             appendln("private val __path: RecordedPath")
@@ -100,12 +100,12 @@ class PathPropertyWrapperTemplate(
 
     private fun getWrapperName(type: KSType, nullable: Boolean): String {
         return if (type.isScalar()) {
-            "ScalarPathReflectionPropertyWrapper"
+            "ScalarPathReflectionWrapper"
         } else {
             if (nullable) {
-                type.className() + "_NullablePathReflectionPropertyWrapper"
+                type.className() + "_NullablePathReflectionWrapper"
             } else {
-                type.className() + "_PathReflectionPropertyWrapper"
+                type.className() + "_PathReflectionWrapper"
             }
         }
     }
@@ -118,6 +118,22 @@ class PathPropertyWrapperTemplate(
         }
     }
 
+//    val innerList: List<Inner2_NullablePathReflectionWrapper> by lazy {
+//        pathReflectionList(
+//            value().innerList,
+//            path() + StringNamePathIdentifier("innerList"),
+//            ::Inner2_NullablePathReflectionWrapper
+//        )
+//    }
+//
+//    val innerMap: MapPathReflectionRecorder<Inner2, Inner2_NullablePathReflectionWrapper> by lazy {
+//        pathReflectionMap(
+//            value().innerMap,
+//            path() + StringNamePathIdentifier("innerMap"),
+//            ::Inner2_NullablePathReflectionWrapper
+//        )
+//    }
+
     private fun CodeBuilder.createCollectionPropertyEntry(
         classProperty: ClassProperty,
         nullable: Boolean,
@@ -129,42 +145,26 @@ class PathPropertyWrapperTemplate(
         }
 
         val recorderClassImpl = when (collectionType) {
-            CollectionType.LIST -> "ListPathReflectionRecorder"
-            CollectionType.STRING -> "MapPathReflectionRecorder"
-        }
-
-        val indexClassIdentifierImpl = when (collectionType) {
-            CollectionType.LIST -> "IntIndexPathIdentifier"
-            CollectionType.STRING -> "StringIndexPathIdentifier"
+            CollectionType.LIST -> "PathReflectionList"
+            CollectionType.STRING -> "PathReflectionMap"
         }
 
         val itemType =
             requireNotNull(classProperty.type.innerArguments.last().type?.resolve()) { "Unable to resolve type of list ${classProperty.name} in $name" }
-        val itemNullable = itemType.nullability != Nullability.NOT_NULL || nullable
 
-        val itemNId = nullableIdentifier(itemNullable)
-        val forceNotNull = if (!itemNullable) {
-            "!!"
+        val itemNId = nullableIdentifier(nullable)
+        val defaultInitialization = if(nullable) {
+            " ?: $defaultInitializer"
         } else {
             ""
         }
 
-        val wrapperType = getWrapperType(itemType, itemNullable)
-        indentBlock("val ${classProperty.name}: $recorderClassImpl<${itemType.typeFQName()}$itemNId, $wrapperType> by lazy") {
-            indentBlock(
-                """$recorderClassImpl(value()${itemNId}.${classProperty.name}${
-                    if (itemNullable) {
-                        " ?: $defaultInitializer"
-                    } else {
-                        ""
-                    }
-                }, path() + StringNamePathIdentifier("${classProperty.name}"))"""
-            ) {
-                appendln("path, index, item ->")
-                indentBlock(getWrapperName(itemType, itemNullable), enclosingCharacter = "(") {
-                    appendln("item$forceNotNull,")
-                    appendln("""path + $indexClassIdentifierImpl(index)""")
-                }
+        val wrapperType = getWrapperType(itemType, true)
+        indentBlock("val ${classProperty.name}: $recorderClassImpl<${itemType.typeFQName()}, $wrapperType> by lazy") {
+            indentBlock(recorderClassImpl, enclosingCharacter = "(") {
+                appendln("value()${itemNId}.${classProperty.name}$defaultInitialization,")
+                appendln("""path() + StringNamePathIdentifier("${classProperty.name}"),""")
+                appendln("::$wrapperType")
             }
         }
     }

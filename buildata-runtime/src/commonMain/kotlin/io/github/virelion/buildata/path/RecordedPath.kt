@@ -4,14 +4,8 @@ import kotlin.jvm.JvmInline
 
 @JvmInline
 value class RecordedPath(private val item: List<PathIdentifier> = listOf()) {
-    constructor(vararg identifiers: PathIdentifier) : this(identifiers.toList())
-
     operator fun plus(identifier: PathIdentifier): RecordedPath {
         return RecordedPath(item + identifier)
-    }
-
-    operator fun plus(path: RecordedPath): RecordedPath {
-        return RecordedPath(item + path.item)
     }
 
     val jsonPath : String get() {

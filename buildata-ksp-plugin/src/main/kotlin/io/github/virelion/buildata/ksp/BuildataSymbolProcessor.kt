@@ -51,7 +51,7 @@ class BuildataSymbolProcessor(
         }
 
         // Stream Dynamically accessible code-generated classes
-        val dynamicAccessorAnnotated = resolver
+        resolver
             .getSymbolsWithAnnotation(DYNAMICALLY_ACCESSIBLE_FQNAME)
             .apply {
                 filterIsInstance<KSClassDeclaration>()
@@ -61,6 +61,6 @@ class BuildataSymbolProcessor(
                     .forEach(streamer::consume)
             }
 
-        return buildableAnnotated.toList() + dynamicAccessorAnnotated.toList()
+        return listOf()
     }
 }

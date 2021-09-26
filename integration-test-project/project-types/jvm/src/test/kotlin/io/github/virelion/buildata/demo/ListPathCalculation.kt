@@ -1,9 +1,8 @@
 package io.github.virelion.buildata.demo
 
-import io.github.virelion.buildata.path.MissingElementException
 import org.junit.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.test.assertNull
 
 class ListPathCalculation {
     @Test
@@ -27,16 +26,10 @@ class ListPathCalculation {
                 innerList = listOf(Inner2())
             }
         }
-        var failed = false
-        try {
-            root.withPath().inner1.innerList[1].leaf.string
-        } catch (e: MissingElementException) {
-            failed = true
-            assertEquals("1", e.index)
-            assertEquals("$.inner1.innerList", e.path.jsonPath)
-            assertEquals("There is no item on index '1' of '$.inner1.innerList'", e.message)
+        with(root.withPath().inner1.innerList[1].leaf.string) {
+            assertNull(value())
+            assertEquals("$.inner1.innerList[1].leaf.string",  path().jsonPath)
         }
-        assertTrue(failed)
     }
 
     @Test
