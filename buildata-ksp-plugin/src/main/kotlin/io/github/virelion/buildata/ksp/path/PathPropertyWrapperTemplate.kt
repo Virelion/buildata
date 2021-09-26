@@ -3,8 +3,10 @@ package io.github.virelion.buildata.ksp.path
 import com.google.devtools.ksp.innerArguments
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.Nullability
+import io.github.virelion.buildata.ksp.BuildataCodegenException
 import io.github.virelion.buildata.ksp.ClassProperty
 import io.github.virelion.buildata.ksp.GeneratedFileTemplate
+import io.github.virelion.buildata.ksp.extensions.classFQName
 import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.typeFQName
 import io.github.virelion.buildata.ksp.utils.*
@@ -90,13 +92,20 @@ class PathPropertyWrapperTemplate(
         val wrapperType = if (classProperty.type.isScalar()) {
             wrapperName + "<${classProperty.type.typeFQName()}$nId>"
         } else {
+            if(!classProperty.pathReflection) {
+                throw BuildataCodegenException(
+                    """Cannot create path reflection wrapper for: $originalName.
+                       Member element ${classProperty.name} not annotated for reflection. 
+                       Annotate ${classProperty.type.classFQName()} with @PathReflection"""
+                )
+            }
             wrapperName
         }
 
         indentBlock("val ${classProperty.name}: $wrapperType by lazy") {
             indentBlock(wrapperName, enclosingCharacter = "(") {
                 appendln("value()$nId.${classProperty.name},")
-                appendln("""path() + StringNamePathIdentifier("${classProperty.name}")""")
+                appendln("path() + ${StringNamePathIdentifier(classProperty)}")
             }
         }
     }
@@ -150,7 +159,7 @@ class PathPropertyWrapperTemplate(
         indentBlock("val ${classProperty.name}: $recorderClassImpl<${itemType.typeFQName()}, $wrapperType> by lazy") {
             indentBlock(recorderClassImpl, enclosingCharacter = "(") {
                 appendln("value()${itemNId}.${classProperty.name}$defaultInitialization,")
-                appendln("""path() + StringNamePathIdentifier("${classProperty.name}"),""")
+                appendln("path() + ${StringNamePathIdentifier(classProperty)},")
                 appendln("::$wrapperType")
             }
         }

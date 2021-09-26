@@ -1,15 +1,18 @@
 package io.github.virelion.buildata.ksp
 
+import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSType
 import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.typeFQName
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
+import java.lang.IllegalStateException
 
 class ClassProperty(
     val name: String,
     val type: KSType,
     val hasDefaultValue: Boolean,
     val nullable: Boolean,
+    val annotations: Sequence<KSAnnotation>,
     val buildable: Boolean,
     val pathReflection: Boolean
 ) {

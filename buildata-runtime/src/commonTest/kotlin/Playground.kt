@@ -8,6 +8,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertSame
 
 data class Root(
+    @PathElementName("asdf")
     val inner1: Inner1,
     val value: String,
     val nullable: String? = null
