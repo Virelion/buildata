@@ -4,16 +4,16 @@ import io.github.virelion.buildata.Buildable
 
 @Buildable
 data class RootWithDefaults(
-    val a: @Buildable Lvl1WithDefaults = Lvl1WithDefaults(),
-    val b: @Buildable Lvl1WithDefaults = Lvl1WithDefaults(),
-    val c: @Buildable Lvl1WithDefaults = Lvl1WithDefaults(),
-    val d: @Buildable Lvl1WithDefaults = Lvl1WithDefaults(),
-    val e: @Buildable Lvl1WithDefaults = Lvl1WithDefaults(),
-    val f: @Buildable Lvl1WithDefaults = Lvl1WithDefaults(),
-    val g: @Buildable Lvl1WithDefaults = Lvl1WithDefaults(),
-    val i: @Buildable Lvl1WithDefaults = Lvl1WithDefaults(),
-    val j: @Buildable Lvl1WithDefaults = Lvl1WithDefaults(),
-    val k: @Buildable Lvl1WithDefaults = Lvl1WithDefaults()
+    val a: Lvl1WithDefaults = Lvl1WithDefaults(),
+    val b: Lvl1WithDefaults = Lvl1WithDefaults(),
+    val c: Lvl1WithDefaults = Lvl1WithDefaults(),
+    val d: Lvl1WithDefaults = Lvl1WithDefaults(),
+    val e: Lvl1WithDefaults = Lvl1WithDefaults(),
+    val f: Lvl1WithDefaults = Lvl1WithDefaults(),
+    val g: Lvl1WithDefaults = Lvl1WithDefaults(),
+    val i: Lvl1WithDefaults = Lvl1WithDefaults(),
+    val j: Lvl1WithDefaults = Lvl1WithDefaults(),
+    val k: Lvl1WithDefaults = Lvl1WithDefaults()
 )
 
 fun RootWithDefaults_Builder.fill() {
@@ -33,16 +33,16 @@ fun RootWithDefaults_Builder.fill() {
 
 @Buildable
 data class Lvl1WithDefaults(
-    val a: @Buildable Lvl2WithDefaults = Lvl2WithDefaults(),
-    val b: @Buildable Lvl2WithDefaults = Lvl2WithDefaults(),
-    val c: @Buildable Lvl2WithDefaults = Lvl2WithDefaults(),
-    val d: @Buildable Lvl2WithDefaults = Lvl2WithDefaults(),
-    val e: @Buildable Lvl2WithDefaults = Lvl2WithDefaults(),
-    val f: @Buildable Lvl2WithDefaults = Lvl2WithDefaults(),
-    val g: @Buildable Lvl2WithDefaults = Lvl2WithDefaults(),
-    val i: @Buildable Lvl2WithDefaults = Lvl2WithDefaults(),
-    val j: @Buildable Lvl2WithDefaults = Lvl2WithDefaults(),
-    val k: @Buildable Lvl2WithDefaults = Lvl2WithDefaults()
+    val a: Lvl2WithDefaults = Lvl2WithDefaults(),
+    val b: Lvl2WithDefaults = Lvl2WithDefaults(),
+    val c: Lvl2WithDefaults = Lvl2WithDefaults(),
+    val d: Lvl2WithDefaults = Lvl2WithDefaults(),
+    val e: Lvl2WithDefaults = Lvl2WithDefaults(),
+    val f: Lvl2WithDefaults = Lvl2WithDefaults(),
+    val g: Lvl2WithDefaults = Lvl2WithDefaults(),
+    val i: Lvl2WithDefaults = Lvl2WithDefaults(),
+    val j: Lvl2WithDefaults = Lvl2WithDefaults(),
+    val k: Lvl2WithDefaults = Lvl2WithDefaults()
 )
 
 fun Lvl1WithDefaults_Builder.fill() {
@@ -62,16 +62,16 @@ fun Lvl1WithDefaults_Builder.fill() {
 
 @Buildable
 data class Lvl2WithDefaults(
-    val a: @Buildable Lvl3WithDefaults = Lvl3WithDefaults(),
-    val b: @Buildable Lvl3WithDefaults = Lvl3WithDefaults(),
-    val c: @Buildable Lvl3WithDefaults = Lvl3WithDefaults(),
-    val d: @Buildable Lvl3WithDefaults = Lvl3WithDefaults(),
-    val e: @Buildable Lvl3WithDefaults = Lvl3WithDefaults(),
-    val f: @Buildable Lvl3WithDefaults = Lvl3WithDefaults(),
-    val g: @Buildable Lvl3WithDefaults = Lvl3WithDefaults(),
-    val i: @Buildable Lvl3WithDefaults = Lvl3WithDefaults(),
-    val j: @Buildable Lvl3WithDefaults = Lvl3WithDefaults(),
-    val k: @Buildable Lvl3WithDefaults = Lvl3WithDefaults()
+    val a: Lvl3WithDefaults = Lvl3WithDefaults(),
+    val b: Lvl3WithDefaults = Lvl3WithDefaults(),
+    val c: Lvl3WithDefaults = Lvl3WithDefaults(),
+    val d: Lvl3WithDefaults = Lvl3WithDefaults(),
+    val e: Lvl3WithDefaults = Lvl3WithDefaults(),
+    val f: Lvl3WithDefaults = Lvl3WithDefaults(),
+    val g: Lvl3WithDefaults = Lvl3WithDefaults(),
+    val i: Lvl3WithDefaults = Lvl3WithDefaults(),
+    val j: Lvl3WithDefaults = Lvl3WithDefaults(),
+    val k: Lvl3WithDefaults = Lvl3WithDefaults()
 )
 
 fun Lvl2WithDefaults_Builder.fill() {
@@ -91,16 +91,16 @@ fun Lvl2WithDefaults_Builder.fill() {
 
 @Buildable
 data class Lvl3WithDefaults(
-    val a: @Buildable Lvl4WithDefaults = Lvl4WithDefaults(),
-    val b: @Buildable Lvl4WithDefaults = Lvl4WithDefaults(),
-    val c: @Buildable Lvl4WithDefaults = Lvl4WithDefaults(),
-    val d: @Buildable Lvl4WithDefaults = Lvl4WithDefaults(),
-    val e: @Buildable Lvl4WithDefaults = Lvl4WithDefaults(),
-    val f: @Buildable Lvl4WithDefaults = Lvl4WithDefaults(),
-    val g: @Buildable Lvl4WithDefaults = Lvl4WithDefaults(),
-    val i: @Buildable Lvl4WithDefaults = Lvl4WithDefaults(),
-    val j: @Buildable Lvl4WithDefaults = Lvl4WithDefaults(),
-    val k: @Buildable Lvl4WithDefaults = Lvl4WithDefaults()
+    val a: Lvl4WithDefaults = Lvl4WithDefaults(),
+    val b: Lvl4WithDefaults = Lvl4WithDefaults(),
+    val c: Lvl4WithDefaults = Lvl4WithDefaults(),
+    val d: Lvl4WithDefaults = Lvl4WithDefaults(),
+    val e: Lvl4WithDefaults = Lvl4WithDefaults(),
+    val f: Lvl4WithDefaults = Lvl4WithDefaults(),
+    val g: Lvl4WithDefaults = Lvl4WithDefaults(),
+    val i: Lvl4WithDefaults = Lvl4WithDefaults(),
+    val j: Lvl4WithDefaults = Lvl4WithDefaults(),
+    val k: Lvl4WithDefaults = Lvl4WithDefaults()
 )
 
 fun Lvl3WithDefaults_Builder.fill() {
@@ -120,16 +120,16 @@ fun Lvl3WithDefaults_Builder.fill() {
 
 @Buildable
 data class Lvl4WithDefaults(
-    val a: @Buildable Lvl5WithDefaults = Lvl5WithDefaults(),
-    val b: @Buildable Lvl5WithDefaults = Lvl5WithDefaults(),
-    val c: @Buildable Lvl5WithDefaults = Lvl5WithDefaults(),
-    val d: @Buildable Lvl5WithDefaults = Lvl5WithDefaults(),
-    val e: @Buildable Lvl5WithDefaults = Lvl5WithDefaults(),
-    val f: @Buildable Lvl5WithDefaults = Lvl5WithDefaults(),
-    val g: @Buildable Lvl5WithDefaults = Lvl5WithDefaults(),
-    val i: @Buildable Lvl5WithDefaults = Lvl5WithDefaults(),
-    val j: @Buildable Lvl5WithDefaults = Lvl5WithDefaults(),
-    val k: @Buildable Lvl5WithDefaults = Lvl5WithDefaults()
+    val a: Lvl5WithDefaults = Lvl5WithDefaults(),
+    val b: Lvl5WithDefaults = Lvl5WithDefaults(),
+    val c: Lvl5WithDefaults = Lvl5WithDefaults(),
+    val d: Lvl5WithDefaults = Lvl5WithDefaults(),
+    val e: Lvl5WithDefaults = Lvl5WithDefaults(),
+    val f: Lvl5WithDefaults = Lvl5WithDefaults(),
+    val g: Lvl5WithDefaults = Lvl5WithDefaults(),
+    val i: Lvl5WithDefaults = Lvl5WithDefaults(),
+    val j: Lvl5WithDefaults = Lvl5WithDefaults(),
+    val k: Lvl5WithDefaults = Lvl5WithDefaults()
 )
 
 fun Lvl4WithDefaults_Builder.fill() {
@@ -149,16 +149,16 @@ fun Lvl4WithDefaults_Builder.fill() {
 
 @Buildable
 data class Lvl5WithDefaults(
-    val a: @Buildable Lvl6WithDefaults = Lvl6WithDefaults(),
-    val b: @Buildable Lvl6WithDefaults = Lvl6WithDefaults(),
-    val c: @Buildable Lvl6WithDefaults = Lvl6WithDefaults(),
-    val d: @Buildable Lvl6WithDefaults = Lvl6WithDefaults(),
-    val e: @Buildable Lvl6WithDefaults = Lvl6WithDefaults(),
-    val f: @Buildable Lvl6WithDefaults = Lvl6WithDefaults(),
-    val g: @Buildable Lvl6WithDefaults = Lvl6WithDefaults(),
-    val i: @Buildable Lvl6WithDefaults = Lvl6WithDefaults(),
-    val j: @Buildable Lvl6WithDefaults = Lvl6WithDefaults(),
-    val k: @Buildable Lvl6WithDefaults = Lvl6WithDefaults()
+    val a: Lvl6WithDefaults = Lvl6WithDefaults(),
+    val b: Lvl6WithDefaults = Lvl6WithDefaults(),
+    val c: Lvl6WithDefaults = Lvl6WithDefaults(),
+    val d: Lvl6WithDefaults = Lvl6WithDefaults(),
+    val e: Lvl6WithDefaults = Lvl6WithDefaults(),
+    val f: Lvl6WithDefaults = Lvl6WithDefaults(),
+    val g: Lvl6WithDefaults = Lvl6WithDefaults(),
+    val i: Lvl6WithDefaults = Lvl6WithDefaults(),
+    val j: Lvl6WithDefaults = Lvl6WithDefaults(),
+    val k: Lvl6WithDefaults = Lvl6WithDefaults()
 )
 
 fun Lvl5WithDefaults_Builder.fill() {

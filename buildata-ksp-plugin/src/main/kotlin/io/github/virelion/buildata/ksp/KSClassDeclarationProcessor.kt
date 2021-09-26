@@ -7,11 +7,13 @@ import com.google.devtools.ksp.symbol.KSNode
 import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.symbol.Nullability
 import io.github.virelion.buildata.ksp.access.AccessorExtensionsTemplate
+import io.github.virelion.buildata.ksp.extensions.classFQName
 import io.github.virelion.buildata.ksp.extensions.printableFqName
-import io.github.virelion.buildata.ksp.extensions.typeFQName
+import io.github.virelion.buildata.ksp.path.PathPropertyWrapperTemplate
 
 internal class KSClassDeclarationProcessor(
-    val logger: KSPLogger
+    val logger: KSPLogger,
+    val annotatedClasses: AnnotatedClasses
 ) {
     fun processAccessorClasses(ksClassDeclaration: KSClassDeclaration): AccessorExtensionsTemplate {
         ksClassDeclaration.apply {
@@ -23,12 +25,29 @@ internal class KSClassDeclarationProcessor(
         }
     }
 
-    fun processBuilderClasses(ksClassDeclaration: KSClassDeclaration): BuilderClassTemplate {
+    fun processBuilderClasses(
+        ksClassDeclaration: KSClassDeclaration
+    ): BuilderClassTemplate {
         ksClassDeclaration.apply {
             if (Modifier.DATA !in this.modifiers) {
                 error("Cannot add create builder for non data class", this)
             }
             return BuilderClassTemplate(
+                pkg = this.packageName.asString(),
+                originalName = this.simpleName.getShortName(),
+                properties = getClassProperties()
+            )
+        }
+    }
+
+    fun processPathWrapperClasses(
+        ksClassDeclaration: KSClassDeclaration
+    ): PathPropertyWrapperTemplate {
+        ksClassDeclaration.apply {
+            if (Modifier.DATA !in this.modifiers) {
+                error("Cannot add create builder for non data class", this)
+            }
+            return PathPropertyWrapperTemplate(
                 pkg = this.packageName.asString(),
                 originalName = this.simpleName.getShortName(),
                 properties = getClassProperties()
@@ -42,15 +61,15 @@ internal class KSClassDeclarationProcessor(
             .filter { it.isVar || it.isVal }
             .map { parameter ->
                 val type = parameter.type.resolve()
+
                 ClassProperty(
                     name = requireNotNull(parameter.name?.getShortName(), parameter) { "$printableFqName contains nameless property" },
                     type = type,
                     hasDefaultValue = parameter.hasDefault,
                     nullable = type.nullability == Nullability.NULLABLE,
-                    buildable = type.annotations
-                        .any { annotation ->
-                            annotation.annotationType.resolve().typeFQName() == Constants.BUILDABLE_FQNAME
-                        }
+                    annotations = parameter.annotations,
+                    buildable = (type.classFQName() in annotatedClasses.buildable),
+                    pathReflection = (type.classFQName() in annotatedClasses.pathReflection)
                 )
             }
     }

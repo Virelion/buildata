@@ -1,6 +1,6 @@
 package io.github.virelion.buildata.benchmark
 
-import org.junit.Test
+import kotlin.test.Test
 
 class ScenarioTest {
     @Test

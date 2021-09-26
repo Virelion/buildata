@@ -12,9 +12,64 @@
 ![version](https://img.shields.io/github/v/tag/Virelion/buildata)
 ![last-commit](https://img.shields.io/github/last-commit/Virelion/buildata)
 
-Kotlin multiplatform builder generator.
+Kotlin multiplatform code-generator for typed tree data class structures.
 
-# How to use?
+# [Builder generator](docs/data-tree-building.md)
+Generate builders for your immutable data classes.
+Annotate class:
+```kotlin
+@Buildable
+data class Root(
+    //...
+)
+```
+
+and use builders:
+```kotlin
+Root::class.build {
+    branch {
+        leaf = "My value"
+    }
+}
+```
+
+See more in [data-tree-building.md](docs/data-tree-building.md)
+
+# [Path reflection](docs/path-reflection.md)
+Generate builders for your immutable data classes.
+
+Annotate class:
+```kotlin
+@PathReflection
+data class Root(
+    //...
+)
+```
+
+and automatically gather information about the path to the value:
+```kotlin
+root.withPath().branch.leaf.path().jsonPath // will return "$.branch.leaf"
+```
+
+See more in [path-reflection.md](docs/path-reflection.md)
+
+# Dynamic access
+
+Annotate class:
+```kotlin
+@DynamicallyAccessible
+data class Item(
+    val value: String
+    // ...
+)
+```
+
+and access data dynamically with generated accessors:
+```kotlin
+item.dynamicAccessor["value"] // returns item.value
+```
+
+# How to set up?
 0. Have open source repositories connected to project:
 ```kotlin
 buildscript {
@@ -55,79 +110,3 @@ kotlin {
     }
 }
 ```
-
-3. Add annotation to your `data class`
-```kotlin
-
-import io.github.virelion.buildata.Buildable
-// ...
-
-@Buildable
-data class MyDataClass(
-    val property: String
-)
-```
-
-4. Codegen will generate a builder you can use:
-```kotlin
-val myDataClass = MyDataClass::class.build {
-    property = "Example"
-}
-```
-```kotlin
-val builder = MyDataClass::class.builder()
-val myDataClass = builder {
-    property = "Example"
-}.build()
-```
-
-# Features
-## Default values support
-Builders will honor default values during the building.
-```kotlin
-@Buildable 
-data class MyDataClass(
-    val propertyWithDefault: String = "DEFAULT",
-    val property: String
-)
-```
-
-```kotlin
-val myDataClass = MyDataClass::class.build {
-    property = "Example"
-}
-
-myDataClass.property // returns "Example"
-myDataClass.propertyWithDefault // returns "DEFAULT"
-```
-
-## Composite builders support
-You can mark item as `@Buildable` to allow accessing inner builders.
-
-```kotlin
-@Buildable
-data class InnerItem(
-    val property: String    
-) 
-
-@Buildable 
-data class ParentDataClass(
-    val innerItem: @Buildable InnerItem
-)
-```
-
-```kotlin
-val parentDataClassBuilder = ParentDataClass::class.builder()
-
-parentDataClassBuilder {
-    innerItem {
-        property = "Example"
-    }
-}
-
-val parentDataClass = parentDataClassBuilder.build()
-parentDataClass.innerItem.property // returns "Example"
-```
-
-This feature allows for creating complex builder structures for tree like `data class` 
-and make mutation easy during tree building process.

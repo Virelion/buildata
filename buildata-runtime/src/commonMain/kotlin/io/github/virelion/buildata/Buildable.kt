@@ -19,6 +19,6 @@ package io.github.virelion.buildata
  * )
  * ```
  */
-@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
+@Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Buildable
