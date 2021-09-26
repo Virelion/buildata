@@ -2,6 +2,11 @@ package io.github.virelion.buildata.path
 
 import kotlin.jvm.JvmInline
 
+/**
+ * List of [PathIdentifier].
+ *
+ * Elements are ordered as they were accessed: first element accessed is first element of collection, etc.
+ */
 @JvmInline
 value class RecordedPath(private val item: List<PathIdentifier> = listOf()) {
     operator fun plus(identifier: PathIdentifier): RecordedPath {

@@ -17,6 +17,7 @@ class PathPropertyWrapperTemplate(
     companion object {
         val imports: List<String> = listOf(
             "io.github.virelion.buildata.path.*",
+            "kotlin.reflect.KClass"
         ).sorted()
     }
 
@@ -35,6 +36,8 @@ class PathPropertyWrapperTemplate(
             emptyLine()
             createPathReflectionWrapperClass(nullable = true)
             emptyLine()
+            createExtensionWithPathMethod()
+            emptyLine()
             createExtensionPathMethod()
             emptyLine()
         }
@@ -49,7 +52,7 @@ class PathPropertyWrapperTemplate(
         }
         appendDocumentation(
             """
-                TODO
+                Implementation of [io.github.virelion.buildata.path.PathReflectionWrapper] for${if (!nullable) " not" else ""} nullable item of [${pkg}.$originalName]
             """.trimIndent()
         )
         indentBlock(
@@ -118,22 +121,6 @@ class PathPropertyWrapperTemplate(
         }
     }
 
-//    val innerList: List<Inner2_NullablePathReflectionWrapper> by lazy {
-//        pathReflectionList(
-//            value().innerList,
-//            path() + StringNamePathIdentifier("innerList"),
-//            ::Inner2_NullablePathReflectionWrapper
-//        )
-//    }
-//
-//    val innerMap: MapPathReflectionRecorder<Inner2, Inner2_NullablePathReflectionWrapper> by lazy {
-//        pathReflectionMap(
-//            value().innerMap,
-//            path() + StringNamePathIdentifier("innerMap"),
-//            ::Inner2_NullablePathReflectionWrapper
-//        )
-//    }
-
     private fun CodeBuilder.createCollectionPropertyEntry(
         classProperty: ClassProperty,
         nullable: Boolean,
@@ -172,25 +159,40 @@ class PathPropertyWrapperTemplate(
     private fun CodeBuilder.createOverrides() {
         appendDocumentation(
             """
-                TODO
+                @returns value stored in wrapper node. Null in case value is null or any previous element was null.
             """.trimIndent()
         )
         appendln("override fun value() = __value")
         emptyLine()
         appendDocumentation(
             """
-                TODO
+                @returns [io.github.virelion.buildata.path.RecordedPath] even for accessed element
             """.trimIndent()
         )
         appendln("override fun path() = __path")
     }
 
-    private fun CodeBuilder.createExtensionPathMethod() {
+    private fun CodeBuilder.createExtensionWithPathMethod() {
         appendDocumentation(
             """
-                TODO
+                Wrap item in [io.github.virelion.buildata.path.PathReflectionWrapper]. This will treat this item as a root of accessed elements.
+                
+                @returns [io.github.virelion.buildata.path.PathReflectionWrapper] implementation for this item,
             """.trimIndent()
         )
         appendln("fun $originalName.withPath() = $name(this, RecordedPath())")
+    }
+
+    private fun CodeBuilder.createExtensionPathMethod() {
+        appendDocumentation(
+            """
+                Creates path builder for [io.github.virelion.buildata.path.RecordedPath] creation 
+                with [$pkg.$originalName] as data root. 
+                Value of every node will be always null.
+                
+                @returns path builder
+            """.trimIndent()
+        )
+        appendln("fun KClass<$originalName>.path() = $nullableWrapperName(null, RecordedPath())")
     }
 }

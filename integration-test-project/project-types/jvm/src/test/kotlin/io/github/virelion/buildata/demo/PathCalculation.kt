@@ -210,11 +210,10 @@ class PathCalculation {
     }
 
     @Test
-    fun testRelativePath() {
-        val leaf = LeafNode(string = "TestString")
-        with(leaf.withPath().string) {
-            assertEquals("TestString", value())
-            assertEquals("$.string",  path().jsonPath)
+    fun testPathCalculationOnEmptyNode() {
+        with(Root::class.path().inner1.innerList[42].leaf.boolean) {
+            assertNull(value())
+            assertEquals("$.inner1.innerList[42].leaf.boolean",  path().jsonPath)
         }
     }
 }

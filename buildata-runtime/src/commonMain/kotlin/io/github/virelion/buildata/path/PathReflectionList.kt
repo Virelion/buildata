@@ -1,5 +1,10 @@
 package io.github.virelion.buildata.path
 
+/**
+ * List implementation for seamless path wrapped elements access
+ *
+ * Accessing element that is out of bound will return nullable wrapper.
+ */
 class PathReflectionList<Type, Wrapper : PathReflectionWrapper<Type?>> internal constructor(
     private val delegate: List<Wrapper>,
     private val nullWrapperProvider: (Int) -> Wrapper

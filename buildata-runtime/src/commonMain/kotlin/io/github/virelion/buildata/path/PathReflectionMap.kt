@@ -1,5 +1,10 @@
 package io.github.virelion.buildata.path
 
+/**
+ * Map implementation for seamless path wrapped elements access
+ *
+ * Accessing element that is not in original map will return nullable wrapper.
+ */
 class PathReflectionMap<Type, Wrapper : PathReflectionWrapper<Type?>> internal constructor(
     private val delegate: Map<String, Wrapper>,
     private val nullWrapperProvider: (String) -> Wrapper
