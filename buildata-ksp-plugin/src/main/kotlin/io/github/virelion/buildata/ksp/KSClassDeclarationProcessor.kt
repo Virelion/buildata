@@ -2,10 +2,12 @@ package io.github.virelion.buildata.ksp
 
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSNode
+import com.google.devtools.ksp.symbol.Modifier
+import com.google.devtools.ksp.symbol.Nullability
 import io.github.virelion.buildata.ksp.access.AccessorExtensionsTemplate
 import io.github.virelion.buildata.ksp.extensions.classFQName
-import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.printableFqName
 import io.github.virelion.buildata.ksp.path.PathPropertyWrapperTemplate
 

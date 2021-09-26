@@ -6,7 +6,7 @@ import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.Nullability
 
 fun KSType.typeFQName(): String {
-    val genericTypes = if(this.innerArguments.isNotEmpty()) {
+    val genericTypes = if (this.innerArguments.isNotEmpty()) {
         this.innerArguments.mapNotNull { it.type?.resolve()?.typeFQName() }
             .joinToString(prefix = "<", postfix = ">", separator = ", ")
     } else ""

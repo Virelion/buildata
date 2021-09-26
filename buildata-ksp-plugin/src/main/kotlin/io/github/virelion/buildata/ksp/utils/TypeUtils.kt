@@ -29,7 +29,7 @@ fun KSType.isScalar(): Boolean {
     return this.className() in SCALARS
 }
 
-fun nullableIdentifier(nullable: Boolean) = if(nullable) "?" else ""
+fun nullableIdentifier(nullable: Boolean) = if (nullable) "?" else ""
 
 fun KSType.isList(): Boolean {
     return "kotlin.collections.List" == this.classFQName()

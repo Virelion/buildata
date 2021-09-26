@@ -24,7 +24,6 @@ class PathReflectionMap<Type, Wrapper : PathReflectionWrapper<Type?>> internal c
         nullWrapperProvider = { key -> wrapperProvider(null, pathToList + StringIndexPathIdentifier(key)) }
     )
 
-
     override fun get(key: String): Wrapper {
         if (key !in delegate) {
             return nullWrapperProvider(key)

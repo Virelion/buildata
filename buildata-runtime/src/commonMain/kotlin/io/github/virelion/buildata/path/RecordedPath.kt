@@ -13,11 +13,11 @@ value class RecordedPath(private val item: List<PathIdentifier> = listOf()) {
         return RecordedPath(item + identifier)
     }
 
-    val jsonPath : String get() {
+    val jsonPath: String get() {
         val builder = StringBuilder()
         builder.append("$")
         item.forEach {
-            when(it) {
+            when (it) {
                 is IntIndexPathIdentifier -> builder.append("[${it.index}]")
                 is StringIndexPathIdentifier -> builder.append("['${it.index}']")
                 is StringNamePathIdentifier -> builder.append(".${it.name}")

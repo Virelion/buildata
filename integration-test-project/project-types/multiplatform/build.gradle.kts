@@ -40,6 +40,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("io.github.virelion:buildata-runtime:$buildataRuntimeVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.1")
             }
         }
 

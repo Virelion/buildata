@@ -9,7 +9,11 @@ import io.github.virelion.buildata.ksp.GeneratedFileTemplate
 import io.github.virelion.buildata.ksp.extensions.classFQName
 import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.typeFQName
-import io.github.virelion.buildata.ksp.utils.*
+import io.github.virelion.buildata.ksp.utils.CodeBuilder
+import io.github.virelion.buildata.ksp.utils.isList
+import io.github.virelion.buildata.ksp.utils.isMapWithStringKey
+import io.github.virelion.buildata.ksp.utils.isScalar
+import io.github.virelion.buildata.ksp.utils.nullableIdentifier
 
 class PathPropertyWrapperTemplate(
     override val pkg: String,
@@ -54,13 +58,13 @@ class PathPropertyWrapperTemplate(
         }
         appendDocumentation(
             """
-                Implementation of [io.github.virelion.buildata.path.PathReflectionWrapper] for${if (!nullable) " not" else ""} nullable item of [${pkg}.$originalName]
+                Implementation of [io.github.virelion.buildata.path.PathReflectionWrapper] for${if (!nullable) " not" else ""} nullable item of [$pkg.$originalName]
             """.trimIndent()
         )
         indentBlock(
             "class $className",
             enclosingCharacter = "(",
-            sufix = " : PathReflectionWrapper<$originalName${nId}> {"
+            sufix = " : PathReflectionWrapper<$originalName$nId> {"
         ) {
             appendln("private val __value: $originalName$nId,")
             appendln("private val __path: RecordedPath")
@@ -74,7 +78,6 @@ class PathPropertyWrapperTemplate(
         }
         appendln("}")
     }
-
 
     private fun CodeBuilder.createPropertyEntry(classProperty: ClassProperty, nullable: Boolean) {
         if (classProperty.type.isList()) {
@@ -92,7 +95,7 @@ class PathPropertyWrapperTemplate(
         val wrapperType = if (classProperty.type.isScalar()) {
             wrapperName + "<${classProperty.type.typeFQName()}$nId>"
         } else {
-            if(!classProperty.pathReflection) {
+            if (!classProperty.pathReflection) {
                 throw BuildataCodegenException(
                     """Cannot create path reflection wrapper for: $originalName.
                        Member element ${classProperty.name} not annotated for reflection. 
@@ -149,7 +152,7 @@ class PathPropertyWrapperTemplate(
             requireNotNull(classProperty.type.innerArguments.last().type?.resolve()) { "Unable to resolve type of list ${classProperty.name} in $name" }
 
         val itemNId = nullableIdentifier(nullable)
-        val defaultInitialization = if(nullable) {
+        val defaultInitialization = if (nullable) {
             " ?: $defaultInitializer"
         } else {
             ""
@@ -158,7 +161,7 @@ class PathPropertyWrapperTemplate(
         val wrapperType = getWrapperType(itemType, true)
         indentBlock("val ${classProperty.name}: $recorderClassImpl<${itemType.typeFQName()}, $wrapperType> by lazy") {
             indentBlock(recorderClassImpl, enclosingCharacter = "(") {
-                appendln("value()${itemNId}.${classProperty.name}$defaultInitialization,")
+                appendln("value()$itemNId.${classProperty.name}$defaultInitialization,")
                 appendln("path() + ${StringNamePathIdentifier(classProperty)},")
                 appendln("::$wrapperType")
             }
