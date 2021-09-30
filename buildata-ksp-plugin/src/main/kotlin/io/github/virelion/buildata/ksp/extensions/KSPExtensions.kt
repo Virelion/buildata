@@ -21,6 +21,10 @@ fun KSType.className(): String {
     return this.declaration.qualifiedName!!.getShortName()
 }
 
+fun KSType.pkg(): String {
+    return declaration.qualifiedName!!.getQualifier()
+}
+
 fun KSType.typeForDocumentation(): String {
     return "[${declaration.qualifiedName!!.getQualifier()}.${className()}]${nullability.toCode()}"
 }
