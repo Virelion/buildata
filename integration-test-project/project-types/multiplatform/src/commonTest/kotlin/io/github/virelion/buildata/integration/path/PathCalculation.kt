@@ -223,7 +223,6 @@ class PathCalculation {
     fun testCustomNamesAnnotated() {
         with(AnnotatedLeaf::class.path()) {
             assertEquals("$.PATH_ELEMENT_NAME", pathElementNameAnnotated.path().jsonPath)
-            assertEquals("$.JACKSON_JSON_ALIAS", jacksonAnnotatedWithAlias.path().jsonPath)
             assertEquals("$.KOTLINX_SERIALIZATION_SERIAL_NAME", kotlinxSerializationAnnotated.path().jsonPath)
         }
     }

@@ -14,19 +14,19 @@ fun KSType.typeFQName(): String {
 }
 
 fun KSType.classFQName(): String {
-    return "${declaration.qualifiedName!!.getQualifier()}.${className()}"
+    return listOf(declaration.qualifiedName?.getQualifier() ?: "", className()).joinToString(separator = ".")
 }
 
 fun KSType.className(): String {
-    return this.declaration.qualifiedName!!.getShortName()
+    return this.declaration.qualifiedName?.getShortName() ?: ""
 }
 
 fun KSType.pkg(): String {
-    return declaration.qualifiedName!!.getQualifier()
+    return declaration.qualifiedName?.getQualifier() ?: ""
 }
 
 fun KSType.typeForDocumentation(): String {
-    return "[${declaration.qualifiedName!!.getQualifier()}.${className()}]${nullability.toCode()}"
+    return "[${declaration.qualifiedName?.getQualifier() ?: ""}.${className()}]${nullability.toCode()}"
 }
 
 val KSClassDeclaration.printableFqName: String
