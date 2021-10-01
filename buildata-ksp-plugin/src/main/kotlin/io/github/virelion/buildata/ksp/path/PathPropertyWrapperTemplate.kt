@@ -90,10 +90,10 @@ class PathPropertyWrapperTemplate(
         }
 
         val nId = nullableIdentifier(nullable)
-        val wrapperName = getWrapperName(classProperty.type, nullable)
+        val wrapperFQName = getWrapperFQName(classProperty.type, nullable)
 
         val wrapperType = if (classProperty.type.isScalar()) {
-            wrapperName + "<${classProperty.type.typeFQName()}$nId>"
+            wrapperFQName + "<${classProperty.type.typeFQName()}$nId>"
         } else {
             if (!classProperty.pathReflection) {
                 throw BuildataCodegenException(
@@ -102,11 +102,11 @@ class PathPropertyWrapperTemplate(
                        Annotate ${classProperty.type.classFQName()} with @PathReflection"""
                 )
             }
-            wrapperName
+            wrapperFQName
         }
 
         indentBlock("val ${classProperty.name}: $wrapperType by lazy") {
-            indentBlock(wrapperName, enclosingCharacter = "(") {
+            indentBlock(wrapperFQName, enclosingCharacter = "(") {
                 appendln("value()$nId.${classProperty.name},")
                 appendln("path() + ${StringNamePathIdentifier(classProperty)}")
             }
@@ -125,11 +125,23 @@ class PathPropertyWrapperTemplate(
         }
     }
 
-    private fun getWrapperType(type: KSType, nullable: Boolean): String {
+    private fun getWrapperFQName(type: KSType, nullable: Boolean): String {
         return if (type.isScalar()) {
-            getWrapperName(type, nullable) + "<${type.typeFQName()}>"
+            "ScalarPathReflectionWrapper"
         } else {
-            getWrapperName(type, nullable)
+            if (nullable) {
+                type.classFQName() + "_NullablePathReflectionWrapper"
+            } else {
+                type.classFQName() + "_PathReflectionWrapper"
+            }
+        }
+    }
+
+    private fun getWrapperFQType(type: KSType, nullable: Boolean): String {
+        return if (type.isScalar()) {
+            getWrapperFQName(type, nullable) + "<${type.typeFQName()}>"
+        } else {
+            getWrapperFQName(type, nullable)
         }
     }
 
@@ -158,12 +170,12 @@ class PathPropertyWrapperTemplate(
             ""
         }
 
-        val wrapperType = getWrapperType(itemType, true)
-        indentBlock("val ${classProperty.name}: $recorderClassImpl<${itemType.typeFQName()}, $wrapperType> by lazy") {
+        val wrapperFQType = getWrapperFQType(itemType, true)
+        indentBlock("val ${classProperty.name}: $recorderClassImpl<${itemType.typeFQName()}, $wrapperFQType> by lazy") {
             indentBlock(recorderClassImpl, enclosingCharacter = "(") {
                 appendln("value()$itemNId.${classProperty.name}$defaultInitialization,")
                 appendln("path() + ${StringNamePathIdentifier(classProperty)},")
-                appendln("::$wrapperType")
+                appendln("::${getWrapperName(itemType, true)}")
             }
         }
     }
