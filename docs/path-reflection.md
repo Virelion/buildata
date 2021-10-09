@@ -38,8 +38,8 @@ fun exampleUse(root: Root) {
 but rather on wrapper structures that were generated to mimic access.
 
 ## Nullability
-Because operation are done on wrapper classes, those are always will be not null.
-which means accessing members of `branch2` looks like this.
+Because operation are done on wrapper classes, those are not null.
+Which means accessing members of `branch2` looks like this.
 
 ```kotlin
 fun exampleUse(root: Root) {
