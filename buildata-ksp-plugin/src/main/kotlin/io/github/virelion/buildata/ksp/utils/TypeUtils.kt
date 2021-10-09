@@ -1,6 +1,5 @@
 package io.github.virelion.buildata.ksp.utils
 
-import com.google.devtools.ksp.innerArguments
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeAlias
@@ -54,31 +53,27 @@ fun KSType.isList(): Boolean {
 }
 
 fun KSType.isArray(): Boolean {
-    return this.classFQName() == ""
+    return this.classFQName() == "kotlin.Array"
 }
 
 fun KSType.isMap(): Boolean {
     return MAP_TYPES
-            .map { isClassOrChildOfClass(it) }
-            .reduce { prev, current -> prev || current }
+        .map { isClassOrChildOfClass(it) }
+        .reduce { prev, current -> prev || current }
 }
 
 fun KSType.isClassOrChildOfClass(fqClassName: String): Boolean {
     var declaration = this.declaration
 
-    if(declaration is KSTypeAlias) {
+    if (declaration is KSTypeAlias) {
         declaration = declaration.type.resolve().declaration
     }
 
     if (declaration !is KSClassDeclaration) return false
 
-    if(fqClassName == this.classFQName()) return true
+    if (fqClassName == this.classFQName()) return true
 
     return declaration.superTypes
         .map { it.resolve().classFQName() }
         .contains(fqClassName)
-}
-
-fun KSType.isMapWithStringKey(): Boolean {
-    return isMap() && this.innerArguments.first().type?.resolve()?.classFQName() == "kotlin.String"
 }

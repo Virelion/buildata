@@ -27,9 +27,9 @@ data class Inner1(
     val nullableIntMap: LinkedHashMap<Int, Inner2>? = null,
     val nullableIntMapOfNullables: LinkedHashMap<Int, Inner2?>? = linkedMapOf(0 to null),
 
-//    // array
-//    val innerArray: Array<Inner2> = arrayOf(),
-//    val arrayOfNullables: Array<Inner2?> = arrayOf(null),
-//    val nullableArray: Array<Inner2>? = null,
-//    val nullableArrayOfNullables: Array<Inner2?>? = arrayOf(null)
+    // array
+    val innerArray: Array<Inner2> = arrayOf(),
+    val arrayOfNullables: Array<Inner2?> = arrayOf(null),
+    val nullableArray: Array<Inner2>? = null,
+    val nullableArrayOfNullables: Array<Inner2?>? = arrayOf(null)
 )
