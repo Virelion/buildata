@@ -5,7 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class MapPathCalculation {
+class StringMapPathCalculation {
     @Test
     fun testMapAccess() {
         val root = Root::class.build {
@@ -37,7 +37,7 @@ class MapPathCalculation {
     fun testMapOfNullablesAccess() {
         val root = Root::class.build {
             inner1 {
-                mapOfNullables = mapOf("null" to null)
+                mapOfNullables = linkedMapOf("null" to null)
             }
         }
 
@@ -51,7 +51,7 @@ class MapPathCalculation {
     fun testNullableMapAccess() {
         val root = Root::class.build {
             inner1 {
-                nullableMap = mapOf("key" to Inner2())
+                nullableMap = linkedMapOf("key" to Inner2())
             }
         }
 
@@ -65,7 +65,7 @@ class MapPathCalculation {
     fun testNullableMapOfNullablesAccess() {
         val root = Root::class.build {
             inner1 {
-                nullableMapOfNullables = mapOf("key" to Inner2())
+                nullableMapOfNullables = linkedMapOf("key" to Inner2())
             }
         }
 

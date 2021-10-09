@@ -53,6 +53,10 @@ fun KSType.isList(): Boolean {
         .reduce { prev, current -> prev || current }
 }
 
+fun KSType.isArray(): Boolean {
+    return this.classFQName() == ""
+}
+
 fun KSType.isMap(): Boolean {
     return MAP_TYPES
             .map { isClassOrChildOfClass(it) }

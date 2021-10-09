@@ -23,6 +23,12 @@ class PathReflectionList<Type, Wrapper : PathReflectionWrapper<Type?>> internal 
         nullWrapperProvider = { index -> wrapperProvider(null, pathToList + IntIndexPathIdentifier(index)) }
     )
 
+    constructor(
+        originalArray: Array<Type>,
+        pathToArray: RecordedPath,
+        wrapperProvider: (Type?, RecordedPath) -> Wrapper
+    ) : this(originalArray.toList(), pathToArray, wrapperProvider)
+
     override fun get(index: Int): Wrapper {
         if (index >= size) {
             return nullWrapperProvider(index)
