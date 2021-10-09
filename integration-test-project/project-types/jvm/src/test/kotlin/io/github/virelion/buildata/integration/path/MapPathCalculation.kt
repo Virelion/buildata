@@ -10,7 +10,7 @@ class MapPathCalculation {
     fun testMapAccess() {
         val root = Root::class.build {
             inner1 {
-                innerMap = mapOf("key" to Inner2())
+                innerMap = linkedMapOf("key" to Inner2())
             }
         }
 
@@ -24,7 +24,7 @@ class MapPathCalculation {
     fun testListAccessOutOfBoundsElement() {
         val root = Root::class.build {
             inner1 {
-                innerMap = mapOf("key" to Inner2())
+                innerMap = linkedMapOf("key" to Inner2())
             }
         }
         with(root.withPath().inner1.innerMap["missingKey"].leaf.string) {

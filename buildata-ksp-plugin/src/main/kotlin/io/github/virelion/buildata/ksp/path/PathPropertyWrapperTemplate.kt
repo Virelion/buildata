@@ -3,9 +3,9 @@ package io.github.virelion.buildata.ksp.path
 import com.google.devtools.ksp.innerArguments
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.Nullability
-import io.github.virelion.buildata.ksp.BuildataCodegenException
 import io.github.virelion.buildata.ksp.ClassProperty
 import io.github.virelion.buildata.ksp.GeneratedFileTemplate
+import io.github.virelion.buildata.ksp.LOGGER
 import io.github.virelion.buildata.ksp.extensions.classFQName
 import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.typeFQName
@@ -96,9 +96,9 @@ class PathPropertyWrapperTemplate(
             wrapperFQName + "<${classProperty.type.typeFQName()}$nId>"
         } else {
             if (!classProperty.pathReflection) {
-                throw BuildataCodegenException(
+                LOGGER.error(
                     """Cannot create path reflection wrapper for: $originalName.
-                       Member element ${classProperty.name} not annotated for reflection. 
+                       Member element ${classProperty.name} not annotated for path reflection. 
                        Annotate ${classProperty.type.classFQName()} with @PathReflection"""
                 )
             }

@@ -10,7 +10,7 @@ class ListPathCalculation {
     fun testListAccess() {
         val root = Root::class.build {
             inner1 {
-                innerList = listOf(Inner2())
+                innerList = arrayListOf(Inner2())
             }
         }
 
@@ -24,7 +24,7 @@ class ListPathCalculation {
     fun testListAccessOutOfBoundsElement() {
         val root = Root::class.build {
             inner1 {
-                innerList = listOf(Inner2())
+                innerList = arrayListOf(Inner2())
             }
         }
         with(root.withPath().inner1.innerList[1].leaf.string) {
