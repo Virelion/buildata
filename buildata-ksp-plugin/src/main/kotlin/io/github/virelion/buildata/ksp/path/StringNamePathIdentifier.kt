@@ -32,7 +32,7 @@ value class StringNamePathIdentifier(
     }
 
     private fun KSAnnotation.getFirstParamOfAnnotationAsString(): String? {
-        return arguments.firstOrNull()?.value?.safeAs()
+        return arguments.firstOrNull()?.value?.safeAs<String>()
     }
 
     private fun KSAnnotation.getFirstListElementOfAnnotationAsString(): String? {

@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
-        jcenter()
         mavenCentral()
         google()
     }
@@ -16,7 +15,7 @@ plugins {
     kotlin("multiplatform")
     `maven-publish`
     id("org.jlleitschuh.gradle.ktlint")
-    id("org.jetbrains.dokka") version "1.4.0"
+    id("org.jetbrains.dokka") version "1.6.10"
     signing
 }
 
@@ -32,7 +31,6 @@ if (androidEnabled) {
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
     google()
 }
 
@@ -182,9 +180,9 @@ tasks {
     }
 
     val javadocJar by registering(org.gradle.jvm.tasks.Jar::class) {
-        dependsOn("dokkaJavadoc")
+        dependsOn(dokkaHtml)
         archiveClassifier.set("javadoc")
-        from("$buildDir/javadoc")
+        from(dokkaHtml.get().outputDirectory)
     }
 
     artifacts {

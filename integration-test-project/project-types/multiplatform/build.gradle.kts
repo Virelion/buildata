@@ -13,7 +13,6 @@ if (androidEnabled) {
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
     google()
 }
 

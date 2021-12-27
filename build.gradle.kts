@@ -3,7 +3,6 @@ apply(from = "$rootDir/gradle/pom.gradle.kts")
 buildscript {
     repositories {
         mavenLocal()
-        jcenter()
         mavenCentral()
         google()
     }
@@ -13,7 +12,7 @@ buildscript {
 }
 
 plugins {
-    kotlin("multiplatform") version "1.5.31" apply false
+    kotlin("multiplatform") version "1.6.10" apply false
     id("org.jlleitschuh.gradle.ktlint") version "10.2.0" apply false
     id("com.gradle.plugin-publish") version "0.12.0" apply false
     id("nebula.release") version "13.0.0"
@@ -22,8 +21,6 @@ plugins {
 allprojects {
     repositories {
         mavenCentral()
-        jcenter()
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
         google()
     }
 }

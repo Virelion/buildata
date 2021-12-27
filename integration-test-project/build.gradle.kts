@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         gradlePluginPortal()
-        jcenter()
         mavenCentral()
         google()
     }
@@ -11,7 +10,7 @@ buildscript {
 }
 
 plugins {
-    val kotlinVersion = "1.5.31"
+    val kotlinVersion = "1.6.10"
     kotlin("multiplatform") version kotlinVersion apply false
     kotlin("jvm") version kotlinVersion apply false
     id("org.jlleitschuh.gradle.ktlint") version "10.2.0"
@@ -21,6 +20,5 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
     google()
 }
