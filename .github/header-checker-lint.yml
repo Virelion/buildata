@@ -1,0 +1,6 @@
+allowedCopyrightHolders:
+  - 'Maciej Ziemba'
+allowedLicenses:
+  - 'Apache-2.0'
+sourceFileExtensions:
+  - 'kt'
