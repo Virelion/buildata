@@ -29,8 +29,8 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("compiler-embeddable"))
     implementation("com.google.devtools.ksp:symbol-processing-api:$kspVersion")
-    compileOnly("com.google.auto.service:auto-service:1.0-rc6")
-    kapt("com.google.auto.service:auto-service:1.0-rc6")
+    compileOnly("com.google.auto.service:auto-service:1.0.1")
+    kapt("com.google.auto.service:auto-service:1.0.1")
 
     testImplementation(kotlin("test-junit"))
 }
