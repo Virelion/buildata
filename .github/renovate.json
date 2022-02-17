@@ -1,0 +1,9 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "ignoreDeps": [
+    "io.github.virelion.buildata",
+    "io.github.virelion:buildata-runtime"
+  ]
+}
