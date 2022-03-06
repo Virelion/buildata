@@ -14,7 +14,7 @@ jobs:
       GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
       GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Release
@@ -33,7 +33,7 @@ jobs:
     needs: [ Linux ]
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Release
@@ -52,7 +52,7 @@ jobs:
       GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
       GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Release
@@ -71,7 +71,7 @@ jobs:
       GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
       GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Release
