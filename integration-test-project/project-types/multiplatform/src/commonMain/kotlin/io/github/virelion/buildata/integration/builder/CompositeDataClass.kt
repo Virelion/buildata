@@ -7,4 +7,3 @@ import io.github.virelion.buildata.integration.builder.inner.Level1Class
 data class CompositeDataClass(
     val innerClass: Level1Class?
 )
-

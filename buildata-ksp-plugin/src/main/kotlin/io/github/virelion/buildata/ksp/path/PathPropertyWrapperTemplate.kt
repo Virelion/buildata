@@ -18,15 +18,16 @@ package io.github.virelion.buildata.ksp.path
 import com.google.devtools.ksp.innerArguments
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.Nullability
-import io.github.virelion.buildata.ksp.BuildataCodegenException
 import io.github.virelion.buildata.ksp.ClassProperty
 import io.github.virelion.buildata.ksp.GeneratedFileTemplate
+import io.github.virelion.buildata.ksp.LOGGER
 import io.github.virelion.buildata.ksp.extensions.classFQName
 import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.typeFQName
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
+import io.github.virelion.buildata.ksp.utils.isArray
 import io.github.virelion.buildata.ksp.utils.isList
-import io.github.virelion.buildata.ksp.utils.isMapWithStringKey
+import io.github.virelion.buildata.ksp.utils.isMap
 import io.github.virelion.buildata.ksp.utils.isScalar
 import io.github.virelion.buildata.ksp.utils.nullableIdentifier
 
@@ -96,11 +97,23 @@ class PathPropertyWrapperTemplate(
 
     private fun CodeBuilder.createPropertyEntry(classProperty: ClassProperty, nullable: Boolean) {
         if (classProperty.type.isList()) {
-            createCollectionPropertyEntry(classProperty, nullable, CollectionType.LIST)
+            createCollectionPropertyEntry(classProperty, nullable, CollectionType.LIST, CollectionKeyType.INT)
             return
         }
-        if (classProperty.type.isMapWithStringKey()) {
-            createCollectionPropertyEntry(classProperty, nullable, CollectionType.STRING)
+        if (classProperty.type.isArray()) {
+            createCollectionPropertyEntry(classProperty, nullable, CollectionType.ARRAY, CollectionKeyType.INT)
+            return
+        }
+        if (classProperty.type.isMap()) {
+            val keyType = when (val keyType = classProperty.type.innerArguments.first().type?.resolve()?.classFQName()) {
+                "kotlin.String" -> CollectionKeyType.STRING
+                "kotlin.Int" -> CollectionKeyType.INT
+                else -> {
+                    LOGGER.warn("""Maps with keys: $keyType are not supported for path reflection""")
+                    return
+                }
+            }
+            createCollectionPropertyEntry(classProperty, nullable, CollectionType.MAP, keyType)
             return
         }
 
@@ -111,10 +124,12 @@ class PathPropertyWrapperTemplate(
             wrapperFQName + "<${classProperty.type.typeFQName()}$nId>"
         } else {
             if (!classProperty.pathReflection) {
-                throw BuildataCodegenException(
-                    """Cannot create path reflection wrapper for: $originalName.
-                       Member element ${classProperty.name} not annotated for reflection. 
-                       Annotate ${classProperty.type.classFQName()} with @PathReflection"""
+                LOGGER.error(
+                    listOf(
+                        "Cannot create path reflection wrapper for: $originalName.",
+                        "Member element '${classProperty.name}' not annotated for path reflection.",
+                        "Annotate '${classProperty.type.classFQName()}' with @PathReflection."
+                    ).joinToString(separator = " ")
                 )
             }
             wrapperFQName
@@ -163,20 +178,26 @@ class PathPropertyWrapperTemplate(
     private fun CodeBuilder.createCollectionPropertyEntry(
         classProperty: ClassProperty,
         nullable: Boolean,
-        collectionType: CollectionType
+        collectionType: CollectionType,
+        collectionKeyType: CollectionKeyType
     ) {
         val defaultInitializer = when (collectionType) {
             CollectionType.LIST -> "listOf()"
-            CollectionType.STRING -> "mapOf()"
+            CollectionType.ARRAY -> "arrayOf()"
+            CollectionType.MAP -> "mapOf()"
         }
 
         val recorderClassImpl = when (collectionType) {
             CollectionType.LIST -> "PathReflectionList"
-            CollectionType.STRING -> "PathReflectionMap"
+            CollectionType.ARRAY -> "PathReflectionList"
+            CollectionType.MAP -> "PathReflectionMap"
         }
 
-        val itemType =
-            requireNotNull(classProperty.type.innerArguments.last().type?.resolve()) { "Unable to resolve type of list ${classProperty.name} in $name" }
+        val itemType = classProperty.type.innerArguments.last().type?.resolve()
+        if (itemType == null) {
+            LOGGER.error("Unable to resolve type of collection ${classProperty.name} in $name")
+            return
+        }
 
         val itemNId = nullableIdentifier(nullable)
         val defaultInitialization = if (nullable) {
@@ -185,12 +206,18 @@ class PathPropertyWrapperTemplate(
             ""
         }
 
-        val wrapperFQType = getWrapperFQType(itemType, true)
-        indentBlock("val ${classProperty.name}: $recorderClassImpl<${itemType.typeFQName()}, $wrapperFQType> by lazy") {
+        indentBlock("val ${classProperty.name} by lazy") {
             indentBlock(recorderClassImpl, enclosingCharacter = "(") {
                 appendln("value()$itemNId.${classProperty.name}$defaultInitialization,")
                 appendln("path() + ${StringNamePathIdentifier(classProperty)},")
-                appendln("::${getWrapperName(itemType, true)}")
+                appendln("::${getWrapperName(itemType, true)},")
+
+                if (collectionType == CollectionType.MAP) {
+                    when (collectionKeyType) {
+                        CollectionKeyType.STRING -> appendln("::StringIndexPathIdentifier")
+                        CollectionKeyType.INT -> appendln("::IntIndexPathIdentifier")
+                    }
+                }
             }
         }
     }

@@ -15,6 +15,7 @@
  */
 package io.github.virelion.buildata.integration.path.inner
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import io.github.virelion.buildata.path.PathElementName
 import io.github.virelion.buildata.path.PathReflection
 import kotlinx.serialization.SerialName

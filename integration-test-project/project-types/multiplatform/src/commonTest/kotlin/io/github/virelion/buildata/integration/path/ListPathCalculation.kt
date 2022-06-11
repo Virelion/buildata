@@ -10,7 +10,7 @@ class ListPathCalculation {
     fun testListAccess() {
         val root = Root::class.build {
             inner1 {
-                innerList = listOf(Inner2())
+                innerList = arrayListOf(Inner2())
             }
         }
 
@@ -24,7 +24,7 @@ class ListPathCalculation {
     fun testListAccessOutOfBoundsElement() {
         val root = Root::class.build {
             inner1 {
-                innerList = listOf(Inner2())
+                innerList = arrayListOf(Inner2())
             }
         }
         with(root.withPath().inner1.innerList[1].leaf.string) {
@@ -37,7 +37,7 @@ class ListPathCalculation {
     fun testListOfNullablesAccess() {
         val root = Root::class.build {
             inner1 {
-                listOfNullables = listOf(null)
+                listOfNullables = arrayListOf(null)
             }
         }
 
@@ -51,7 +51,7 @@ class ListPathCalculation {
     fun testNullableListAccess() {
         val root = Root::class.build {
             inner1 {
-                nullableList = listOf(Inner2())
+                nullableList = arrayListOf(Inner2())
             }
         }
 
@@ -65,7 +65,7 @@ class ListPathCalculation {
     fun testNullableListOfNullablesAccess() {
         val root = Root::class.build {
             inner1 {
-                nullableListOfNullables = listOf(Inner2())
+                nullableListOfNullables = arrayListOf(Inner2())
             }
         }
 

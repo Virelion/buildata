@@ -91,6 +91,7 @@ internal class KSClassDeclarationProcessor(
 
     fun error(message: String, ksNode: KSNode): Nothing {
         logger.error(message, ksNode)
+
         throw BuildataCodegenException(message)
     }
 
