@@ -165,7 +165,7 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.6"
+        kotlinOptions.jvmTarget = "1.8"
     }
 
     withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
