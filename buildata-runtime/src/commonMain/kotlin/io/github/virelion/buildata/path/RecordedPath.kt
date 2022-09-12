@@ -23,15 +23,75 @@ import kotlin.jvm.JvmInline
  * Elements are ordered as they were accessed: first element accessed is first element of collection, etc.
  */
 @JvmInline
-value class RecordedPath(private val item: List<PathIdentifier> = listOf()) {
+value class RecordedPath(val path: List<PathIdentifier> = listOf()) {
+    object Parser {
+        private val NO_TOKEN = 0.toChar()
+
+        private fun createPathIdentifierOutOfToken(token: Char, identifier: String): PathIdentifier {
+            return when (token) {
+                '.' -> StringNamePathIdentifier(identifier)
+                '[' -> {
+                    identifier.toIntOrNull()
+                        ?.let { IntIndexPathIdentifier(it) }
+                        ?: identifier
+                            .removeSurrounding("'")
+                            .removeSurrounding("\"")
+                            .let { StringIndexPathIdentifier(it) }
+                }
+                else -> throw IllegalArgumentException("Unrecognized token $token")
+            }
+        }
+
+        fun parse(path: String): RecordedPath {
+            if (path.trim() == "" || path.trim() == "$") return RecordedPath(listOf())
+
+            val preparedPath = path.removePrefix("$").let {
+                if (!(it.startsWith(".") || it.startsWith("["))) {
+                    ".$it"
+                } else {
+                    it
+                }
+            }.trim()
+            val iterator = preparedPath.iterator()
+
+            val identifiers = mutableListOf<PathIdentifier>()
+            var tokenType = NO_TOKEN
+            var identifier = ""
+
+            while (iterator.hasNext()) {
+                when (val nextCharacter = iterator.nextChar()) {
+                    '.', '[' -> {
+                        if (tokenType != NO_TOKEN) {
+                            identifiers += createPathIdentifierOutOfToken(tokenType, identifier)
+                            identifier = ""
+                        }
+                        tokenType = nextCharacter
+                    }
+                    ']' -> {
+                        require(tokenType == '[') { "Found closing bracket ], but there is no opening bracket [" }
+                    }
+                    else -> {
+                        identifier += nextCharacter
+                    }
+                }
+            }
+
+            if (tokenType != NO_TOKEN) {
+                identifiers += createPathIdentifierOutOfToken(tokenType, identifier)
+            }
+
+            return RecordedPath(identifiers)
+        }
+    }
+
     operator fun plus(identifier: PathIdentifier): RecordedPath {
-        return RecordedPath(item + identifier)
+        return RecordedPath(path + identifier)
     }
 
     val jsonPath: String get() {
         val builder = StringBuilder()
         builder.append("$")
-        item.forEach {
+        path.forEach {
             when (it) {
                 is IntIndexPathIdentifier -> builder.append("[${it.index}]")
                 is StringIndexPathIdentifier -> builder.append("['${it.index}']")

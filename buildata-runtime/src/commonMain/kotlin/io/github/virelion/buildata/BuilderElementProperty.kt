@@ -24,7 +24,7 @@ import kotlin.reflect.KProperty
 class BuilderElementProperty<T> : ReadWriteProperty<Any?, T> {
     var initialized = false
         private set
-    private var container: T? = null
+    var container: T? = null
 
     /**
      * Sets property value.

@@ -16,6 +16,7 @@
 package io.github.virelion.buildata.ksp
 
 import io.github.virelion.buildata.ksp.extensions.typeForDocumentation
+import io.github.virelion.buildata.ksp.path.StringNamePathIdentifier
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
 
 internal class BuilderClassTemplate(
@@ -120,7 +121,7 @@ internal class BuilderClassTemplate(
             propertiesDocumentation
         )
         appendln("@BuildataDSL")
-        indentBlock("class $builderName() : Builder<$originalName>") {
+        indentBlock("class $builderName() : Builder<$originalName>, StringAccessible") {
             properties.forEach {
                 it.generatePropertyDeclaration(this)
             }
@@ -128,6 +129,8 @@ internal class BuilderClassTemplate(
             generateBuildFunction()
             emptyLine()
             generateBuilderPopulateWithFunction()
+            emptyLine()
+            generateAccessElementFunction()
         }
     }
 
@@ -183,9 +186,31 @@ internal class BuilderClassTemplate(
         }
     }
 
+    fun CodeBuilder.generateAccessElementFunction() {
+        appendDocumentation(
+            """
+            Access class element builder using string identifier
+            
+            @param key element name
+            @returns element, elements builder or null if not set
+            """.trimIndent()
+        )
+        indentBlock("override fun accessElement(key: String): Any?") {
+            indentBlock("return when(key)") {
+                properties.forEach {
+                    val pathIdentifier = StringNamePathIdentifier(it).getPropertyName()
+                    appendln(""""$pathIdentifier" -> ${it.generateDirectAccessLine()}""")
+                }
+                appendln("""else -> throw MissingPropertyException(key, "$originalName")""")
+            }
+        }
+    }
+
     companion object {
         val imports: List<String> = listOf(
             "io.github.virelion.buildata.*",
+            "io.github.virelion.buildata.access.MissingPropertyException",
+            "io.github.virelion.buildata.access.StringAccessible",
             "kotlin.reflect.KClass"
         ).sorted()
 

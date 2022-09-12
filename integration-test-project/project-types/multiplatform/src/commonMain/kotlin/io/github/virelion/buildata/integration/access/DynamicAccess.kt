@@ -15,18 +15,55 @@
  */
 package io.github.virelion.buildata.integration.access
 
-import io.github.virelion.buildata.access.DynamicallyAccessible
+import io.github.virelion.buildata.Buildable
+import io.github.virelion.buildata.access.IntAccessible
+import io.github.virelion.buildata.access.StringAccessible
+import io.github.virelion.buildata.path.PathElementName
 
-@DynamicallyAccessible
-class DynamicAccessRoot(
+@Buildable
+data class DynamicAccessRoot(
     val map: Map<String, String>,
+    val intMap: Map<Int, String> = mapOf(),
     val list: List<String>,
+    val array: Array<String>,
     val element: DynamicAccessInner1,
-    val nullable_element: DynamicAccessInner1?
+    val nullable_element: DynamicAccessInner1?,
+
+    @PathElementName("CUSTOM_NAME")
+    val customName: String = ""
 )
 
-@DynamicallyAccessible
-class DynamicAccessInner1(
+@Buildable
+data class DynamicAccessInner1(
     val map: Map<String, String>,
     val list: List<String>,
+    val intMap: Map<Int, String>,
+    val array: Array<String>,
+    val customStringAccessible: CustomStringAccessible = CustomStringAccessible,
+    val customIntAccessible: CustomIntAccessible = CustomIntAccessible,
 )
+
+@Buildable
+data class ComplexData(
+    val data: Map<String, List<DynamicAccessRoot>>
+)
+
+object CustomStringAccessible : StringAccessible {
+    override fun accessElement(key: String): Any? {
+        if (key == "custom") {
+            return "custom"
+        } else {
+            throw IndexOutOfBoundsException()
+        }
+    }
+}
+
+object CustomIntAccessible : IntAccessible {
+    override fun accessElement(key: Int): Any? {
+        if (key == 42) {
+            return "custom"
+        } else {
+            throw IndexOutOfBoundsException()
+        }
+    }
+}
