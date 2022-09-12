@@ -73,7 +73,7 @@ item.dynamicAccessor["value"] // returns item.value
 item.dynamicAccessor["$.list[2]['element']"] // returns item.list[2]["element"]
 ```
 
-See more in [path-reflection.md](docs/dynamic-access.md)
+See more in [dynamic-access.md](docs/dynamic-access.md)
 
 # How to set up?
 0. Have open source repositories connected to project:
