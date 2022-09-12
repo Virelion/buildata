@@ -30,7 +30,7 @@ value class StringNamePathIdentifier(
         val JACKSON_ALIAS = "com.fasterxml.jackson.annotation.JsonAlias"
     }
 
-    private fun getPropertyName(): String {
+    fun getPropertyName(): String {
         return getAnnotatedName() ?: classProperty.name
     }
 

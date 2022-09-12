@@ -67,4 +67,16 @@ class ClassProperty(
             appendln("$name = it.$name")
         }
     }
+
+    fun generateDirectAccessLine(): String {
+        return if (buildable) {
+            if (nullable) {
+                "if($backingPropName.setToNull) null else $backingPropName.builder"
+            } else {
+                "$backingPropName.builder"
+            }
+        } else {
+            "$backingPropName.container"
+        }
+    }
 }

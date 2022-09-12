@@ -15,7 +15,6 @@
  */
 package io.github.virelion.buildata.ksp
 
-import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSNode
@@ -34,8 +33,7 @@ internal class KSClassDeclarationProcessor(
         ksClassDeclaration.apply {
             return AccessorExtensionsTemplate(
                 pkg = this.packageName.asString(),
-                originalName = this.simpleName.getShortName(),
-                properties = ksClassDeclaration.getDeclaredProperties().map { it.simpleName.asString() }.toList()
+                originalName = this.simpleName.getShortName()
             )
         }
     }

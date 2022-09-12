@@ -16,9 +16,24 @@
 
 package io.github.virelion.buildata.access
 
-class MissingPropertyException(
-    val pathElement: String,
-    val className: String
-) : Exception(
-    "Cannot access $pathElement in $className"
+import io.github.virelion.buildata.path.PathIdentifier
+import io.github.virelion.buildata.path.RecordedPath
+
+class ElementNotFoundException(
+    /**
+     * Path processed before element was not found
+     */
+    val pathProcessed: RecordedPath,
+
+    /**
+     * Last element processed
+     */
+    val lastItemProcessed: Any?,
+
+    /**
+     * Path identifier of element that was not found
+     */
+    val lastProcessedPathIdentifier: PathIdentifier
+) : RuntimeException(
+    "On $pathProcessed cannot $lastProcessedPathIdentifier access on $lastItemProcessed"
 )

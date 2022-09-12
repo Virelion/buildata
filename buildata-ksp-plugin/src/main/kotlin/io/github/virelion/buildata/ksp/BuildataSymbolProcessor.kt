@@ -21,7 +21,6 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import io.github.virelion.buildata.ksp.Constants.BUILDABLE_FQNAME
-import io.github.virelion.buildata.ksp.Constants.DYNAMICALLY_ACCESSIBLE_FQNAME
 import io.github.virelion.buildata.ksp.Constants.PATH_REFLECTION_FQNAME
 import io.github.virelion.buildata.ksp.extensions.printableFqName
 
@@ -67,7 +66,7 @@ class BuildataSymbolProcessor(
 
         // Stream Dynamically accessible code-generated classes
         resolver
-            .getSymbolsWithAnnotation(DYNAMICALLY_ACCESSIBLE_FQNAME)
+            .getSymbolsWithAnnotation(BUILDABLE_FQNAME)
             .apply {
                 filterIsInstance<KSClassDeclaration>()
                     .map {

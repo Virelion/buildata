@@ -26,7 +26,7 @@ import kotlin.reflect.KProperty
 class BuilderNullableCompositeElementProperty<T : Any, B : Builder<T>>(
     val builderProvider: () -> B
 ) : ReadWriteProperty<Any?, T?> {
-    private var setToNull = false
+    var setToNull = false
     var initialized = false
         private set
     var builder: B = builderProvider()

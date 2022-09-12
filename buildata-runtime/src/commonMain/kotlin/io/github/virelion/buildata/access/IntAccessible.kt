@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Maciej Ziemba
+ * Copyright 2022 Maciej Ziemba
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.virelion.buildata.integration.builder.inner
 
-import io.github.virelion.buildata.Buildable
+package io.github.virelion.buildata.access
 
-@Buildable
-data class Level1Class(
-    val level2: Level2Class,
-    val value: String,
-)
+interface IntAccessible {
+    @Throws(IndexOutOfBoundsException::class)
+    fun accessElement(key: Int): Any?
+}

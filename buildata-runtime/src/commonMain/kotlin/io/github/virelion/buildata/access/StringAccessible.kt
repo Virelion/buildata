@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Maciej Ziemba
+ * Copyright 2022 Maciej Ziemba
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.github.virelion.buildata.access
 
-/**
- * Use this annotation to mark data class as target for builder generation.
- *
- * ```kotlin
- * @DynamicallyAccessible
- * data class Item(
- *     val item: String
- *     // ...
- * )
- * ```
- */
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DynamicallyAccessible
+interface StringAccessible {
+    @Throws(MissingPropertyException::class)
+    fun accessElement(key: String): Any?
+}
