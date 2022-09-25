@@ -14,7 +14,7 @@ val buildataRuntimeVersion = "0.0.0-SNAPSHOT"
 
 dependencies {
     implementation("io.github.virelion:buildata-runtime:$buildataRuntimeVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.13.3")
 
     testImplementation(kotlin("test-junit"))
