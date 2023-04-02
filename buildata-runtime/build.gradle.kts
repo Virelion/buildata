@@ -36,7 +36,7 @@ repositories {
 
 kotlin {
     jvm {}
-    js {
+    js(IR) {
         nodejs {
             testTask {
                 useMocha()

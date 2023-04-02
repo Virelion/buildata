@@ -20,17 +20,30 @@ val buildataRuntimeVersion = "0.0.0-SNAPSHOT"
 
 kotlin {
     jvm()
-    js {
+    js(IR) {
         nodejs {
             testTask {
                 useMocha()
             }
         }
     }
-    mingwX64()
-    macosX64()
-    linuxX64()
-    ios()
+    // hack from https://github.com/atsushieno/augene-ng/issues/10
+    val hostOs = System.getProperty("os.name")
+    val isMingwX64 = hostOs.startsWith("Windows")
+    when {
+        hostOs == "Mac OS X" -> {
+            macosX64("native")
+            ios("nativeIOS")
+        }
+        hostOs == "Linux" -> linuxX64("native")
+        isMingwX64 -> mingwX64("native")
+        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
+    }
+    // endof hack
+//    mingwX64()
+//    macosX64()
+//    linuxX64()
+//    ios()
     if (androidEnabled) {
         android()
     }
@@ -73,41 +86,41 @@ kotlin {
                 implementation(kotlin("test-js"))
             }
         }
-
-        val nativeMain by creating {
-            dependencies {
-            }
-        }
-
-        val linuxX64Main by getting {
-            dependsOn(nativeMain)
-            dependencies {
-            }
-        }
-
-        val macosX64Main by getting {
-            dependsOn(nativeMain)
-            dependencies {
-            }
-        }
-
-        val iosX64Main by getting {
-            dependsOn(nativeMain)
-            dependencies {
-            }
-        }
-
-        val iosArm64Main by getting {
-            dependsOn(nativeMain)
-            dependencies {
-            }
-        }
-
-        val mingwX64Main by getting {
-            dependsOn(nativeMain)
-            dependencies {
-            }
-        }
+//
+//        val nativeMain by creating {
+//            dependencies {
+//            }
+//        }
+//
+//        val linuxX64Main by getting {
+//            dependsOn(nativeMain)
+//            dependencies {
+//            }
+//        }
+//
+//        val macosX64Main by getting {
+//            dependsOn(nativeMain)
+//            dependencies {
+//            }
+//        }
+//
+//        val iosX64Main by getting {
+//            dependsOn(nativeMain)
+//            dependencies {
+//            }
+//        }
+//
+//        val iosArm64Main by getting {
+//            dependsOn(nativeMain)
+//            dependencies {
+//            }
+//        }
+//
+//        val mingwX64Main by getting {
+//            dependsOn(nativeMain)
+//            dependencies {
+//            }
+//        }
         if (androidEnabled) {
             val androidMain by getting {
                 dependencies {
