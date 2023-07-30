@@ -6,12 +6,10 @@ buildscript {
         mavenCentral()
         google()
     }
-    dependencies {
-        classpath("com.android.tools.build:gradle:3.6.4")
-    }
 }
 
 plugins {
+    id("com.android.library")
     kotlin("multiplatform")
     `maven-publish`
     id("org.jlleitschuh.gradle.ktlint")
@@ -202,6 +200,9 @@ afterEvaluate {
                 apply(from = "$rootDir/gradle/pom.gradle.kts")
                 val configurePOM: ((MavenPublication, Project) -> Unit) by extra
 
+                this.forEach {
+                    logger.warn(it.name)
+                }
                 this.getByName<MavenPublication>("androidRelease") {
                     configurePOM(this, project)
                 }
@@ -215,17 +216,14 @@ afterEvaluate {
 }
 
 fun Project.configureAndroid() {
-    apply(plugin = "com.android.library")
 
     configure<LibraryExtension> {
-        buildToolsVersion("29.0.2")
-        compileSdkVersion(29)
+        namespace = "io.github.virelion"
+        buildToolsVersion = "29.0.2"
+        compileSdkVersion = "android-29"
 
         defaultConfig {
-            targetSdkVersion(29)
-            minSdkVersion(21)
-            versionCode = 1
-            versionName = "1.0"
+            minSdk = 21
         }
 
         compileOptions {

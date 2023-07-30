@@ -27,14 +27,14 @@ gradlePlugin {
             description = project.description
             id = "io.github.virelion.buildata"
             implementationClass = "io.github.virelion.buildata.gradle.BuildataPlugin"
+            tags.set(listOf("codegen", "Kotlin", "multiplatform"))
         }
     }
 }
 
-pluginBundle {
-    website = "https://github.com/Virelion/buildata"
-    vcsUrl = "https://github.com/Virelion/buildata.git"
-    tags = listOf("codegen", "Kotlin", "multiplatform")
+gradlePlugin {
+    website.set("https://github.com/Virelion/buildata")
+    vcsUrl.set("https://github.com/Virelion/buildata.git")
 }
 
 description = "Plugin that connects Buildata KSP codegen engine to Kotlin gradle project"
