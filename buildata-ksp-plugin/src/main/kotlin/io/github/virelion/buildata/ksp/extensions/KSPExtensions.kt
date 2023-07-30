@@ -24,7 +24,9 @@ fun KSType.typeFQName(): String {
     val genericTypes = if (this.innerArguments.isNotEmpty()) {
         this.innerArguments.mapNotNull { it.type?.resolve()?.typeFQName() }
             .joinToString(prefix = "<", postfix = ">", separator = ", ")
-    } else ""
+    } else {
+        ""
+    }
     return "${declaration.qualifiedName!!.getQualifier()}.${className()}$genericTypes${nullability.toCode()}"
 }
 

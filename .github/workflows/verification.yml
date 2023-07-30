@@ -24,13 +24,14 @@ jobs:
           publishMacosX64PublicationToMavenLocal
           publishIosX64PublicationToMavenLocal
           publishIosArm64PublicationToMavenLocal
+          publishIosArmSimulator64PublicationToMavenLocal
           macosX64Test iosX64Test
       - name: Integration tests
         working-directory: integration-test-project
         run: ./gradlew clean macosX64Test iosX64Test
 
   "Linux":
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Unit tests
@@ -47,7 +48,7 @@ jobs:
         run: ./gradlew clean ktlintCheck linuxX64Test
 
   "Windows":
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
       - name: Unit tests
@@ -65,7 +66,7 @@ jobs:
         run: .\gradlew.bat clean mingwX64Test
 
   "JavaScript":
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Unit tests
@@ -83,7 +84,7 @@ jobs:
         run: ./gradlew clean jsTest jsNodeTest
 
   "JVM":
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Unit tests
@@ -100,7 +101,7 @@ jobs:
         run: ./gradlew clean jvmTest project-types:jvm:test
 
   "Android":
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Unit tests

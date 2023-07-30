@@ -40,7 +40,7 @@ data class DynamicAccessInner1(
     val intMap: Map<Int, String>,
     val array: Array<String>,
     val customStringAccessible: CustomStringAccessible = CustomStringAccessible,
-    val customIntAccessible: CustomIntAccessible = CustomIntAccessible,
+    val customIntAccessible: CustomIntAccessible = CustomIntAccessible
 )
 
 @Buildable

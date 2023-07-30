@@ -27,36 +27,33 @@ kotlin {
             }
         }
     }
-    // hack from https://github.com/atsushieno/augene-ng/issues/10
     val hostOs = System.getProperty("os.name")
     val isMingwX64 = hostOs.startsWith("Windows")
     when {
         hostOs == "Mac OS X" -> {
-            macosX64("native")
-            ios("nativeIOS")
+            macosX64()
+            iosX64()
+            iosArm64()
+            iosSimulatorArm64()
         }
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
+        hostOs == "Linux" -> linuxX64()
+        isMingwX64 -> mingwX64()
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
-    // endof hack
-//    mingwX64()
-//    macosX64()
-//    linuxX64()
-//    ios()
+
     if (androidEnabled) {
         android()
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation("io.github.virelion:buildata-runtime:$buildataRuntimeVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
             }
         }
 
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
@@ -76,59 +73,13 @@ kotlin {
             }
         }
 
-        val jsMain by getting {
-            dependencies {
-            }
-        }
-
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
             }
         }
-//
-//        val nativeMain by creating {
-//            dependencies {
-//            }
-//        }
-//
-//        val linuxX64Main by getting {
-//            dependsOn(nativeMain)
-//            dependencies {
-//            }
-//        }
-//
-//        val macosX64Main by getting {
-//            dependsOn(nativeMain)
-//            dependencies {
-//            }
-//        }
-//
-//        val iosX64Main by getting {
-//            dependsOn(nativeMain)
-//            dependencies {
-//            }
-//        }
-//
-//        val iosArm64Main by getting {
-//            dependsOn(nativeMain)
-//            dependencies {
-//            }
-//        }
-//
-//        val mingwX64Main by getting {
-//            dependsOn(nativeMain)
-//            dependencies {
-//            }
-//        }
         if (androidEnabled) {
-            val androidMain by getting {
-                dependencies {
-                    implementation(kotlin("stdlib"))
-                }
-            }
-
-            val androidTest by getting {
+            val androidUnitTest by getting {
                 dependencies {
                     implementation(kotlin("test"))
                     implementation(kotlin("test-junit"))
@@ -138,18 +89,39 @@ kotlin {
     }
 }
 
+tasks {
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+
+    withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
+        kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
+        }
+    }
+
+    withType(org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile::class).all {
+        kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
+        }
+    }
+
+    withType(org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile::class).all {
+        kotlinOptions {
+            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
+        }
+    }
+}
+
 fun Project.configureAndroid() {
     apply(plugin = "com.android.application")
 
     configure<AppExtension> {
-        buildToolsVersion("29.0.2")
-        compileSdkVersion(29)
+        namespace = "io.github.virelion.buildata.demo"
+        compileSdkVersion = "android-29"
 
         defaultConfig {
-            targetSdkVersion(29)
-            minSdkVersion(21)
-            versionCode = 1
-            versionName = "1.0"
+            minSdk = 21
         }
 
         compileOptions {
@@ -158,16 +130,14 @@ fun Project.configureAndroid() {
         }
 
         sourceSets.getByName("main").apply {
-            java.srcDirs("src/commonMain/kotlin")
+            java.srcDirs("src/androidMain/kotlin")
             res.srcDirs("src/androidMain/res")
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
             assets.srcDirs("src/commonMain/resources/assets")
         }
 
         sourceSets.getByName("androidTest").apply {
-            java.srcDirs("src/commonTest/kotlin")
+            java.srcDirs("src/commonTest/kotlin", "src/jvmTest/kotlin")
             res.srcDirs("src/androidTest/res")
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
             assets.srcDirs("src/commonMain/resources/assets")
         }
 

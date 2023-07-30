@@ -9,7 +9,7 @@ on:
 
 jobs:
   "Linux":
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
       GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
@@ -31,7 +31,7 @@ jobs:
   "GradlePlugin":
     name: Gradle Plugin
     needs: [ Linux ]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -65,7 +65,7 @@ jobs:
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
 
   "Windows":
-    runs-on: windows-2019
+    runs-on: windows-latest
     needs: [ Linux ]
     env:
       GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}

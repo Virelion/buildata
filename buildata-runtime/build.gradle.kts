@@ -13,7 +13,7 @@ plugins {
     kotlin("multiplatform")
     `maven-publish`
     id("org.jlleitschuh.gradle.ktlint")
-    id("org.jetbrains.dokka") version "1.8.10"
+    id("org.jetbrains.dokka") version "1.9.10"
     signing
 }
 
@@ -48,7 +48,9 @@ kotlin {
         linuxX64()
     }
 
-    ios()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
     val publicationsFromMainHost =
         listOf(jvm(), js())
             .map { it.name } + "kotlinMultiplatform" + "androidDebug" + "androidRelease" + "metadata"
@@ -70,12 +72,12 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
             }
         }
 
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
@@ -100,40 +102,13 @@ kotlin {
             }
         }
 
-        val nativeMain by creating {
-            dependencies {
-            }
-        }
-
-        val mingwX64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val macosX64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        if (linuxTargetEnabled) {
-            val linuxX64Main by getting {
-                dependsOn(nativeMain)
-            }
-        }
-
-        val iosX64Main by getting {
-            dependsOn(nativeMain)
-        }
-
-        val iosArm64Main by getting {
-            dependsOn(nativeMain)
-        }
-
         if (androidEnabled) {
             val androidMain by getting {
                 dependencies {
                 }
             }
 
-            val androidTest by getting {
+            val androidUnitTest by getting {
                 dependencies {
                     implementation(kotlin("test"))
                     implementation(kotlin("test-junit"))
@@ -146,19 +121,19 @@ kotlin {
 tasks {
     withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-Xopt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
         }
     }
 
     withType(org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile::class).all {
         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-Xopt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
         }
     }
 
     withType(org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile::class).all {
         kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-Xopt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
         }
     }
 
@@ -200,9 +175,6 @@ afterEvaluate {
                 apply(from = "$rootDir/gradle/pom.gradle.kts")
                 val configurePOM: ((MavenPublication, Project) -> Unit) by extra
 
-                this.forEach {
-                    logger.warn(it.name)
-                }
                 this.getByName<MavenPublication>("androidRelease") {
                     configurePOM(this, project)
                 }
@@ -216,10 +188,8 @@ afterEvaluate {
 }
 
 fun Project.configureAndroid() {
-
     configure<LibraryExtension> {
         namespace = "io.github.virelion"
-        buildToolsVersion = "29.0.2"
         compileSdkVersion = "android-29"
 
         defaultConfig {
@@ -234,14 +204,12 @@ fun Project.configureAndroid() {
         sourceSets.getByName("main").apply {
             java.srcDirs("src/androidMain/kotlin")
             res.srcDirs("src/androidMain/res")
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
             assets.srcDirs("src/commonMain/resources/assets")
         }
 
         sourceSets.getByName("androidTest").apply {
             java.srcDirs("src/commonTest/kotlin", "src/jvmTest/kotlin")
             res.srcDirs("src/androidTest/res")
-            manifest.srcFile("src/androidMain/AndroidManifest.xml")
             assets.srcDirs("src/commonMain/resources/assets")
         }
 
