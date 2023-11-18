@@ -36,7 +36,7 @@ class DynamicAccessTest {
             mapOf("inner1" to "Inner1"),
             listOf("inner1"),
             mapOf(1 to "element"),
-            arrayOf("arrayElement"),
+            arrayOf("arrayElement")
         ),
         null,
         "value"

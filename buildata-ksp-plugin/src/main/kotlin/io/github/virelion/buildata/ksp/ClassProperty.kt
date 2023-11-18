@@ -16,7 +16,9 @@
 package io.github.virelion.buildata.ksp
 
 import com.google.devtools.ksp.symbol.KSAnnotation
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSValueParameter
 import io.github.virelion.buildata.ksp.extensions.classFQName
 import io.github.virelion.buildata.ksp.extensions.className
 import io.github.virelion.buildata.ksp.extensions.pkg
@@ -26,12 +28,20 @@ import io.github.virelion.buildata.ksp.utils.CodeBuilder
 class ClassProperty(
     val name: String,
     val type: KSType,
-    val hasDefaultValue: Boolean,
     val nullable: Boolean,
-    val annotations: Sequence<KSAnnotation>,
     val buildable: Boolean,
-    val pathReflection: Boolean
+    val pathReflection: Boolean,
+    val classProperty: KSPropertyDeclaration?,
+    val constructorParameter: KSValueParameter
 ) {
+    val annotations: Sequence<KSAnnotation> get() {
+        return constructorParameter.annotations +
+            (classProperty?.annotations ?: emptySequence()) +
+            (classProperty?.getter?.annotations ?: emptySequence()) +
+            (classProperty?.setter?.annotations ?: emptySequence())
+    }
+
+    val hasDefaultValue: Boolean get() = constructorParameter.hasDefault
     val backingPropName = "${name}_Element"
 
     fun generatePropertyDeclaration(codeBuilder: CodeBuilder) {

@@ -18,11 +18,10 @@ package io.github.virelion.buildata.ksp.path
 import com.google.devtools.ksp.symbol.KSAnnotation
 import io.github.virelion.buildata.ksp.ClassProperty
 import io.github.virelion.buildata.ksp.extensions.classFQName
-import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 @JvmInline
 value class StringNamePathIdentifier(
-    private val classProperty: ClassProperty,
+    private val classProperty: ClassProperty
 ) {
     companion object {
         val PATH_ELEMENT_NAME_FQNAME = "io.github.virelion.buildata.path.PathElementName"
@@ -47,11 +46,11 @@ value class StringNamePathIdentifier(
     }
 
     private fun KSAnnotation.getFirstParamOfAnnotationAsString(): String? {
-        return arguments.firstOrNull()?.value?.safeAs<String>()
+        return arguments.firstOrNull()?.value as? String
     }
 
     private fun KSAnnotation.getFirstListElementOfAnnotationAsString(): String? {
-        return arguments.firstOrNull()?.value?.safeAs<List<String>>()?.firstOrNull()
+        return (arguments.firstOrNull()?.value as? List<String>)?.firstOrNull()
     }
 
     override fun toString(): String {

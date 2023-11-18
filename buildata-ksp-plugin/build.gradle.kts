@@ -26,7 +26,6 @@ repositories {
 val kspVersion: String by project
 
 dependencies {
-    implementation(kotlin("stdlib"))
     implementation(kotlin("compiler-embeddable"))
     implementation("com.google.devtools.ksp:symbol-processing-api:$kspVersion")
     compileOnly("com.google.auto.service:auto-service:1.0.1")

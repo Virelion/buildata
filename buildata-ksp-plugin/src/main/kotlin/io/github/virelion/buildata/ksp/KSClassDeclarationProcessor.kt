@@ -74,15 +74,16 @@ internal class KSClassDeclarationProcessor(
             .filter { it.isVar || it.isVal }
             .map { parameter ->
                 val type = parameter.type.resolve()
+                val classProp = this.getAllProperties().find { it.simpleName == parameter.name }
 
                 ClassProperty(
                     name = requireNotNull(parameter.name?.getShortName(), parameter) { "$printableFqName contains nameless property" },
                     type = type,
-                    hasDefaultValue = parameter.hasDefault,
                     nullable = type.nullability == Nullability.NULLABLE,
-                    annotations = parameter.annotations,
                     buildable = (type.classFQName() in annotatedClasses.buildable),
-                    pathReflection = (type.classFQName() in annotatedClasses.pathReflection)
+                    pathReflection = (type.classFQName() in annotatedClasses.pathReflection),
+                    classProp,
+                    parameter
                 )
             }
     }

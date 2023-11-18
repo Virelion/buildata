@@ -9,7 +9,7 @@ on:
 
 jobs:
   "Linux":
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
       GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
@@ -17,6 +17,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Release
         run: >
           ./gradlew final publish
@@ -31,11 +36,16 @@ jobs:
   "GradlePlugin":
     name: Gradle Plugin
     needs: [ Linux ]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Release
         run: >
           ./gradlew final publishPlugins
@@ -55,6 +65,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Release
         run: >
           ./gradlew final :buildata-runtime:publish
@@ -65,7 +80,7 @@ jobs:
           -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
 
   "Windows":
-    runs-on: windows-2019
+    runs-on: windows-latest
     needs: [ Linux ]
     env:
       GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
@@ -74,6 +89,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Release
         shell: cmd
         run: >

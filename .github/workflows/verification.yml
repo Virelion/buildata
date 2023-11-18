@@ -14,12 +14,17 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         run: >
           ./gradlew
           -PisMainHost=true
           -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishMacosX64PublicationToMavenLocal
           publishIosX64PublicationToMavenLocal
@@ -30,15 +35,20 @@ jobs:
         run: ./gradlew clean macosX64Test iosX64Test
 
   "Linux":
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         run: >
           ./gradlew ktlintCheck
           -PisMainHost=true
           -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishLinuxX64PublicationToMavenLocal
           linuxX64Test
@@ -47,16 +57,21 @@ jobs:
         run: ./gradlew clean ktlintCheck linuxX64Test
 
   "Windows":
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         shell: cmd
         run: >
           .\gradlew.bat
           -PisMainHost=true
           -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishMingwX64PublicationToMavenLocal
           mingwX64Test
@@ -65,15 +80,20 @@ jobs:
         run: .\gradlew.bat clean mingwX64Test
 
   "JavaScript":
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         run: >
           ./gradlew
           -PisMainHost=true
           -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishLinuxX64PublicationToMavenLocal
           publishJsPublicationToMavenLocal
@@ -83,14 +103,19 @@ jobs:
         run: ./gradlew clean jsTest jsNodeTest
 
   "JVM":
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         run: >
           ./gradlew -PisMainHost=true
           -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishLinuxX64PublicationToMavenLocal
           publishJvmPublicationToMavenLocal
@@ -100,13 +125,18 @@ jobs:
         run: ./gradlew clean jvmTest project-types:jvm:test
 
   "Android":
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         run: >
           ./gradlew -PisMainHost=true -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishAndroidDebugPublicationToMavenLocal
           publishAndroidReleasePublicationToMavenLocal
