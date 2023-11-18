@@ -14,17 +14,21 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         run: >
           ./gradlew
           -PisMainHost=true
           -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishMacosX64PublicationToMavenLocal
           publishIosX64PublicationToMavenLocal
           publishIosArm64PublicationToMavenLocal
-          publishIosArmSimulator64PublicationToMavenLocal
           macosX64Test iosX64Test
       - name: Integration tests
         working-directory: integration-test-project
@@ -34,12 +38,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         run: >
           ./gradlew ktlintCheck
           -PisMainHost=true
           -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishLinuxX64PublicationToMavenLocal
           linuxX64Test
@@ -51,13 +60,18 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         shell: cmd
         run: >
           .\gradlew.bat
           -PisMainHost=true
           -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishMingwX64PublicationToMavenLocal
           mingwX64Test
@@ -69,12 +83,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         run: >
           ./gradlew
           -PisMainHost=true
           -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishLinuxX64PublicationToMavenLocal
           publishJsPublicationToMavenLocal
@@ -87,11 +106,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         run: >
           ./gradlew -PisMainHost=true
           -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishLinuxX64PublicationToMavenLocal
           publishJvmPublicationToMavenLocal
@@ -104,10 +128,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          java-package: 'jdk'
       - name: Unit tests
         run: >
           ./gradlew -PisMainHost=true -Prelease.version=0.0.0-SNAPSHOT
-          clean publishPluginsToMavenLocal
+          publishPluginsToMavenLocal
           publishKotlinMultiplatformPublicationToMavenLocal
           publishAndroidDebugPublicationToMavenLocal
           publishAndroidReleasePublicationToMavenLocal

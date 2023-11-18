@@ -94,8 +94,8 @@ repositories {
 1. Add buildata plugin to your build
 ```kotlin
 plugins {
-    kotlin("multiplatform") version "1.5.20"
-    kotlin("jvm") version "1.5.20" // alternatively
+    kotlin("multiplatform") version "1.9.20"
+    kotlin("jvm") version "1.9.20" // alternatively
     // ...
     id("io.github.virelion.buildata") version <LIBRARY_VERSION>
 }
