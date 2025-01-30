@@ -14,7 +14,7 @@ buildscript {
 plugins {
     kotlin("multiplatform") version "1.9.20" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1" apply false
-    id("com.gradle.plugin-publish") version "1.1.0" apply false
+    id("com.gradle.plugin-publish") version "1.3.1" apply false
     id("nebula.release") version "18.0.4"
 }
 
