@@ -44,7 +44,7 @@ val kspVersion: String by project
 dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("gradle-plugin-api"))
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.20")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25")
     implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$kspVersion")
     compileOnly("com.google.auto.service:auto-service:1.1.1")
     kapt("com.google.auto.service:auto-service:1.1.1")
