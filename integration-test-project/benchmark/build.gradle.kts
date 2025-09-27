@@ -14,7 +14,6 @@ repositories {
 val buildataRuntimeVersion = "0.0.0-SNAPSHOT"
 
 dependencies {
-    implementation("io.github.virelion:buildata-runtime:$buildataRuntimeVersion")
-
+    implementation(project(":buildata-runtime"))
     testImplementation(kotlin("test-junit"))
 }

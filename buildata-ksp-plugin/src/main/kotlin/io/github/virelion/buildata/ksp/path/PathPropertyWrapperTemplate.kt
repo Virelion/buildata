@@ -16,6 +16,7 @@
 package io.github.virelion.buildata.ksp.path
 
 import com.google.devtools.ksp.innerArguments
+import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.Nullability
 import io.github.virelion.buildata.ksp.BuildataCodegenException
@@ -31,6 +32,7 @@ import io.github.virelion.buildata.ksp.utils.isScalar
 import io.github.virelion.buildata.ksp.utils.nullableIdentifier
 
 class PathPropertyWrapperTemplate(
+    override val source: KSFile,
     override val pkg: String,
     val originalName: String,
     val properties: List<ClassProperty>

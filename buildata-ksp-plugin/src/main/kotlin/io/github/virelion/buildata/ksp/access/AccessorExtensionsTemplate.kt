@@ -15,10 +15,12 @@
  */
 package io.github.virelion.buildata.ksp.access
 
+import com.google.devtools.ksp.symbol.KSFile
 import io.github.virelion.buildata.ksp.GeneratedFileTemplate
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
 
 class AccessorExtensionsTemplate(
+    override val source: KSFile,
     override val pkg: String,
     val originalName: String
 ) : GeneratedFileTemplate {

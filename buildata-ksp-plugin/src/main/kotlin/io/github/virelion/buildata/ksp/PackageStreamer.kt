@@ -15,33 +15,19 @@
  */
 package io.github.virelion.buildata.ksp
 
+import com.google.devtools.ksp.processing.CodeGenerator
+import com.google.devtools.ksp.processing.Dependencies
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
-import java.io.File
-import java.io.PrintWriter
+import java.io.OutputStreamWriter
 
 internal class PackageStreamer(
-    private val codegenDir: String
+    private val codeGenerator: CodeGenerator
 ) {
     fun consume(template: GeneratedFileTemplate) {
-        val packageDir = codegenDir +
-            File.separator +
-            template.pkg.getPathFromPackageName()
-        File(packageDir).mkdirs()
-
-        val output = File(
-            packageDir +
-                File.separator +
-                template.name + ".kt"
-        )
-        output.createNewFile()
-
-        val printWriter = PrintWriter(output)
-        printWriter.use {
-            it.print(template.generateCode(CodeBuilder()))
+        codeGenerator.createNewFile(Dependencies(aggregating = true), template.pkg, template.name, "kt").use { output ->
+            OutputStreamWriter(output).use { writer ->
+                writer.append(template.generateCode(CodeBuilder()))
+            }
         }
-    }
-
-    internal fun String.getPathFromPackageName(): String {
-        return replace('.', File.separatorChar)
     }
 }

@@ -32,6 +32,7 @@ internal class KSClassDeclarationProcessor(
     fun processAccessorClasses(ksClassDeclaration: KSClassDeclaration): AccessorExtensionsTemplate {
         ksClassDeclaration.apply {
             return AccessorExtensionsTemplate(
+                source = ksClassDeclaration.containingFile!!,
                 pkg = this.packageName.asString(),
                 originalName = this.simpleName.getShortName()
             )
@@ -46,6 +47,7 @@ internal class KSClassDeclarationProcessor(
                 error("Cannot add create builder for non data class", this)
             }
             return BuilderClassTemplate(
+                source = ksClassDeclaration.containingFile!!,
                 pkg = this.packageName.asString(),
                 originalName = this.simpleName.getShortName(),
                 properties = getClassProperties()
@@ -61,6 +63,7 @@ internal class KSClassDeclarationProcessor(
                 error("Cannot add create builder for non data class", this)
             }
             return PathPropertyWrapperTemplate(
+                source = ksClassDeclaration.containingFile!!,
                 pkg = this.packageName.asString(),
                 originalName = this.simpleName.getShortName(),
                 properties = getClassProperties()
