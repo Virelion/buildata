@@ -9,8 +9,6 @@ repositories {
     google()
 }
 
-val buildataRuntimeVersion = "0.0.0-SNAPSHOT"
-
 dependencies {
     implementation(project(":buildata-runtime"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
