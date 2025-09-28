@@ -15,6 +15,7 @@
  */
 package io.github.virelion.buildata.ksp
 
+import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
@@ -26,7 +27,7 @@ import io.github.virelion.buildata.ksp.extensions.printableFqName
 
 class BuildataSymbolProcessor(
     val logger: KSPLogger,
-    val buildataCodegenDir: String
+    val codeGenerator: CodeGenerator
 ) : SymbolProcessor {
 
     override fun finish() {
@@ -36,7 +37,7 @@ class BuildataSymbolProcessor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         logger.info("BuildataSymbolProcessor processing started")
 
-        val streamer = PackageStreamer(buildataCodegenDir)
+        val streamer = PackageStreamer(codeGenerator)
 
         // Stream Buildable code-generated classes
         val buildableAnnotated = resolver

@@ -15,11 +15,13 @@
  */
 package io.github.virelion.buildata.ksp
 
+import com.google.devtools.ksp.symbol.KSFile
 import io.github.virelion.buildata.ksp.extensions.typeForDocumentation
 import io.github.virelion.buildata.ksp.path.StringNamePathIdentifier
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
 
 internal class BuilderClassTemplate(
+    override val source: KSFile,
     override val pkg: String,
     val originalName: String,
     val properties: List<ClassProperty>

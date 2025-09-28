@@ -1,5 +1,5 @@
 import com.android.build.gradle.LibraryExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 buildscript {
     repositories {
@@ -21,7 +21,8 @@ description = "Buildata runtime for generated builders."
 
 val linuxTargetEnabled = project.findProperty("kotlin.native.linux.enabled") ?: "true" == "true"
 
-val androidEnabled = System.getenv("ANDROID_HOME") != null
+val androidEnabled = (System.getenv("ANDROID_HOME") != null)
+    .apply { if (!this) logger.error("Android is not enabled for project ANDROID_HOME is empty") }
 if (androidEnabled) {
     configureAndroid()
 }
@@ -32,8 +33,15 @@ repositories {
     google()
 }
 
+var publicationsFromMainHost = listOf<String>()
+
 kotlin {
-    jvm {}
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+    }
+    jvm {
+        this.compilerOptions.jvmTarget = JvmTarget.JVM_11
+    }
     js(IR) {
         nodejs {
             testTask {
@@ -51,22 +59,12 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
-    val publicationsFromMainHost =
+    publicationsFromMainHost =
         listOf(jvm(), js())
-            .map { it.name } + "kotlinMultiplatform" + "androidDebug" + "androidRelease" + "metadata"
-    publishing {
-        publications {
-            matching { it.name in publicationsFromMainHost }.all {
-                val targetPublication = this@all
-                tasks.withType<AbstractPublishToMaven>()
-                    .matching { it.publication == targetPublication }
-                    .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
-            }
-        }
-    }
+        .map { it.name } + "kotlinMultiplatform" + "androidDebug" + "androidRelease" + "metadata"
 
     if (androidEnabled) {
-        android {
+        androidTarget {
             publishLibraryVariants("release", "debug")
         }
     }
@@ -118,28 +116,18 @@ kotlin {
     }
 }
 
+publishing {
+    publications {
+        matching { it.name in publicationsFromMainHost }.all {
+            val targetPublication = this@all
+            tasks.withType<AbstractPublishToMaven>()
+                .matching { it.publication == targetPublication }
+                .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
+        }
+    }
+}
+
 tasks {
-    withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
-        kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
-        }
-    }
-
-    withType(org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile::class).all {
-        kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
-        }
-    }
-
-    withType(org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile::class).all {
-        kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
-        }
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
-    }
 
     withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
         outputDirectory.set(file("$buildDir/javadoc"))
@@ -175,13 +163,13 @@ afterEvaluate {
                 apply(from = "$rootDir/gradle/pom.gradle.kts")
                 val configurePOM: ((MavenPublication, Project) -> Unit) by extra
 
-                this.getByName<MavenPublication>("androidRelease") {
-                    configurePOM(this, project)
-                }
+//                this.getByName<MavenPublication>("androidRelease") {
+//                    configurePOM(this, project)
+//                }
 
-                this.getByName<MavenPublication>("androidDebug") {
-                    configurePOM(this, project)
-                }
+//                this.getByName<MavenPublication>("androidDebug") {
+//                    configurePOM(this, project)
+//                }
             }
         }
     }
@@ -190,15 +178,15 @@ afterEvaluate {
 fun Project.configureAndroid() {
     configure<LibraryExtension> {
         namespace = "io.github.virelion"
-        compileSdkVersion = "android-29"
+        compileSdkVersion = "android-30"
 
         defaultConfig {
             minSdk = 21
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
         }
 
         sourceSets.getByName("main").apply {

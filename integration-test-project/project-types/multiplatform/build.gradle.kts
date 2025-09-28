@@ -2,7 +2,7 @@ import com.android.build.gradle.AppExtension
 
 plugins {
     kotlin("multiplatform")
-    id("io.github.virelion.buildata")
+    id("com.google.devtools.ksp") version "2.2.20-2.0.3"
 }
 
 val androidEnabled = System.getenv("ANDROID_HOME") != null
@@ -16,10 +16,13 @@ repositories {
     google()
 }
 
-val buildataRuntimeVersion = "0.0.0-SNAPSHOT"
-
 kotlin {
-    jvm()
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+    }
+    jvm {
+        this.compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
+    }
     js(IR) {
         nodejs {
             testTask {
@@ -42,13 +45,16 @@ kotlin {
     }
 
     if (androidEnabled) {
-        android()
+        androidTarget()
     }
 
     sourceSets {
         commonMain {
+            kotlin {
+                srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+            }
             dependencies {
-                implementation("io.github.virelion:buildata-runtime:$buildataRuntimeVersion")
+                implementation(project(":buildata-runtime"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
             }
         }
@@ -89,28 +95,16 @@ kotlin {
     }
 }
 
-tasks {
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-
-    withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
-        kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
+afterEvaluate {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().all {
+        if (name != "kspCommonMainKotlinMetadata") {
+            dependsOn("kspCommonMainKotlinMetadata")
         }
     }
+}
 
-    withType(org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile::class).all {
-        kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
-        }
-    }
-
-    withType(org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile::class).all {
-        kotlinOptions {
-            freeCompilerArgs = freeCompilerArgs + listOf("-opt-in=kotlin.RequiresOptIn")
-        }
-    }
+dependencies {
+    add("kspCommonMainMetadata", project(":buildata-ksp-plugin"))
 }
 
 fun Project.configureAndroid() {
@@ -118,15 +112,15 @@ fun Project.configureAndroid() {
 
     configure<AppExtension> {
         namespace = "io.github.virelion.buildata.demo"
-        compileSdkVersion = "android-29"
+        compileSdkVersion = "android-30"
 
         defaultConfig {
             minSdk = 21
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_1_8
-            targetCompatibility = JavaVersion.VERSION_1_8
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
         }
 
         sourceSets.getByName("main").apply {

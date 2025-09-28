@@ -15,9 +15,11 @@
  */
 package io.github.virelion.buildata.ksp
 
+import com.google.devtools.ksp.symbol.KSFile
 import io.github.virelion.buildata.ksp.utils.CodeBuilder
 
 interface GeneratedFileTemplate {
+    val source: KSFile
     val pkg: String
     val name: String
     fun generateCode(codeBuilder: CodeBuilder): String

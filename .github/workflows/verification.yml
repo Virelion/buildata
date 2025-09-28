@@ -21,18 +21,7 @@ jobs:
           java-package: 'jdk'
       - name: Unit tests
         run: >
-          ./gradlew
-          -PisMainHost=true
-          -Prelease.version=0.0.0-SNAPSHOT
-          publishPluginsToMavenLocal
-          publishKotlinMultiplatformPublicationToMavenLocal
-          publishMacosX64PublicationToMavenLocal
-          publishIosX64PublicationToMavenLocal
-          publishIosArm64PublicationToMavenLocal
-          macosX64Test iosX64Test
-      - name: Integration tests
-        working-directory: integration-test-project
-        run: ./gradlew clean macosX64Test iosX64Test
+          ./gradlew macosX64Test iosX64Test
 
   "Linux":
     runs-on: ubuntu-latest
@@ -45,16 +34,7 @@ jobs:
           java-package: 'jdk'
       - name: Unit tests
         run: >
-          ./gradlew ktlintCheck
-          -PisMainHost=true
-          -Prelease.version=0.0.0-SNAPSHOT
-          publishPluginsToMavenLocal
-          publishKotlinMultiplatformPublicationToMavenLocal
-          publishLinuxX64PublicationToMavenLocal
-          linuxX64Test
-      - name: Integration tests
-        working-directory: integration-test-project
-        run: ./gradlew clean ktlintCheck linuxX64Test
+          ./gradlew ktlintCheck linuxX64Test  -PisMainHost=true 
 
   "Windows":
     runs-on: windows-latest
@@ -68,16 +48,7 @@ jobs:
       - name: Unit tests
         shell: cmd
         run: >
-          .\gradlew.bat
-          -PisMainHost=true
-          -Prelease.version=0.0.0-SNAPSHOT
-          publishPluginsToMavenLocal
-          publishKotlinMultiplatformPublicationToMavenLocal
-          publishMingwX64PublicationToMavenLocal
-          mingwX64Test
-      - name: Integration tests
-        working-directory: integration-test-project
-        run: .\gradlew.bat clean mingwX64Test
+          .\gradlew.bat mingwX64Test
 
   "JavaScript":
     runs-on: ubuntu-latest
@@ -90,17 +61,7 @@ jobs:
           java-package: 'jdk'
       - name: Unit tests
         run: >
-          ./gradlew
-          -PisMainHost=true
-          -Prelease.version=0.0.0-SNAPSHOT
-          publishPluginsToMavenLocal
-          publishKotlinMultiplatformPublicationToMavenLocal
-          publishLinuxX64PublicationToMavenLocal
-          publishJsPublicationToMavenLocal
-          jsTest jsNodeTest
-      - name: Integration tests
-        working-directory: integration-test-project
-        run: ./gradlew clean jsTest jsNodeTest
+          ./gradlew jsTest jsNodeTest
 
   "JVM":
     runs-on: ubuntu-latest
@@ -113,16 +74,7 @@ jobs:
           java-package: 'jdk'
       - name: Unit tests
         run: >
-          ./gradlew -PisMainHost=true
-          -Prelease.version=0.0.0-SNAPSHOT
-          publishPluginsToMavenLocal
-          publishKotlinMultiplatformPublicationToMavenLocal
-          publishLinuxX64PublicationToMavenLocal
-          publishJvmPublicationToMavenLocal
-          jvmTest
-      - name: Integration tests
-        working-directory: integration-test-project
-        run: ./gradlew clean jvmTest project-types:jvm:test
+          ./gradlew jvmTest
 
   "Android":
     runs-on: ubuntu-latest
@@ -135,13 +87,5 @@ jobs:
           java-package: 'jdk'
       - name: Unit tests
         run: >
-          ./gradlew -PisMainHost=true -Prelease.version=0.0.0-SNAPSHOT
-          publishPluginsToMavenLocal
-          publishKotlinMultiplatformPublicationToMavenLocal
-          publishAndroidDebugPublicationToMavenLocal
-          publishAndroidReleasePublicationToMavenLocal
-          testDebugUnitTest
-      - name: Integration tests
-        working-directory: integration-test-project
-        run: ./gradlew clean testDebugUnitTest
+          ./gradlew testDebugUnitTest
 

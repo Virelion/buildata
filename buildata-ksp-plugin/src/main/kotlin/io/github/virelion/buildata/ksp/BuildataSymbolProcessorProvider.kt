@@ -25,9 +25,7 @@ class BuildataSymbolProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
         return BuildataSymbolProcessor(
             environment.logger,
-            requireNotNull(environment.options["buildataCodegenDir"]) {
-                "buildataCodegenDir ksp option should have correct path".apply { environment.logger.error(this) }
-            }
+            environment.codeGenerator
         )
     }
 }
