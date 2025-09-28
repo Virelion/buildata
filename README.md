@@ -96,12 +96,25 @@ repositories {
 plugins {
     kotlin("multiplatform") version "2.2.20"
     kotlin("jvm") version "2.2.20" // alternatively
-    // ...
-    id("io.github.virelion.buildata") version <LIBRARY_VERSION>
 }
 ```
 
 2. Add buildata runtime to your dependencies
+
+For JVM Kotlin projects
+```kotlin
+plugins {
+    kotlin("jvm")
+    id("com.google.devtools.ksp") version "2.2.20-2.0.3"
+}
+dependencies {
+    add("ksp", project(":buildata-ksp-plugin"))
+    implementation("io.github.virelion.buildata:buildata-runtime:<LIBRARY_VERSION>")
+}
+```
+
+For multiplatform:
+
 ```kotlin
 kotlin {
     // ...
@@ -113,6 +126,18 @@ kotlin {
         }
 
         // ...
+    }
+}
+
+dependencies {
+    add("kspCommonMainMetadata", project("io.github.virelion.buildata:buildata-ksp-plugin:<LIBRARY_VERSION>"))
+}
+
+afterEvaluate {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().all {
+        if (name != "kspCommonMainKotlinMetadata") {
+            dependsOn("kspCommonMainKotlinMetadata")
+        }
     }
 }
 ```

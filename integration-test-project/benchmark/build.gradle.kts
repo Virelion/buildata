@@ -11,8 +11,6 @@ repositories {
     google()
 }
 
-val buildataRuntimeVersion = "0.0.0-SNAPSHOT"
-
 dependencies {
     implementation(project(":buildata-runtime"))
     testImplementation(kotlin("test-junit"))
