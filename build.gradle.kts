@@ -25,8 +25,10 @@ allprojects {
 }
 
 subprojects {
-    if (!this.plugins.hasPlugin("maven-publish")) {
-        apply(plugin = "maven-publish")
+    afterEvaluate {
+        if (this.plugins.hasPlugin("maven-publish")) {
+            configureMavenCentralRepository()
+        }
     }
 }
 
@@ -34,7 +36,6 @@ val configurePOM: ((MavenPublication, Project) -> Unit) by extra
 
 fun Project.configureMavenCentralRepository() {
     configure<PublishingExtension> {
-
         repositories {
             maven {
                 name = "ossrh-staging-api"
