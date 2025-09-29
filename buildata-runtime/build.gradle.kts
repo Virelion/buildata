@@ -163,13 +163,13 @@ afterEvaluate {
                 apply(from = "$rootDir/gradle/pom.gradle.kts")
                 val configurePOM: ((MavenPublication, Project) -> Unit) by extra
 
-//                this.getByName<MavenPublication>("androidRelease") {
-//                    configurePOM(this, project)
-//                }
+                this.getByName<MavenPublication>("androidRelease") {
+                    configurePOM(this, project)
+                }
 
-//                this.getByName<MavenPublication>("androidDebug") {
-//                    configurePOM(this, project)
-//                }
+                this.getByName<MavenPublication>("androidDebug") {
+                    configurePOM(this, project)
+                }
             }
         }
     }
