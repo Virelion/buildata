@@ -34,31 +34,14 @@ val configurePOM: ((MavenPublication, Project) -> Unit) by extra
 
 fun Project.configureMavenCentralRepository() {
     configure<PublishingExtension> {
+
         repositories {
             maven {
-                name = "MavenCentralReleaseStaging"
-                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
+                name = "ossrh-staging-api"
+                url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
                 credentials {
-                    username = project.findProperty("nexus.username") as? String
-                    password = project.findProperty("nexus.token") as? String
-                }
-            }
-        }
-        afterEvaluate {
-            publications {
-                filterIsInstance<MavenPublication>()
-                        .forEach {
-                            configurePOM(it, this@afterEvaluate)
-                        }
-            }
-
-            val isReleasingWithSigning: Boolean = (findProperty("isReleasingWithSigning") as? String)?.toBoolean() ?: false
-            if(isReleasingWithSigning) {
-                val signingKey = System.getenv("GPG_SECRET_KEY") ?: error("Missing signing.secretKey")
-                val signingPassword = System.getenv("GPG_SECRET_PASSWORD") ?: error("Missing signing.password")
-                configure<SigningExtension> {
-                    useInMemoryPgpKeys(signingKey, signingPassword)
-                    sign(publications)
+                    username = project.findProperty("sonatype.username") as? String
+                    password = project.findProperty("sonatype.password") as? String
                 }
             }
         }
