@@ -25,13 +25,10 @@ jobs:
       - name: Release
         run: >
           ./gradlew final publish
-          -PisReleasingWithSigning=true
           -Prelease.scope=${{ github.event.inputs.scope }}
           -PisMainHost=true
-          -Dorg.ajoberstar.grgit.auth.username=Virelion
-          -Dorg.ajoberstar.grgit.auth.password=${{ secrets.GITHUB_TOKEN }}
-          -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
-          -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
+          -Psonatype.token=${{ secrets.SONATYPE_PASSWORD }}
+          -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
 
   "MacOS-and-iOS":
     name: MacOS & iOS
@@ -52,11 +49,10 @@ jobs:
       - name: Release
         run: >
           ./gradlew final :buildata-runtime:publish
-          -PisReleasingWithSigning=true
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
-          -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
-          -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
+          -Psonatype.token=${{ secrets.SONATYPE_PASSWORD }}
+          -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
 
   "Windows":
     runs-on: windows-latest
@@ -77,8 +73,7 @@ jobs:
         shell: cmd
         run: >
           .\gradlew.bat final :buildata-runtime:publish
-          -PisReleasingWithSigning=true
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
-          -Pnexus.token=${{ secrets.NEXUS_TOKEN }}
-          -Pnexus.username=${{ secrets.NEXUS_USERNAME }}
+          -Psonatype.token=${{ secrets.SONATYPE_PASSWORD }}
+          -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
