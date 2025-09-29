@@ -27,7 +27,7 @@ jobs:
           ./gradlew final publish
           -Prelease.scope=${{ github.event.inputs.scope }}
           -PisMainHost=true
-          -Psonatype.token=${{ secrets.SONATYPE_PASSWORD }}
+          -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
 
   "MacOS-and-iOS":
@@ -51,7 +51,7 @@ jobs:
           ./gradlew final :buildata-runtime:publish
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
-          -Psonatype.token=${{ secrets.SONATYPE_PASSWORD }}
+          -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
 
   "Windows":
@@ -75,5 +75,5 @@ jobs:
           .\gradlew.bat final :buildata-runtime:publish
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
-          -Psonatype.token=${{ secrets.SONATYPE_PASSWORD }}
+          -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
