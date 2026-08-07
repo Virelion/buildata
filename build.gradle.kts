@@ -31,6 +31,7 @@ val configurePOM: ((MavenPublication, Project) -> Unit) by extra
 nexusPublishing {
     repositories {
         sonatype {
+            packageGroup.set("io.github.virelion")
             // Sonatype Central / OSSRH Staging API
             nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
