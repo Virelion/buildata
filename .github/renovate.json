@@ -5,5 +5,11 @@
   "ignoreDeps": [
     "io.github.virelion.buildata",
     "io.github.virelion:buildata-runtime"
+  ],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["*"],
+      "groupName": "all dependencies"
+    }
   ]
 }
