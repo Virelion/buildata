@@ -28,15 +28,20 @@ allprojects {
 
 val configurePOM: ((MavenPublication, Project) -> Unit) by extra
 
+
 nexusPublishing {
     repositories {
         sonatype {
+            // Your Sonatype group ID / namespace
             packageGroup.set("io.github.virelion")
-            // Sonatype Central / OSSRH Staging API
-            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+
+            // Staging profile ID (matches package group for OSSRH)
+            stagingProfileId.set("io.github.virelion")
+
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
 
-            // Resolve credentials from project properties (or environment variables)
+            // Resolves credentials passed via -Psonatype.username and -Psonatype.password
             username.set(providers.gradleProperty("sonatype.username"))
             password.set(providers.gradleProperty("sonatype.password"))
         }

@@ -22,7 +22,7 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
           java-package: 'jdk'
-      - name: Release
+      - name: Release Linux Artifacts
         run: >
           ./gradlew final publishToSonatype
           -Prelease.scope=${{ github.event.inputs.scope }}
@@ -46,7 +46,7 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
           java-package: 'jdk'
-      - name: Release
+      - name: Release MacOS & iOS Artifacts
         run: >
           ./gradlew final :buildata-runtime:publishToSonatype
           -Pkotlin.native.linux.enabled=false
@@ -69,7 +69,7 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
           java-package: 'jdk'
-      - name: Release
+      - name: Release Windows Artifacts
         shell: cmd
         run: >
           .\gradlew.bat final :buildata-runtime:publishToSonatype
@@ -90,6 +90,7 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
           java-package: 'jdk'
+
       - name: Close and Release Sonatype Staging Repository
         run: >
           ./gradlew closeAndReleaseSonatypeStagingRepository
