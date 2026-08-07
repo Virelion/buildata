@@ -28,6 +28,7 @@ allprojects {
 
 val configurePOM: ((MavenPublication, Project) -> Unit) by extra
 
+
 nexusPublishing {
     repositories {
         sonatype {
@@ -37,10 +38,7 @@ nexusPublishing {
             // Staging profile ID (matches package group for OSSRH)
             stagingProfileId.set("io.github.virelion")
 
-            // OSSRH Staging Endpoints
-            // Note: If your Sonatype account was created after Feb 2021,
-            // change 'ossrh-staging-api.central.sonatype.com' to 's01.oss.sonatype.org'
-            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
 
             // Resolves credentials passed via -Psonatype.username and -Psonatype.password
