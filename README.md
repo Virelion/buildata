@@ -94,8 +94,8 @@ repositories {
 1. Add buildata plugin to your build
 ```kotlin
 plugins {
-    kotlin("multiplatform") version "2.2.20"
-    kotlin("jvm") version "2.2.20" // alternatively
+    kotlin("multiplatform") version "2.4.10"
+    kotlin("jvm") version "2.4.10" // alternatively
 }
 ```
 
@@ -105,7 +105,7 @@ For JVM Kotlin projects
 ```kotlin
 plugins {
     kotlin("jvm")
-    id("com.google.devtools.ksp") version "2.2.20-2.0.3"
+    id("com.google.devtools.ksp") version "2.3.11"
 }
 dependencies {
     add("ksp", project(":buildata-ksp-plugin"))
