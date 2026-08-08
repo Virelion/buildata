@@ -90,10 +90,9 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
           java-package: 'jdk'
-
-      - name: Close and Release Sonatype Staging Repository
+      - name: Close and Release Staging Repository
         run: >
-          ./gradlew closeAndReleaseSonatypeStagingRepository
+          ./gradlew findSonatypeStagingRepository closeAndReleaseSonatypeStagingRepository
           -Prelease.useLastTag=true
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
