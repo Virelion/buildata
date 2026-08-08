@@ -86,9 +86,9 @@ subprojects {
                     configurePOM(this, project)
                 }
             }
-        }
 
-        configureSigningIfNeeded(project)
+            configureSigningIfNeeded(project)
+        }
     }
 }
 
