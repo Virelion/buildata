@@ -14,7 +14,6 @@ buildscript {
 plugins {
     kotlin("multiplatform") version "2.2.20" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1" apply false
-    id("nebula.release") version "18.0.4"
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 }
 
@@ -45,25 +44,35 @@ nexusPublishing {
     }
 }
 
-tasks.register("saveStagingRepositoryID") {
+tasks.register("saveBuildInformation") {
     group = "publishing"
     description = "Saves the staging repository ID to a file"
 
-    // Must run after initialization
     mustRunAfter("initializeSonatypeStagingRepository")
 
-    val outputFile = layout.buildDirectory.file("nexus-staging-plugin/sonatype.properties")
+    val outputFile = layout.buildDirectory.file("build.properties")
     outputs.file(outputFile)
 
     doLast {
-        // Access the task directly to get the generated ID
         val initTask = tasks.named<io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository>("initializeSonatypeStagingRepository").get()
         val repoId = initTask.registry.get().registry[initTask.repository.get().name].stagingRepositoryId
 
-        initTask.repository.get().name
-        // Save to file
-        outputFile.get().asFile.writeText("stagingRepositoryId=$repoId")
-        println("##[set-output name=REPO_ID;]$repoId") // For CI output
-        println(repoId)
+        val rawVersion = project.version.toString()
+
+        if("v" in rawVersion) throw GradleException("Incorrect version $rawVersion, version cannot contain 'v'")
+        val cleanVersion = rawVersion.removePrefix("v")
+
+        // Ensure releaseTag always retains/adds the 'v' prefix
+        val explicitTag = project.findProperty("releaseTag")?.toString()
+        val tagWithV = explicitTag ?: "v$cleanVersion"
+
+        val buildProperties = buildString {
+            appendLine("stagingRepositoryId=$repoId")
+            appendLine("releaseTag=$tagWithV")       // Guaranteed: v1.1.1
+            appendLine("releaseVersion=$cleanVersion") // Guaranteed: 1.1.1
+        }
+
+        outputFile.get().asFile.writeText(buildProperties)
+        println(buildProperties)
     }
 }
