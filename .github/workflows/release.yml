@@ -60,6 +60,7 @@ jobs:
           ./gradlew publishToSonatype
           -PisMainHost=true
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
+          --staging-repository-id=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
@@ -84,6 +85,7 @@ jobs:
           ./gradlew :buildata-runtime:publishToSonatype
           -Pkotlin.native.linux.enabled=false
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
+          --staging-repository-id=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
@@ -109,6 +111,7 @@ jobs:
           ./gradlew :buildata-runtime:publishToSonatype
           -Pkotlin.native.linux.enabled=false
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
+          --staging-repository-id=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
@@ -129,14 +132,23 @@ jobs:
         run: >
           ./gradlew closeSonatypeStagingRepository
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
+          --staging-repository-id=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
 
   "Rollback-Staging":
-    if: ${{ (cancelled() || failure()) && needs['Initialize-Staging'].outputs.stagingRepositoryId != '' }}
-    needs: [ Initialize-Staging, Linux, MacOS-and-iOS, Windows ]
+    if: >-
+      always() &&
+      (
+        needs.['Initialize-Staging'].result == 'failure' || needs.['Initialize-Staging'].result == 'cancelled' ||
+        needs.Linux.result == 'failure' || needs.Linux.result == 'cancelled' ||
+        needs.['MacOS-and-iOS'].result == 'failure' || needs.['MacOS-and-iOS'].result == 'cancelled' ||
+        needs.Windows.result == 'failure' || needs.Windows.result == 'cancelled' ||
+        needs.['Close-Staging'].result == 'failure' || needs.['Close-Staging'].result == 'cancelled'
+      )
+    needs: [ Initialize-Staging, Linux, MacOS-and-iOS, Windows, Close-Staging ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -154,6 +166,7 @@ jobs:
         run: |
           ./gradlew dropSonatypeStagingRepository \
             -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }} \
+            --staging-repository-id=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
             -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }} \
             -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }} \
             -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }} || true
