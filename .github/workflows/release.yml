@@ -18,11 +18,11 @@ jobs:
       releaseTag: ${{ steps.init.outputs.releaseTag }}
       releaseVersion: ${{ steps.init.outputs.releaseVersion }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'corretto'
           java-version: '17'
@@ -50,10 +50,10 @@ jobs:
       GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
       GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'corretto'
           java-version: '17'
@@ -74,10 +74,10 @@ jobs:
       GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
       GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'corretto'
           java-version: '17'
@@ -98,10 +98,10 @@ jobs:
       GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
       GPG_SECRET_PASSWORD: ${{ secrets.GPG_SECRET_PASSWORD }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'corretto'
           java-version: '17'
@@ -120,10 +120,10 @@ jobs:
     needs: [ Initialize-Staging, Linux, MacOS-and-iOS, Windows ]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'corretto'
           java-version: '17'
@@ -150,11 +150,11 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'corretto'
           java-version: '17'
