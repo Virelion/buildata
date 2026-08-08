@@ -41,7 +41,8 @@ nexusPublishing {
             username.set(providers.gradleProperty("sonatype.username"))
             password.set(providers.gradleProperty("sonatype.password"))
 
-            repositoryDescription.set(repositoryDescription.get()+"#"+project.findProperty("releaseRunID "))
+            repositoryDescription.set(repositoryDescription.get()+"#"+project.findProperty("releaseRunID"))
+            logger.info("Sonatype repository description: ${repositoryDescription.get()}")
         }
     }
 }
