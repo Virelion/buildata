@@ -35,6 +35,7 @@ jobs:
 
           ./gradlew initializeSonatypeStagingRepository saveBuildInformation \
             -Pversion="$VERSION_NUMBER" \
+            -PreleaseRunID=${{ github.run_id }}
             -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }} \
             -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           
@@ -57,12 +58,10 @@ jobs:
           java-version: '17'
       - name: Release Linux Artifacts
         run: >
-          ./gradlew publishToSonatype
+          ./gradlew -x initializeSonatypeStagingRepository findSonatypeStagingRepository publishToSonatype
           -PisMainHost=true
+          -PreleaseRunID=${{ github.run_id }}
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
-          --staging-repository-id=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
-          -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
-          -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
 
@@ -82,12 +81,10 @@ jobs:
           java-version: '17'
       - name: Release MacOS & iOS Artifacts
         run: >
-          ./gradlew :buildata-runtime:publishToSonatype
+          ./gradlew -x initializeSonatypeStagingRepository findSonatypeStagingRepository :buildata-runtime:publishToSonatype
           -Pkotlin.native.linux.enabled=false
+          -PreleaseRunID=${{ github.run_id }}
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
-          --staging-repository-id=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
-          -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
-          -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
 
@@ -108,12 +105,10 @@ jobs:
       - name: Release Windows Artifacts
         shell: bash
         run: >
-          ./gradlew :buildata-runtime:publishToSonatype
+          ./gradlew -x initializeSonatypeStagingRepository findSonatypeStagingRepository :buildata-runtime:publishToSonatype
           -Pkotlin.native.linux.enabled=false
+          -PreleaseRunID=${{ github.run_id }}
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
-          --staging-repository-id=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
-          -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
-          -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
 
@@ -130,11 +125,9 @@ jobs:
           java-version: '17'
       - name: Close Staging Repository
         run: >
-          ./gradlew closeSonatypeStagingRepository
+          ./gradlew findSonatypeStagingRepository closeSonatypeStagingRepository
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
-          --staging-repository-id=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
-          -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
-          -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
+          -PreleaseRunID=${{ github.run_id }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
 
@@ -161,15 +154,6 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-
-      - name: Drop Staging Repository
-        run: |
-          ./gradlew dropSonatypeStagingRepository \
-            -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }} \
-            --staging-repository-id=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
-            -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }} \
-            -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }} \
-            -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }} || true
 
       - name: Delete GitHub Release
         env:

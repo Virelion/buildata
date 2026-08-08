@@ -26,6 +26,7 @@ allprojects {
 
 
 val configurePOM: ((MavenPublication, Project) -> Unit) by extra
+val releaseRunID by properties
 
 
 nexusPublishing {
@@ -40,6 +41,8 @@ nexusPublishing {
 
             username.set(providers.gradleProperty("sonatype.username"))
             password.set(providers.gradleProperty("sonatype.password"))
+
+            repositoryDescription.set(repositoryDescription.get()+"#"+releaseRunID)
         }
     }
 }
@@ -48,15 +51,10 @@ tasks.register("saveBuildInformation") {
     group = "publishing"
     description = "Saves the staging repository ID to a file"
 
-    mustRunAfter("initializeSonatypeStagingRepository")
-
     val outputFile = layout.buildDirectory.file("build.properties")
     outputs.file(outputFile)
 
     doLast {
-        val initTask = tasks.named<io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository>("initializeSonatypeStagingRepository").get()
-        val repoId = initTask.registry.get().registry[initTask.repository.get().name].stagingRepositoryId
-
         val rawVersion = project.version.toString()
 
         if("v" in rawVersion) throw GradleException("Incorrect version $rawVersion, version cannot contain 'v'")
@@ -67,9 +65,8 @@ tasks.register("saveBuildInformation") {
         val tagWithV = explicitTag ?: "v$cleanVersion"
 
         val buildProperties = buildString {
-            appendLine("stagingRepositoryId=$repoId")
-            appendLine("releaseTag=$tagWithV")       // Guaranteed: v1.1.1
-            appendLine("releaseVersion=$cleanVersion") // Guaranteed: 1.1.1
+            appendLine("releaseTag=$tagWithV")
+            appendLine("releaseVersion=$cleanVersion")
         }
 
         outputFile.get().asFile.writeText(buildProperties)
