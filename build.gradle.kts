@@ -82,7 +82,10 @@ subprojects {
             // withType<MavenPublication> catches JVM, Android, KotlinMultiplatform,
             // and all Native/iOS target publications automatically as they initialize.
             publications.withType<MavenPublication> {
-                configurePOM(this, project)
+                // has to be in afterEvaluate, otherwise buildata-runtime does not get description populated
+                afterEvaluate {
+                    configurePOM(this@withType, project)
+                }
             }
         }
 
