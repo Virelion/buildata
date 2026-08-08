@@ -35,7 +35,7 @@ jobs:
 
           ./gradlew initializeSonatypeStagingRepository saveBuildInformation \
             -Pversion="$VERSION_NUMBER" \
-            -PreleaseRunID=${{ github.run_id }}
+            -PreleaseRunID=${{ github.run_id }} \
             -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }} \
             -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           
