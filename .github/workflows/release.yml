@@ -43,6 +43,7 @@ jobs:
           cat build/build.properties >> $GITHUB_OUTPUT
 
   "Linux":
+    name: "Linux, Android and JVM"
     needs: [ Initialize-Staging ]
     runs-on: ubuntu-latest
     env:
@@ -59,6 +60,7 @@ jobs:
       - name: Release Linux Artifacts
         run: >
           ./gradlew -x initializeSonatypeStagingRepository findSonatypeStagingRepository publishToSonatype
+          -PisReleasingWithSigning=true
           -PisMainHost=true
           -PreleaseRunID=${{ github.run_id }}
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
@@ -82,6 +84,7 @@ jobs:
       - name: Release MacOS & iOS Artifacts
         run: >
           ./gradlew -x initializeSonatypeStagingRepository findSonatypeStagingRepository :buildata-runtime:publishToSonatype
+          -PisReleasingWithSigning=true
           -Pkotlin.native.linux.enabled=false
           -PreleaseRunID=${{ github.run_id }}
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
@@ -106,6 +109,7 @@ jobs:
         shell: bash
         run: >
           ./gradlew -x initializeSonatypeStagingRepository findSonatypeStagingRepository :buildata-runtime:publishToSonatype
+          -PisReleasingWithSigning=true
           -Pkotlin.native.linux.enabled=false
           -PreleaseRunID=${{ github.run_id }}
           -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
