@@ -26,6 +26,7 @@ allprojects {
 
 
 val configurePOM: ((MavenPublication, Project) -> Unit) by extra
+val releaseRunID by properties
 
 
 nexusPublishing {
@@ -40,6 +41,8 @@ nexusPublishing {
 
             username.set(providers.gradleProperty("sonatype.username"))
             password.set(providers.gradleProperty("sonatype.password"))
+
+            repositoryDescription.set(repositoryDescription.get()+"#"+releaseRunID)
         }
     }
 }
