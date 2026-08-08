@@ -93,13 +93,18 @@ subprojects {
 fun configureSigningIfNeeded(project: Project) {
     val isReleasingWithSigning = (project.findProperty("isReleasingWithSigning") as? String)?.toBoolean() ?: false
     if (isReleasingWithSigning) {
-        val signingKey = System.getenv("GPG_SECRET_KEY") ?: error("Missing signing.secretKey")
-        val signingPassword = System.getenv("GPG_SECRET_PASSWORD") ?: error("Missing signing.password")
+        // Explicitly apply the signing plugin if it isn't already applied
+        project.pluginManager.apply("signing")
 
-        project.configure<SigningExtension> {
-            useInMemoryPgpKeys(signingKey, signingPassword)
-            // Signs all publications registered in the project's publishing extension
-            sign(project.extensions.getByType<PublishingExtension>().publications)
+        // Wait for the signing plugin to be ready, then configure it
+        project.pluginManager.withPlugin("signing") {
+            val signingKey = System.getenv("GPG_SECRET_KEY") ?: error("Missing GPG_SECRET_KEY environment variable")
+            val signingPassword = System.getenv("GPG_SECRET_PASSWORD") ?: error("Missing GPG_SECRET_PASSWORD environment variable")
+
+            project.configure<SigningExtension> {
+                useInMemoryPgpKeys(signingKey, signingPassword)
+                sign(project.extensions.getByType<PublishingExtension>().publications)
+            }
         }
     }
 }
