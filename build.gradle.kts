@@ -26,7 +26,6 @@ allprojects {
 
 
 val configurePOM: ((MavenPublication, Project) -> Unit) by extra
-val releaseRunID by properties
 
 
 nexusPublishing {
@@ -42,7 +41,7 @@ nexusPublishing {
             username.set(providers.gradleProperty("sonatype.username"))
             password.set(providers.gradleProperty("sonatype.password"))
 
-            repositoryDescription.set(repositoryDescription.get()+"#"+releaseRunID)
+            repositoryDescription.set(repositoryDescription.get()+"#"+project.findProperty("releaseRunID "))
         }
     }
 }
@@ -71,5 +70,38 @@ tasks.register("saveBuildInformation") {
 
         outputFile.get().asFile.writeText(buildProperties)
         println(buildProperties)
+    }
+}
+
+subprojects {
+    pluginManager.withPlugin("maven-publish") {
+        val isGradlePlugin = this.name == "buildata-gradle-plugin"
+        logger.info("Configuring $name as ${if (!isGradlePlugin) "mavenCentral module" else "gradle plugin"}")
+        if (!isGradlePlugin) {
+            configurePOMAndSigning()
+        }
+    }
+}
+
+fun Project.configurePOMAndSigning() {
+    configure<PublishingExtension> {
+        afterEvaluate {
+            publications {
+                filterIsInstance<MavenPublication>()
+                    .forEach {
+                        configurePOM(it, this@afterEvaluate)
+                    }
+            }
+
+            val isReleasingWithSigning: Boolean = (findProperty("isReleasingWithSigning") as? String)?.toBoolean() ?: false
+            if(isReleasingWithSigning) {
+                val signingKey = System.getenv("GPG_SECRET_KEY") ?: error("Missing signing.secretKey")
+                val signingPassword = System.getenv("GPG_SECRET_PASSWORD") ?: error("Missing signing.password")
+                configure<SigningExtension> {
+                    useInMemoryPgpKeys(signingKey, signingPassword)
+                    sign(publications)
+                }
+            }
+        }
     }
 }
