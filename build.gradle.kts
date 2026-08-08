@@ -76,15 +76,13 @@ tasks.register("saveBuildInformation") {
 
 subprojects {
     pluginManager.withPlugin("maven-publish") {
-        if (project.name != "buildata-gradle-plugin") {
-            logger.info("Configuring KMP/Maven modules for: ${project.name}")
+        logger.info("Configuring KMP/Maven modules for: ${project.name}")
 
-            configure<PublishingExtension> {
-                // withType<MavenPublication> catches JVM, Android, KotlinMultiplatform,
-                // and all Native/iOS target publications automatically as they initialize.
-                publications.withType<MavenPublication> {
-                    configurePOM(this, project)
-                }
+        configure<PublishingExtension> {
+            // withType<MavenPublication> catches JVM, Android, KotlinMultiplatform,
+            // and all Native/iOS target publications automatically as they initialize.
+            publications.withType<MavenPublication> {
+                configurePOM(this, project)
             }
         }
 
@@ -102,39 +100,6 @@ fun configureSigningIfNeeded(project: Project) {
             useInMemoryPgpKeys(signingKey, signingPassword)
             // Signs all publications registered in the project's publishing extension
             sign(project.extensions.getByType<PublishingExtension>().publications)
-        }
-    }
-}
-
-subprojects {
-    pluginManager.withPlugin("maven-publish") {
-        val isGradlePlugin = this.name == "buildata-gradle-plugin"
-        logger.info("Configuring $name as ${if (!isGradlePlugin) "mavenCentral module" else "gradle plugin"}")
-        if (!isGradlePlugin) {
-            configurePOMAndSigning()
-        }
-    }
-}
-
-fun Project.configurePOMAndSigning() {
-    configure<PublishingExtension> {
-        afterEvaluate {
-            publications {
-                filterIsInstance<MavenPublication>()
-                    .forEach {
-                        configurePOM(it, this@afterEvaluate)
-                    }
-            }
-
-            val isReleasingWithSigning: Boolean = (findProperty("isReleasingWithSigning") as? String)?.toBoolean() ?: false
-            if(isReleasingWithSigning) {
-                val signingKey = System.getenv("GPG_SECRET_KEY") ?: error("Missing signing.secretKey")
-                val signingPassword = System.getenv("GPG_SECRET_PASSWORD") ?: error("Missing signing.password")
-                configure<SigningExtension> {
-                    useInMemoryPgpKeys(signingKey, signingPassword)
-                    sign(publications)
-                }
-            }
         }
     }
 }
