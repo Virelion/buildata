@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       stagingRepositoryId: ${{ steps.init.outputs.stagingRepositoryId }}
+      releaseTag: ${{ steps.init.outputs.releaseTag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,14 +24,13 @@ jobs:
           java-package: 'jdk'
       - name: Create Git Tag and Initialize Staging Repo
         id: init
-        # build/nexus-staging-plugin/sonatype.properties contains stagingRepositoryId
         run: |
-          ./gradlew final initializeSonatypeStagingRepository saveStagingRepositoryID \
+          ./gradlew final initializeSonatypeStagingRepository saveBuildInformation \
             -Prelease.scope=${{ github.event.inputs.scope }} \
             -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }} \
             -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           
-          cat build/nexus-staging-plugin/sonatype.properties >> $GITHUB_OUTPUT 
+          cat build/build.properties >> $GITHUB_OUTPUT 
 
   "Linux":
     needs: [ Initialize-Staging ]
@@ -52,6 +52,7 @@ jobs:
           ./gradlew publishToSonatype
           -PisMainHost=true
           -Prelease.useLastTag=true
+          -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
@@ -70,12 +71,12 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-          java-package: 'jdk'
       - name: Release MacOS & iOS Artifacts
         run: >
           ./gradlew :buildata-runtime:publishToSonatype
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
+          -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
@@ -94,13 +95,13 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-          java-package: 'jdk'
       - name: Release Windows Artifacts
         shell: cmd
         run: >
           .\gradlew.bat :buildata-runtime:publishToSonatype
           -Pkotlin.native.linux.enabled=false
           -Prelease.useLastTag=true
+          -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
@@ -116,11 +117,43 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-          java-package: 'jdk'
-      - name: Close and Release Staging Repository
+      - name: Close Staging Repository
         run: >
           ./gradlew closeSonatypeStagingRepository
           -Prelease.useLastTag=true
+          -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }}
+
+  "Rollback-Staging":
+    if: ${{ (cancelled() || failure()) && needs['Initialize-Staging'].outputs.stagingRepositoryId != '' }}
+    needs: [ Initialize-Staging, Linux, MacOS-and-iOS, Windows ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
+      - name: Drop Staging Repository
+        run: |
+          ./gradlew dropSonatypeStagingRepository \
+            -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }} \
+            -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }} \
+            -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }} \
+            -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
+
+      - name: Delete Remote and Local Git Tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ needs['Initialize-Staging'].outputs.releaseTag }}"
+          if [ -n "$TAG" ]; then
+            echo "Rolling back Git tag: $TAG"
+            git tag -d "$TAG" || true
+            git push origin --delete "$TAG" || true
+          fi

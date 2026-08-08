@@ -45,14 +45,14 @@ nexusPublishing {
     }
 }
 
-tasks.register("saveStagingRepositoryID") {
+tasks.register("saveBuildInformation") {
     group = "publishing"
     description = "Saves the staging repository ID to a file"
 
     // Must run after initialization
     mustRunAfter("initializeSonatypeStagingRepository")
 
-    val outputFile = layout.buildDirectory.file("nexus-staging-plugin/sonatype.properties")
+    val outputFile = layout.buildDirectory.file("build.properties")
     outputs.file(outputFile)
 
     doLast {
@@ -62,7 +62,11 @@ tasks.register("saveStagingRepositoryID") {
 
         initTask.repository.get().name
         // Save to file
-        outputFile.get().asFile.writeText("stagingRepositoryId=$repoId")
+        outputFile.get().asFile
+            .writeText(buildString {
+                appendLine("stagingRepositoryId=$repoId")
+                appendLine("releaseTag=${project.version}")
+            })
         println("##[set-output name=REPO_ID;]$repoId") // For CI output
         println(repoId)
     }
