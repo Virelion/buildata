@@ -142,11 +142,11 @@ jobs:
     if: >-
       always() &&
       (
-        needs.['Initialize-Staging'].result == 'failure' || needs.['Initialize-Staging'].result == 'cancelled' ||
+        needs['Initialize-Staging'].result == 'failure' || needs['Initialize-Staging'].result == 'cancelled' ||
         needs.Linux.result == 'failure' || needs.Linux.result == 'cancelled' ||
-        needs.['MacOS-and-iOS'].result == 'failure' || needs.['MacOS-and-iOS'].result == 'cancelled' ||
+        needs['MacOS-and-iOS'].result == 'failure' || needs['MacOS-and-iOS'].result == 'cancelled' ||
         needs.Windows.result == 'failure' || needs.Windows.result == 'cancelled' ||
-        needs.['Close-Staging'].result == 'failure' || needs.['Close-Staging'].result == 'cancelled'
+        needs['Close-Staging'].result == 'failure' || needs['Close-Staging'].result == 'cancelled'
       )
     needs: [ Initialize-Staging, Linux, MacOS-and-iOS, Windows, Close-Staging ]
     runs-on: ubuntu-latest
