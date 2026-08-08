@@ -23,14 +23,14 @@ jobs:
           java-package: 'jdk'
       - name: Create Git Tag and Initialize Staging Repo
         id: init
+        # build/nexus-staging-plugin/sonatype.properties contains stagingRepositoryId
         run: |
-          ./gradlew final initializeSonatypeStagingRepository \
+          ./gradlew final initializeSonatypeStagingRepository saveStagingRepositoryID \
             -Prelease.scope=${{ github.event.inputs.scope }} \
             -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }} \
             -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           
-          REPO_ID=$(grep -oP 'Created staging repository \K[^\s]+' build/nexus-staging-plugin/sonatype.properties || echo "")
-          echo "stagingRepositoryId=$REPO_ID" >> $GITHUB_OUTPUT
+          cat build/nexus-staging-plugin/sonatype.properties >> $GITHUB_OUTPUT 
 
   "Linux":
     needs: [ Initialize-Staging ]
@@ -119,7 +119,7 @@ jobs:
           java-package: 'jdk'
       - name: Close and Release Staging Repository
         run: >
-          ./gradlew closeAndReleaseSonatypeStagingRepository
+          ./gradlew closeSonatypeStagingRepository
           -Prelease.useLastTag=true
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}

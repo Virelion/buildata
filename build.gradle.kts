@@ -44,3 +44,26 @@ nexusPublishing {
         }
     }
 }
+
+tasks.register("saveStagingRepositoryID") {
+    group = "publishing"
+    description = "Saves the staging repository ID to a file"
+
+    // Must run after initialization
+    mustRunAfter("initializeSonatypeStagingRepository")
+
+    val outputFile = layout.buildDirectory.file("nexus-staging-plugin/sonatype.properties")
+    outputs.file(outputFile)
+
+    doLast {
+        // Access the task directly to get the generated ID
+        val initTask = tasks.named<io.github.gradlenexus.publishplugin.InitializeNexusStagingRepository>("initializeSonatypeStagingRepository").get()
+        val repoId = initTask.registry.get().registry[initTask.repository.get().name].stagingRepositoryId
+
+        initTask.repository.get().name
+        // Save to file
+        outputFile.get().asFile.writeText("stagingRepositoryId=$repoId")
+        println("##[set-output name=REPO_ID;]$repoId") // For CI output
+        println(repoId)
+    }
+}
