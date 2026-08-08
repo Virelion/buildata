@@ -1,11 +1,14 @@
 name: release
 
 on:
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
-      scope:
-        description: 'Scope of release. Use major|minor|patch'
+      version:
+        description: 'Version tag to release (e.g. 1.0.0 or v1.0.0)'
         required: true
+        type: string
 
 jobs:
   "Initialize-Staging":
@@ -13,24 +16,30 @@ jobs:
     outputs:
       stagingRepositoryId: ${{ steps.init.outputs.stagingRepositoryId }}
       releaseTag: ${{ steps.init.outputs.releaseTag }}
+      releaseVersion: ${{ steps.init.outputs.releaseVersion }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
           java-version: '17'
-          java-package: 'jdk'
-      - name: Create Git Tag and Initialize Staging Repo
+
+      - name: Initialize Staging Repo and Save Build Info
         id: init
         run: |
-          ./gradlew final initializeSonatypeStagingRepository saveBuildInformation \
-            -Prelease.scope=${{ github.event.inputs.scope }} \
+          TAG_NAME="${{ github.event.release.tag_name || inputs.version }}"
+          VERSION_NUMBER="${TAG_NAME#v}"
+
+          ./gradlew initializeSonatypeStagingRepository saveBuildInformation \
+            -Pversion="$VERSION_NUMBER" \
             -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }} \
             -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
           
-          cat build/build.properties >> $GITHUB_OUTPUT 
+          # Reads stagingRepositoryId, releaseTag, and releaseVersion directly into outputs
+          cat build/build.properties >> $GITHUB_OUTPUT
 
   "Linux":
     needs: [ Initialize-Staging ]
@@ -46,12 +55,11 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-          java-package: 'jdk'
       - name: Release Linux Artifacts
         run: >
           ./gradlew publishToSonatype
           -PisMainHost=true
-          -Prelease.useLastTag=true
+          -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
           -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
@@ -75,7 +83,7 @@ jobs:
         run: >
           ./gradlew :buildata-runtime:publishToSonatype
           -Pkotlin.native.linux.enabled=false
-          -Prelease.useLastTag=true
+          -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
           -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
@@ -96,11 +104,11 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
       - name: Release Windows Artifacts
-        shell: cmd
+        shell: bash
         run: >
-          .\gradlew.bat :buildata-runtime:publishToSonatype
+          ./gradlew :buildata-runtime:publishToSonatype
           -Pkotlin.native.linux.enabled=false
-          -Prelease.useLastTag=true
+          -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
           -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
@@ -120,7 +128,7 @@ jobs:
       - name: Close Staging Repository
         run: >
           ./gradlew closeSonatypeStagingRepository
-          -Prelease.useLastTag=true
+          -Pversion=${{ needs['Initialize-Staging'].outputs.releaseVersion }}
           -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }}
           -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
@@ -130,10 +138,13 @@ jobs:
     if: ${{ (cancelled() || failure()) && needs['Initialize-Staging'].outputs.stagingRepositoryId != '' }}
     needs: [ Initialize-Staging, Linux, MacOS-and-iOS, Windows ]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
@@ -145,7 +156,17 @@ jobs:
             -PstagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }} \
             -Psonatype.stagingRepositoryId=${{ needs['Initialize-Staging'].outputs.stagingRepositoryId }} \
             -Psonatype.username=${{ secrets.SONATYPE_USER_NAME }} \
-            -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }}
+            -Psonatype.password=${{ secrets.SONATYPE_PASSWORD }} || true
+
+      - name: Delete GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ needs['Initialize-Staging'].outputs.releaseTag }}"
+          if [ -n "$TAG" ]; then
+            echo "Attempting to delete GitHub Release for tag: $TAG"
+            gh release delete "$TAG" --yes --cleanup-tag=false || true
+          fi
 
       - name: Delete Remote and Local Git Tag
         env:
