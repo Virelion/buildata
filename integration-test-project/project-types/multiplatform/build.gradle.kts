@@ -2,7 +2,7 @@ import com.android.build.gradle.AppExtension
 
 plugins {
     kotlin("multiplatform")
-    id("com.google.devtools.ksp") version "2.2.20-2.0.3"
+    id("com.google.devtools.ksp") version "2.3.11"
 }
 
 val androidEnabled = System.getenv("ANDROID_HOME") != null
@@ -55,7 +55,7 @@ kotlin {
             }
             dependencies {
                 implementation(project(":buildata-runtime"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
             }
         }
 
