@@ -7,13 +7,13 @@ buildscript {
         google()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:8.13.2")
+        classpath("com.android.tools.build:gradle:9.4.0")
     }
 }
 
 plugins {
     kotlin("multiplatform") version "2.2.20" apply false
-    id("org.jlleitschuh.gradle.ktlint") version "11.6.1" apply false
+    id("org.jlleitschuh.gradle.ktlint") version "14.2.0" apply false
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 }
 
