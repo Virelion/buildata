@@ -2,13 +2,11 @@ import com.android.build.gradle.AppExtension
 
 plugins {
     kotlin("multiplatform")
-    id("com.google.devtools.ksp") version "2.2.20-2.0.3"
+    id("com.android.kotlin.multiplatform.library")
+    id("com.google.devtools.ksp") version "2.3.11"
 }
 
 val androidEnabled = System.getenv("ANDROID_HOME") != null
-if (androidEnabled) {
-    configureAndroid()
-}
 
 repositories {
     mavenLocal()
@@ -44,9 +42,7 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    if (androidEnabled) {
-        androidTarget()
-    }
+    androidTarget()
 
     sourceSets {
         commonMain {
@@ -105,37 +101,4 @@ afterEvaluate {
 
 dependencies {
     add("kspCommonMainMetadata", project(":buildata-ksp-plugin"))
-}
-
-fun Project.configureAndroid() {
-    apply(plugin = "com.android.application")
-
-    configure<AppExtension> {
-        namespace = "io.github.virelion.buildata.demo"
-        compileSdkVersion = "android-30"
-
-        defaultConfig {
-            minSdk = 21
-        }
-
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
-        }
-
-        sourceSets.getByName("main").apply {
-            java.srcDirs("src/androidMain/kotlin")
-            res.srcDirs("src/androidMain/res")
-            assets.srcDirs("src/commonMain/resources/assets")
-        }
-
-        sourceSets.getByName("androidTest").apply {
-            java.srcDirs("src/commonTest/kotlin", "src/jvmTest/kotlin")
-            res.srcDirs("src/androidTest/res")
-            assets.srcDirs("src/commonMain/resources/assets")
-        }
-
-        defaultPublishConfig = "debug"
-        testOptions.unitTests.isIncludeAndroidResources = true
-    }
 }
