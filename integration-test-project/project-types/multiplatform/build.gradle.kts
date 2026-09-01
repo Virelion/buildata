@@ -2,7 +2,8 @@ import com.android.build.gradle.AppExtension
 
 plugins {
     kotlin("multiplatform")
-    id("com.google.devtools.ksp") version "2.2.20-2.0.3"
+//    id("com.android.kotlin.multiplatform.library")
+    id("com.google.devtools.ksp") version "2.3.11"
 }
 
 val androidEnabled = System.getenv("ANDROID_HOME") != null
@@ -44,9 +45,7 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    if (androidEnabled) {
-        androidTarget()
-    }
+    androidTarget()
 
     sourceSets {
         commonMain {
@@ -108,34 +107,21 @@ dependencies {
 }
 
 fun Project.configureAndroid() {
-    apply(plugin = "com.android.application")
+    apply(plugin = "com.android.kotlin.multiplatform.library")
 
-    configure<AppExtension> {
-        namespace = "io.github.virelion.buildata.demo"
-        compileSdkVersion = "android-30"
-
-        defaultConfig {
+    extensions.configure(KotlinMultiplatformExtension::class.java) {
+        android {
+            namespace = "io.github.virelion.buildata.demo"
+            compileSdk = 30
             minSdk = 21
-        }
 
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
-        }
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_11)
+            }
 
-        sourceSets.getByName("main").apply {
-            java.srcDirs("src/androidMain/kotlin")
-            res.srcDirs("src/androidMain/res")
-            assets.srcDirs("src/commonMain/resources/assets")
+            withHostTest {
+                isIncludeAndroidResources = true
+            }
         }
-
-        sourceSets.getByName("androidTest").apply {
-            java.srcDirs("src/commonTest/kotlin", "src/jvmTest/kotlin")
-            res.srcDirs("src/androidTest/res")
-            assets.srcDirs("src/commonMain/resources/assets")
-        }
-
-        defaultPublishConfig = "debug"
-        testOptions.unitTests.isIncludeAndroidResources = true
     }
 }
