@@ -8,6 +8,14 @@
   ],
   "packageRules": [
     {
+      "matchPackagePatterns": [
+        "com.google.devtools.ksp",
+        "^org\\.jetbrains\\.kotlin\\.",
+        "kotlin-multiplatform"
+      ],
+      "enabled": false
+    },
+    {
       "matchPackagePatterns": ["*"],
       "groupName": "all dependencies"
     }
