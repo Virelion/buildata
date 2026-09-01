@@ -1,4 +1,3 @@
-import com.android.build.gradle.LibraryExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 buildscript {
@@ -9,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     kotlin("multiplatform")
     `maven-publish`
     id("org.jlleitschuh.gradle.ktlint")
@@ -20,12 +19,8 @@ plugins {
 description = "Buildata runtime for generated builders."
 
 val linuxTargetEnabled = project.findProperty("kotlin.native.linux.enabled") ?: "true" == "true"
-
 val androidEnabled = (System.getenv("ANDROID_HOME") != null)
     .apply { if (!this) logger.error("Android is not enabled for project ANDROID_HOME is empty") }
-if (androidEnabled) {
-    configureAndroid()
-}
 
 repositories {
     mavenLocal()
@@ -39,9 +34,11 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
     }
+
     jvm {
         this.compilerOptions.jvmTarget = JvmTarget.JVM_11
     }
+
     js(IR) {
         nodejs {
             testTask {
@@ -49,6 +46,7 @@ kotlin {
             }
         }
     }
+
     mingwX64()
     macosX64()
 
@@ -59,13 +57,33 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+
     publicationsFromMainHost =
         listOf(jvm(), js())
-        .map { it.name } + "kotlinMultiplatform" + "androidDebug" + "androidRelease" + "metadata"
+            .map { it.name } + "kotlinMultiplatform" + "androidDebug" + "androidRelease" + "metadata"
 
     if (androidEnabled) {
-        androidTarget {
-            publishLibraryVariants("release", "debug")
+        android {
+
+            namespace = "io.github.virelion"
+            compileSdk = 30
+
+//            defaultConfig {
+//                minSdk = 21
+//            }
+
+//            compileOptions {
+//                sourceCompatibility = JavaVersion.VERSION_11
+//                targetCompatibility = JavaVersion.VERSION_11
+//            }
+//
+//            testOptions {
+//                unitTests {
+//                    isIncludeAndroidResources = true
+//                }
+//            }
+//            publishLibraryVariants("release", "debug")
+
         }
     }
 
@@ -101,17 +119,17 @@ kotlin {
         }
 
         if (androidEnabled) {
-            val androidMain by getting {
-                dependencies {
-                }
-            }
-
-            val androidUnitTest by getting {
-                dependencies {
-                    implementation(kotlin("test"))
-                    implementation(kotlin("test-junit"))
-                }
-            }
+//            val androidMain by getting {
+//                dependencies {
+//                }
+//            }
+//
+//            val androidUnitTest by getting {
+//                dependencies {
+//                    implementation(kotlin("test"))
+//                    implementation(kotlin("test-junit"))
+//                }
+//            }
         }
     }
 }
@@ -128,7 +146,6 @@ publishing {
 }
 
 tasks {
-
     withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
         outputDirectory.set(file("$buildDir/javadoc"))
         dokkaSourceSets {
@@ -158,50 +175,18 @@ afterEvaluate {
                 artifact(tasks["javadocJar"])
             }
 
-            // Android targets require additional config for some reason
             if (androidEnabled) {
                 apply(from = "$rootDir/gradle/pom.gradle.kts")
                 val configurePOM: ((MavenPublication, Project) -> Unit) by extra
 
-                this.getByName<MavenPublication>("androidRelease") {
-                    configurePOM(this, project)
-                }
-
-                this.getByName<MavenPublication>("androidDebug") {
-                    configurePOM(this, project)
-                }
+//                this.getByName<MavenPublication>("androidRelease") {
+//                    configurePOM(this, project)
+//                }
+//
+//                this.getByName<MavenPublication>("androidDebug") {
+//                    configurePOM(this, project)
+//                }
             }
         }
-    }
-}
-
-fun Project.configureAndroid() {
-    configure<LibraryExtension> {
-        namespace = "io.github.virelion"
-        compileSdkVersion = "android-30"
-
-        defaultConfig {
-            minSdk = 21
-        }
-
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
-        }
-
-        sourceSets.getByName("main").apply {
-            java.srcDirs("src/androidMain/kotlin")
-            res.srcDirs("src/androidMain/res")
-            assets.srcDirs("src/commonMain/resources/assets")
-        }
-
-        sourceSets.getByName("androidTest").apply {
-            java.srcDirs("src/commonTest/kotlin", "src/jvmTest/kotlin")
-            res.srcDirs("src/androidTest/res")
-            assets.srcDirs("src/commonMain/resources/assets")
-        }
-
-        defaultPublishConfig = "debug"
-        testOptions.unitTests.isIncludeAndroidResources = true
     }
 }
