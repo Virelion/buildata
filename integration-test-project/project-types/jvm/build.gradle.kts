@@ -12,7 +12,7 @@ repositories {
 dependencies {
     implementation(project(":buildata-runtime"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.22.2")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.22.3")
     testImplementation(kotlin("test-junit"))
 
     add("ksp", project(":buildata-ksp-plugin"))
