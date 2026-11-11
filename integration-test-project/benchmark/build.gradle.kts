@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    id("me.champeau.jmh") version "0.7.3"
+    id("me.champeau.jmh") version "0.7.4"
     id("org.jlleitschuh.gradle.ktlint")
     id("io.github.virelion.buildata")
 }
