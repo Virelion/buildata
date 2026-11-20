@@ -1,4 +1,4 @@
-import com.android.build.gradle.AppExtension
+import kotlin.math.log
 
 plugins {
     kotlin("multiplatform")
@@ -6,7 +6,18 @@ plugins {
     id("com.google.devtools.ksp") version "2.3.11"
 }
 
-val androidEnabled = System.getenv("ANDROID_HOME") != null
+fun hasAndroidSdk(project: org.gradle.api.Project): Boolean {
+    val localProps = project.rootProject.file("local.properties")
+    if (localProps.exists()) {
+        val sdkDir = localProps.bufferedReader().useLines { lines ->
+            lines.find { it.startsWith("sdk.dir=") }?.substringAfter("sdk.dir=")?.trim()
+        }
+        if (!sdkDir.isNullOrEmpty()) return true
+    }
+    return System.getenv("ANDROID_HOME") != null
+}
+
+val androidEnabled = hasAndroidSdk(project)
 
 repositories {
     mavenLocal()
@@ -21,7 +32,7 @@ kotlin {
     jvm {
         this.compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
     }
-    js(IR) {
+    js {
         nodejs {
             testTask {
                 useMocha()
@@ -32,7 +43,7 @@ kotlin {
     val isMingwX64 = hostOs.startsWith("Windows")
     when {
         hostOs == "Mac OS X" -> {
-            macosX64()
+            macosArm64()
             iosX64()
             iosArm64()
             iosSimulatorArm64()
@@ -42,7 +53,13 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    androidTarget()
+    if (androidEnabled) {
+        android {
+            namespace = "io.github.virelion.integrationtest"
+            compileSdk { version = release(34) }
+            withHostTest {}
+        }
+    }
 
     sourceSets {
         commonMain {
@@ -62,36 +79,31 @@ kotlin {
             }
         }
 
-        val jvmMain by getting {
+        val jvmMain = sourceSets.getByName("jvmMain") {
             dependencies {
                 implementation(kotlin("reflect"))
             }
         }
 
-        val jvmTest by getting {
+        val jvmTest = sourceSets.getByName("jvmTest") {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
             }
         }
 
-        val jsTest by getting {
+        val jsTest = sourceSets.getByName("jsTest") {
             dependencies {
                 implementation(kotlin("test-js"))
-            }
-        }
-        if (androidEnabled) {
-            val androidUnitTest by getting {
-                dependencies {
-                    implementation(kotlin("test"))
-                    implementation(kotlin("test-junit"))
-                }
             }
         }
     }
 }
 
 afterEvaluate {
+    // Fix Gradle 9.x strictness: KSP multiplatform tasks don't auto-depends on common metadata task
+    tasks.matching { it::class.java.simpleName.startsWith("KspAA") && it.name != "kspCommonMainKotlinMetadata" }.configureEach { dependsOn("kspCommonMainKotlinMetadata") }
+
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().all {
         if (name != "kspCommonMainKotlinMetadata") {
             dependsOn("kspCommonMainKotlinMetadata")
