@@ -51,7 +51,7 @@ kotlin {
             }
             dependencies {
                 implementation(project(":buildata-runtime"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
             }
         }
 
