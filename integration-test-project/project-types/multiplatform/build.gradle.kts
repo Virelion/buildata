@@ -1,14 +1,23 @@
-import com.android.build.gradle.AppExtension
+import kotlin.math.log
 
 plugins {
     kotlin("multiplatform")
-    id("com.google.devtools.ksp") version "2.2.20-2.0.3"
+    id("com.android.kotlin.multiplatform.library")
+    id("com.google.devtools.ksp") version "2.3.11"
 }
 
-val androidEnabled = System.getenv("ANDROID_HOME") != null
-if (androidEnabled) {
-    configureAndroid()
+fun hasAndroidSdk(project: org.gradle.api.Project): Boolean {
+    val localProps = project.rootProject.file("local.properties")
+    if (localProps.exists()) {
+        val sdkDir = localProps.bufferedReader().useLines { lines ->
+            lines.find { it.startsWith("sdk.dir=") }?.substringAfter("sdk.dir=")?.trim()
+        }
+        if (!sdkDir.isNullOrEmpty()) return true
+    }
+    return System.getenv("ANDROID_HOME") != null
 }
+
+val androidEnabled = hasAndroidSdk(project)
 
 repositories {
     mavenLocal()
@@ -23,7 +32,7 @@ kotlin {
     jvm {
         this.compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
     }
-    js(IR) {
+    js {
         nodejs {
             testTask {
                 useMocha()
@@ -34,7 +43,7 @@ kotlin {
     val isMingwX64 = hostOs.startsWith("Windows")
     when {
         hostOs == "Mac OS X" -> {
-            macosX64()
+            macosArm64()
             iosX64()
             iosArm64()
             iosSimulatorArm64()
@@ -45,7 +54,11 @@ kotlin {
     }
 
     if (androidEnabled) {
-        androidTarget()
+        android {
+            namespace = "io.github.virelion.integrationtest"
+            compileSdk { version = release(34) }
+            withHostTest {}
+        }
     }
 
     sourceSets {
@@ -66,36 +79,31 @@ kotlin {
             }
         }
 
-        val jvmMain by getting {
+        val jvmMain = sourceSets.getByName("jvmMain") {
             dependencies {
                 implementation(kotlin("reflect"))
             }
         }
 
-        val jvmTest by getting {
+        val jvmTest = sourceSets.getByName("jvmTest") {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
             }
         }
 
-        val jsTest by getting {
+        val jsTest = sourceSets.getByName("jsTest") {
             dependencies {
                 implementation(kotlin("test-js"))
-            }
-        }
-        if (androidEnabled) {
-            val androidUnitTest by getting {
-                dependencies {
-                    implementation(kotlin("test"))
-                    implementation(kotlin("test-junit"))
-                }
             }
         }
     }
 }
 
 afterEvaluate {
+    // Fix Gradle 9.x strictness: KSP multiplatform tasks don't auto-depends on common metadata task
+    tasks.matching { it::class.java.simpleName.startsWith("KspAA") && it.name != "kspCommonMainKotlinMetadata" }.configureEach { dependsOn("kspCommonMainKotlinMetadata") }
+
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().all {
         if (name != "kspCommonMainKotlinMetadata") {
             dependsOn("kspCommonMainKotlinMetadata")
@@ -105,37 +113,4 @@ afterEvaluate {
 
 dependencies {
     add("kspCommonMainMetadata", project(":buildata-ksp-plugin"))
-}
-
-fun Project.configureAndroid() {
-    apply(plugin = "com.android.application")
-
-    configure<AppExtension> {
-        namespace = "io.github.virelion.buildata.demo"
-        compileSdkVersion = "android-30"
-
-        defaultConfig {
-            minSdk = 21
-        }
-
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
-        }
-
-        sourceSets.getByName("main").apply {
-            java.srcDirs("src/androidMain/kotlin")
-            res.srcDirs("src/androidMain/res")
-            assets.srcDirs("src/commonMain/resources/assets")
-        }
-
-        sourceSets.getByName("androidTest").apply {
-            java.srcDirs("src/commonTest/kotlin", "src/jvmTest/kotlin")
-            res.srcDirs("src/androidTest/res")
-            assets.srcDirs("src/commonMain/resources/assets")
-        }
-
-        defaultPublishConfig = "debug"
-        testOptions.unitTests.isIncludeAndroidResources = true
-    }
 }
